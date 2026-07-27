@@ -6,7 +6,7 @@ import appConfig from "./configurations/app.config";
 import dbConfig from "./configurations/db.config";
 
 const ENV = process.env.NODE_ENV;
-//1
+
 @Module({
   imports: [
     // Environments Variables
