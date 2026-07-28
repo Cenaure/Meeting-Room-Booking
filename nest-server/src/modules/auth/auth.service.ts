@@ -1,0 +1,168 @@
+import {Injectable} from '@nestjs/common';
+import SignInDto from "./dto/signIn.dto";
+import {DatabaseService} from "../../database/database.service";
+import {AppException} from "../../common/errors/app-exception";
+import {AppExceptionBodyCode} from "../../common/errors/app-exception-body.interface";
+import * as bcrypt from 'bcrypt';
+import {randomUUID} from "crypto";
+import {User} from "../../generated/prisma/client";
+import {AccessJwtPayload, RefreshJwtPayload} from "../../common/dto/jwt-payload.dto";
+import {ConfigService} from "@nestjs/config";
+import {JwtService} from "@nestjs/jwt";
+import SignUpDto from "./dto/signUp.dto";
+import {UsersService} from "../users/users.service";
+
+@Injectable()
+export class AuthService {
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly databaseService: DatabaseService,
+    private readonly jwtService: JwtService,
+    private readonly userService: UsersService
+  ) {
+  }
+
+  //region: # Helper functions
+  private async generateAndSaveTokens(
+    user: User,
+    newSession: boolean = false,
+    existingSessionId?: string,
+  ) {
+    const sessionId = newSession ? randomUUID() : existingSessionId;
+    if (!sessionId) throw AppException.unauthorized();
+
+    const accessJwtPayload = new AccessJwtPayload(user);
+    const plainAccessJwtPayload = {...accessJwtPayload};
+
+    const refreshJwtPayload = new RefreshJwtPayload(user, sessionId);
+    const plainRefreshJwtPayload = {...refreshJwtPayload};
+
+    const accessJwtSecret = this.configService.get("auth.access_token_secret")
+    const refreshJwtSecret = this.configService.get("auth.refresh_token_secret")
+
+    const accessTokenTTL = this.configService.get("auth.access_token_ttl") / 1000
+    const refreshTokenTTL = this.configService.get("auth.refresh_token_ttl") / 1000
+
+    console.log(accessTokenTTL, refreshTokenTTL) //TODO: remove
+
+    const accessToken = this.jwtService.sign(plainAccessJwtPayload, {
+      secret: accessJwtSecret,
+      expiresIn: accessTokenTTL
+    });
+
+    const refreshToken = this.jwtService.sign(plainRefreshJwtPayload, {
+      secret: refreshJwtSecret,
+      expiresIn: refreshTokenTTL,
+    });
+
+    if (newSession) {
+      await this.createSession(user.id, sessionId, refreshToken);
+    } else {
+      await this.updateSessionToken(sessionId, refreshToken);
+    }
+
+    return {accessToken, refreshToken, user: plainAccessJwtPayload};
+  }
+
+  /**
+   * Creates a new session (sign in, sign up)
+   */
+  private async createSession(
+    userId: number,
+    sessionId: string,
+    refreshToken: string,
+  ) {
+    const refreshTokenTTL = this.configService.get("auth.refresh_token_ttl")
+
+
+    return this.databaseService.session.create({
+      data: {
+        session_id: sessionId,
+        user_id: userId,
+        refresh_token: refreshToken,
+        expires_at: new Date(Date.now() + refreshTokenTTL),
+      }
+    });
+  }
+
+  /**
+   * Refreshes refreshToken in the existing session (refresh)
+   */
+  private async updateSessionToken(sessionId: string, refreshToken: string) {
+    const refreshTokenTTL = this.configService.get("auth.refresh_token_ttl")
+
+    const session = await this.databaseService.session.findFirst({
+      where: {
+        session_id: sessionId,
+        revoked_at: null
+      }
+    });
+
+    if (!session) {
+      throw AppException.unauthorized({
+        code: AppExceptionBodyCode.sessionNotFound,
+        message: "Session not found"
+      });
+    }
+
+    return this.databaseService.session.update({
+      where: {
+        session_id: sessionId,
+        revoked_at: null
+      },
+      data: {
+        refresh_token: refreshToken,
+        expires_at: new Date(Date.now() + refreshTokenTTL)
+      }
+    })
+  }
+
+  //endregion: # Helper functions
+
+  /**
+   * Authorizes a user, finding it by an email and comparing passwords' hashes
+   */
+  async signIn(dto: SignInDto) {
+    const user = await this.userService.findByEmail(dto.email)
+
+    const password_hash = user?.password_hash || "$2b$12$sMoGxG1IosKwXaDUV2HJvun1DzJJ2CtAZeiVY09slqq8lZfFHrGAq.placeholder"
+    const isPasswordMatches = await bcrypt.compare(dto.password, password_hash)
+
+    // Finding user takes less time than matching passwords, so we throw an error after these two actions completed
+    // it makes impossible to guess which of these two steps failed, and it's impossible to guess email that are in the database
+    if (!user || !isPasswordMatches) {
+      throw AppException.unauthorized({
+        code: AppExceptionBodyCode.wrongEmailOrPassword,
+        message: "Wrong email or password",
+      })
+    }
+
+    await this.userService.updateLastLogin(user.id);
+
+    return await this.generateAndSaveTokens(user, true);
+  }
+
+  /**
+   * Uses UserService to create a new user and send an activation email
+   */
+  async signUp(dto: SignUpDto) {
+    const user = await this.userService.createUser(dto);
+
+    // await this.mailService.sendActivationMail(user.email, user.activationLink);
+
+    await this.userService.updateLastLogin(user.id);
+
+    return await this.generateAndSaveTokens(user, true);
+  }
+
+  /**
+   * Deletes user session from the database
+   */
+  async logout(refreshToken: string) {
+    await this.databaseService.session.delete({where: {refresh_token: refreshToken}});
+  }
+
+  async activateAccount(activationId: string) {
+
+  }
+}
