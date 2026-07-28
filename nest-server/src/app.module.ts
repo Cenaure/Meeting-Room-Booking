@@ -22,10 +22,16 @@ const ENV = process.env.NODE_ENV;
       envFilePath: [`.env.${ENV}.local`, ".env"],
     }),
 
+    DatabaseModule,
+
+    AuthModule,
+
+    UsersModule,
+
 
   ],
 
   controllers: [],
-  providers: [PrismaService],
+  providers: [],
 })
 export class AppModule {}
