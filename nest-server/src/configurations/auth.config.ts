@@ -7,6 +7,7 @@ export default registerAs("auth", () => {
     {
       access_token_ttl: parseInt(process.env.ACCESS_TOKEN_TTL!, 10),
       refresh_token_ttl: parseInt(process.env.REFRESH_TOKEN_TTL!, 10),
+      activation_link_ttl: parseInt(process.env.ACTIVATION_LINK_TTL!, 10),
       access_token_secret: process.env.ACCESS_TOKEN_SECRET!,
       refresh_token_secret: process.env.REFRESH_TOKEN_SECRET!,
     },
@@ -14,6 +15,7 @@ export default registerAs("auth", () => {
     Joi.object({
       access_token_ttl: Joi.number().required(),
       refresh_token_ttl: Joi.number().required(),
+      activation_link_ttl: Joi.number().required(),
       access_token_secret: Joi.string().required(),
       refresh_token_secret: Joi.string().required(),
     })
