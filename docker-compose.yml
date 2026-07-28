@@ -10,8 +10,13 @@ services:
       - "3000:3000"
     env_file: ./nest-server/.env.development.local
     command: npm run start:dev
+    stdin_open: true
+    tty: true
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+    networks:
+      - app-network
 
   postgres:
     image: postgres:18-alpine
@@ -23,6 +28,13 @@ services:
       - pg_data:/var/lib/postgresql
     ports:
       - "5432:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}" ]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+    networks:
+      - app-network
 
   # Development tools
   pgadmin:
@@ -72,3 +84,6 @@ configs:
 
 volumes:
   pg_data:
+
+networks:
+  app-network:
