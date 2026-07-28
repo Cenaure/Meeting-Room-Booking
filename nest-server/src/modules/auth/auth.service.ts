@@ -1,4 +1,4 @@
-import {Injectable} from '@nestjs/common';
+import {Inject, Injectable} from '@nestjs/common';
 import SignInDto from "./dto/signIn.dto";
 import {DatabaseService} from "../../database/database.service";
 import {AppException} from "../../common/errors/app-exception";
@@ -11,6 +11,7 @@ import {ConfigService} from "@nestjs/config";
 import {JwtService} from "@nestjs/jwt";
 import SignUpDto from "./dto/signUp.dto";
 import {UsersService} from "../users/users.service";
+import {Cache, CACHE_MANAGER} from "@nestjs/cache-manager";
 
 @Injectable()
 export class AuthService {
@@ -18,7 +19,8 @@ export class AuthService {
     private readonly configService: ConfigService,
     private readonly databaseService: DatabaseService,
     private readonly jwtService: JwtService,
-    private readonly userService: UsersService
+    private readonly userService: UsersService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache
   ) {
   }
 
@@ -163,6 +165,37 @@ export class AuthService {
   }
 
   async activateAccount(activationId: string) {
+    const userId = await this.cacheManager.get<number>("activation_id:" + activationId);
 
+    if (!userId)
+      throw AppException.badRequest({
+        code: AppExceptionBodyCode.activationLinkExpired,
+        message: "Activation link expired"
+      })
+
+    await this.cacheManager.del("activation_id:" + activationId);
+    return this.userService.setIsActivated(userId);
+  }
+
+  /**
+   * Generate a new activation link and send it to the user's email
+   */
+  async generateActivationLink(userId: number) {
+    const user = await this.userService.findById(userId)
+    if (!user)
+      throw AppException.unauthorized()
+
+    if (user.is_activated)
+      throw AppException.badRequest({code: AppExceptionBodyCode.activationNotNeeded, message: "Activation not needed"})
+
+    const activationLinkTTL = this.configService.get("auth.activation_link_ttl")
+
+    const activationId = randomUUID()
+    await this.cacheManager.set("activation_id:" + activationId, userId, activationLinkTTL)
+
+    console.log(activationId)
+
+    //TODO: this.mailservice...
+    return
   }
 }

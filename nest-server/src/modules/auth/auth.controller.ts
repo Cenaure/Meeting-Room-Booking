@@ -4,6 +4,9 @@ import SignInDto from "./dto/signIn.dto";
 import SignUpDto from "./dto/signUp.dto";
 import type {Request, Response} from "express";
 import {TokensCookiesService} from "./tokens-cookies.service";
+import {Auth} from "./decorators/auth.decorator";
+import {AccessJwtPayload} from "../../common/dto/jwt-payload.dto";
+import {AppException} from "../../common/errors/app-exception";
 
 @Controller('auth')
 export class AuthController {
@@ -68,5 +71,14 @@ export class AuthController {
   @Get("activate/:activation_id")
   async activate(@Param("activation_id") activationId: string) {
     return await this.authService.activateAccount(activationId);
+  }
+
+  @Get("activation-link")
+  @Auth()
+  async generateActivationLink(@Req() request: Request & { user?: AccessJwtPayload }) {
+    const userId = request.user?.user_id;
+    if (!userId) throw AppException.unauthorized();
+
+    return await this.authService.generateActivationLink(userId);
   }
 }

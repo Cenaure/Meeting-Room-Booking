@@ -8,6 +8,8 @@ export const AppExceptionBodyCode = {
   emailRequired: "EMAIL_REQUIRED",
   usernameRequired: "USERNAME_REQUIRED",
   emailTaken: "EMAIL_TAKEN",
+  activationLinkExpired: "ACTIVATION_LINK_EXPIRED",
+  activationNotNeeded: "ACTIVATION_NOT_NEEDED",
 
   unauthorized: "UNAUTHORIZED",
   sessionNotFound: "SESSION_NOT_FOUND",
