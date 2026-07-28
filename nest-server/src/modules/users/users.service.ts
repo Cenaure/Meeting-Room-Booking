@@ -56,6 +56,10 @@ export class UsersService {
     return this.databaseService.user.findFirst({where: {email}});
   }
 
+  async findById(id: number) {
+    return this.databaseService.user.findFirst({where: {id}});
+  }
+
   async updateLastLogin(userId: number) {
     await this.databaseService.user.update({
       where: {id: userId},
