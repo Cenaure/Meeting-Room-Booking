@@ -17,6 +17,8 @@ import authConfig from "./configurations/auth.config";
 import redisConfig from "./configurations/redis.config";
 import frontendConfig from "./configurations/frontend.config";
 import {BullModule} from "@nestjs/bullmq";
+import {RoomsModule} from "./modules/rooms/rooms.module";
+import {ReservationsModule} from "./modules/reservations/reservations.module";
 //endregion: Configs
 
 const ENV = process.env.NODE_ENV;
