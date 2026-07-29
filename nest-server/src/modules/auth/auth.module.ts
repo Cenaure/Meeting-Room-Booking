@@ -4,11 +4,12 @@ import {AuthController} from './auth.controller';
 import {TokensCookiesService} from './tokens-cookies.service';
 import {UsersModule} from "../users/users.module";
 import {JwtModule} from "@nestjs/jwt";
+import {GoogleStrategy} from "./strategies/google.strategy";
 
 @Module({
   imports: [UsersModule, JwtModule],
   controllers: [AuthController],
-  providers: [AuthService, TokensCookiesService],
+  providers: [AuthService, TokensCookiesService, GoogleStrategy],
 })
 export class AuthModule {
 }

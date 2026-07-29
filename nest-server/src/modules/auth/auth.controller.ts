@@ -1,4 +1,4 @@
-import {Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Req, Res} from '@nestjs/common';
+import {Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Req, Res, UseGuards} from '@nestjs/common';
 import {AuthService} from './auth.service';
 import SignInDto from "./dto/signIn.dto";
 import SignUpDto from "./dto/signUp.dto";
@@ -7,12 +7,16 @@ import {TokensCookiesService} from "./tokens-cookies.service";
 import {Auth} from "./decorators/auth.decorator";
 import {AccessJwtPayload} from "../../common/dto/jwt-payload.dto";
 import {Cookies} from "../../common/decorators/cookies.decorator";
+import {GoogleAuthGuard} from "./guards/google-auth.guard";
+import {User} from "../../generated/prisma/client";
+import {ConfigService} from "@nestjs/config";
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
-    private readonly tokensCookiesService: TokensCookiesService
+    private readonly tokensCookiesService: TokensCookiesService,
+    private readonly configService: ConfigService
   ) {
   }
 
@@ -102,5 +106,27 @@ export class AuthController {
   async me(@Req() request: Request & { user?: AccessJwtPayload }) {
     const userId = request.user!.user_id;
     return await this.authService.getUser(userId)
+  }
+
+  @Get("google/sign-in")
+  @UseGuards(GoogleAuthGuard)
+  googleSignIn() {
+  }
+
+  @Get("google/callback")
+  @UseGuards(GoogleAuthGuard)
+  async googleCallback(@Req() req: { user: User }, @Res() response: Response) {
+    const clientUrl = this.configService.get("frontend.client_url")
+    const profileRoute = this.configService.get("frontend.profile_route")
+
+    const result = await this.authService.generateAndSaveTokens(req.user, true);
+    const {accessToken, refreshToken} = result;
+
+    response = this.tokensCookiesService.setCookies(response, {
+      accessToken,
+      refreshToken,
+    });
+
+    return response.redirect(clientUrl + profileRoute);
   }
 }

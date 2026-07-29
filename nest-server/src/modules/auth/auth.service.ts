@@ -12,6 +12,7 @@ import {JwtService} from "@nestjs/jwt";
 import SignUpDto from "./dto/signUp.dto";
 import {UsersService} from "../users/users.service";
 import {Cache, CACHE_MANAGER} from "@nestjs/cache-manager";
+import GoogleUserDto from "./dto/google-user.dto";
 
 @Injectable()
 export class AuthService {
@@ -25,7 +26,7 @@ export class AuthService {
   }
 
   //region: # Helper functions
-  private async generateAndSaveTokens(
+  async generateAndSaveTokens(
     user: User,
     newSession: boolean = false,
     existingSessionId?: string,
@@ -253,6 +254,16 @@ export class AuthService {
       false,
       sessionData.session_id,
     );
+  }
+
+  /**
+   * Validates the user credentials and returns the user information
+   */
+  async validateGoogleUser(googleUser: GoogleUserDto) {
+    const foundUser = await this.userService.findByEmail(googleUser.email);
+    if (foundUser) return foundUser;
+
+    return this.userService.createUser(googleUser, true, googleUser.googleid);
   }
 
 }

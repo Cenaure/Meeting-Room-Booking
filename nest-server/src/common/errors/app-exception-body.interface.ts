@@ -10,7 +10,7 @@ export const AppExceptionBodyCode = {
   emailTaken: "EMAIL_TAKEN",
   activationLinkExpired: "ACTIVATION_LINK_EXPIRED",
   activationNotNeeded: "ACTIVATION_NOT_NEEDED",
-
+  passwordRequired: "PASSWORD_REQUIRED",
   unauthorized: "UNAUTHORIZED",
   sessionNotFound: "SESSION_NOT_FOUND",
 } as const
