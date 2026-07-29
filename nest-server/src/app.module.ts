@@ -8,6 +8,7 @@ import {CacheableMemory} from "cacheable";
 import {CacheModule} from "@nestjs/cache-manager";
 import {MailModule} from './modules/mail/mail.module';
 import {RoomsModule} from './modules/rooms/rooms.module';
+import {ReservationsModule} from './modules/reservations/reservations.module';
 
 //region: Configs
 import appConfig from "./configurations/app.config";
@@ -15,7 +16,6 @@ import dbConfig from "./configurations/db.config";
 import authConfig from "./configurations/auth.config";
 import redisConfig from "./configurations/redis.config";
 import frontendConfig from "./configurations/frontend.config";
-import {MailModule} from "./modules/mail/mail.module";
 //endregion: Configs
 
 const ENV = process.env.NODE_ENV;
@@ -57,15 +57,33 @@ const ENV = process.env.NODE_ENV;
       },
     }),
 
+    // Used for preventing race condition when creating a reservation
+    BullModule.forRootAsync({
+      useFactory: (configService: ConfigService) => {
+        const host = configService.get('redis.host');
+        const port = configService.get('redis.port');
+        const redisPass = configService.get('redis.password');
+        const nodeEnv = configService.get('app.node_env');
+
+        const password = nodeEnv === 'production' ? redisPass : undefined;
+
+        return {
+          connection: {
+            host,
+            port,
+            password
+          },
+        }
+      }
+    }),
+
+
     DatabaseModule,
-
     AuthModule,
-
     UsersModule,
-
     MailModule,
-
     RoomsModule,
+    ReservationsModule,
 
 
   ],
