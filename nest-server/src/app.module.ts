@@ -1,8 +1,11 @@
 import {Module} from '@nestjs/common';
-import {ConfigModule} from "@nestjs/config";
+import {ConfigModule, ConfigService} from "@nestjs/config";
 import {DatabaseModule} from './database/database.module';
 import {AuthModule} from './modules/auth/auth.module';
 import {UsersModule} from './modules/users/users.module';
+import {createKeyv, Keyv} from "@keyv/redis";
+import {CacheableMemory} from "cacheable";
+import {CacheModule} from "@nestjs/cache-manager";
 
 //region: Configs
 import appConfig from "./configurations/app.config";
@@ -29,6 +32,8 @@ const ENV = process.env.NODE_ENV;
     AuthModule,
 
     UsersModule,
+
+    MailModule,
 
 
   ],
