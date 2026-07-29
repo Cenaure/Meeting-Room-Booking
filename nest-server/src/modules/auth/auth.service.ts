@@ -14,6 +14,7 @@ import {UsersService} from "../users/users.service";
 import {Cache, CACHE_MANAGER} from "@nestjs/cache-manager";
 import GoogleUserDto from "./dto/google-user.dto";
 import UpdatePasswordDto from "./dto/update-password.dto";
+import {MailService} from "../mail/mail.service";
 
 @Injectable()
 export class AuthService {
@@ -22,6 +23,7 @@ export class AuthService {
     private readonly databaseService: DatabaseService,
     private readonly jwtService: JwtService,
     private readonly userService: UsersService,
+    private readonly mailService: MailService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache
   ) {
   }
@@ -240,9 +242,8 @@ export class AuthService {
     const activationId = randomUUID()
     await this.cacheManager.set("activation_id:" + activationId, userId, activationLinkTTL)
 
-    console.log(activationId)
+    await this.mailService.sendActivationMail(user.email, activationId)
 
-    //TODO: this.mailservice...
     return
   }
 

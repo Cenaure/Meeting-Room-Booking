@@ -7,12 +7,14 @@ import * as bcrypt from 'bcrypt';
 import {Cache, CACHE_MANAGER} from "@nestjs/cache-manager";
 import {randomUUID} from "crypto";
 import {ConfigService} from "@nestjs/config";
+import {MailService} from "../mail/mail.service";
 
 @Injectable()
 export class UsersService {
   constructor(
     private readonly databaseService: DatabaseService,
     private readonly configService: ConfigService,
+    private readonly mailService: MailService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache
   ) {
   }
@@ -53,6 +55,8 @@ export class UsersService {
 
       const activation_id = randomUUID()
       await this.cacheManager.set(`activation_id:${activation_id}`, user.id, activationLinkTTL);
+
+      await this.mailService.sendActivationMail(dto.email, activation_id)
     }
 
     return user;

@@ -5,9 +5,10 @@ import {TokensCookiesService} from './tokens-cookies.service';
 import {UsersModule} from "../users/users.module";
 import {JwtModule} from "@nestjs/jwt";
 import {GoogleStrategy} from "./strategies/google.strategy";
+import {MailModule} from "../mail/mail.module";
 
 @Module({
-  imports: [UsersModule, JwtModule],
+  imports: [UsersModule, JwtModule, MailModule],
   controllers: [AuthController],
   providers: [AuthService, TokensCookiesService, GoogleStrategy],
 })
