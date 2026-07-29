@@ -6,7 +6,7 @@ import type {Request, Response} from "express";
 import {TokensCookiesService} from "./tokens-cookies.service";
 import {Auth} from "./decorators/auth.decorator";
 import {AccessJwtPayload} from "../../common/dto/jwt-payload.dto";
-import {AppException} from "../../common/errors/app-exception";
+import {Cookies} from "../../common/decorators/cookies.decorator";
 
 @Controller('auth')
 export class AuthController {
@@ -76,9 +76,31 @@ export class AuthController {
   @Get("activation-link")
   @Auth()
   async generateActivationLink(@Req() request: Request & { user?: AccessJwtPayload }) {
-    const userId = request.user?.user_id;
-    if (!userId) throw AppException.unauthorized();
-
+    const userId = request.user!.user_id;
     return await this.authService.generateActivationLink(userId);
+  }
+
+  @Get("refresh")
+  async refresh(
+    @Cookies("refreshToken") refreshToken: string,
+    @Res({passthrough: true}) response: Response
+  ) {
+    const userData = await this.authService.refresh(refreshToken);
+
+    const {accessToken, refreshToken: newRefreshToken} = userData;
+
+    this.tokensCookiesService.setCookies(response, {
+      accessToken,
+      refreshToken: newRefreshToken,
+    });
+
+    return userData;
+  }
+
+  @Get("me")
+  @Auth()
+  async me(@Req() request: Request & { user?: AccessJwtPayload }) {
+    const userId = request.user!.user_id;
+    return await this.authService.getUser(userId)
   }
 }

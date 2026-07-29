@@ -119,6 +119,16 @@ export class AuthService {
     })
   }
 
+  private validateRefreshToken(refreshToken: string) {
+    const refreshJwtSecret = this.configService.get("auth.refresh_token_secret")
+    try {
+      return this.jwtService.verify(refreshToken, {
+        secret: refreshJwtSecret,
+      }) as RefreshJwtPayload;
+    } catch {
+      throw AppException.unauthorized();
+    }
+  }
   //endregion: # Helper functions
 
   /**
@@ -164,6 +174,10 @@ export class AuthService {
     await this.databaseService.session.delete({where: {refresh_token: refreshToken}});
   }
 
+  //region: # Activation
+  /**
+   * Activates the account
+   */
   async activateAccount(activationId: string) {
     const userId = await this.cacheManager.get<number>("activation_id:" + activationId);
 
@@ -198,4 +212,47 @@ export class AuthService {
     //TODO: this.mailservice...
     return
   }
+
+  //endregion: # Activation
+
+  /**
+   * Returns user personal data
+   */
+  async getUser(id: number) {
+    const user = await this.userService.findById(id);
+
+    if (!user)
+      throw AppException.unauthorized()
+
+    return new AccessJwtPayload(user)
+  }
+
+  /**
+   * Refreshes access token using refresh token
+   */
+  async refresh(refreshToken: string) {
+    if (!refreshToken) throw AppException.unauthorized();
+
+    const userData = this.validateRefreshToken(refreshToken);
+    const sessionData = await this.databaseService.session.findFirst({
+      where: {
+        refresh_token: refreshToken,
+        revoked_at: null,
+      }
+    });
+
+    if (!userData || !sessionData) throw AppException.unauthorized();
+
+    const user = await this.userService.findById(userData.user_id);
+    if (!user) throw AppException.unauthorized();
+
+    await this.userService.updateLastLogin(user.id)
+
+    return await this.generateAndSaveTokens(
+      user,
+      false,
+      sessionData.session_id,
+    );
+  }
+
 }
