@@ -35,3 +35,14 @@ model Session {
   @@index([user_id])
   @@index([expires_at])
 }
+
+// Rooms
+model room {
+  id                  Int    @id @default(autoincrement())
+  name                String @unique
+  floor               Int
+  capacity            Int
+  // Working hours added in the model for possible future updates, rooms might have different working hours
+  working_hours_start String @default("09:00")
+  working_hours_end   String @default("19:00")
+}
