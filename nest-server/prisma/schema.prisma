@@ -11,16 +11,17 @@ datasource db {
 // Models
 
 model User {
-  id            Int       @id @default(autoincrement())
+  id            Int           @id @default(autoincrement())
   username      String
-  email         String    @unique
+  email         String        @unique
   password_hash String?
-  google_id     String?   @unique
-  is_activated  Boolean   @default(false)
+  google_id     String?       @unique
+  is_activated  Boolean       @default(false)
   last_login_at DateTime?
-  created_at    DateTime  @default(now())
-  updated_at    DateTime  @updatedAt
+  created_at    DateTime      @default(now())
+  updated_at    DateTime      @updatedAt
   sessions      Session[] // phone, pc, etc sessions
+  reservations  Reservation[]
 }
 
 model Session {
@@ -37,12 +38,28 @@ model Session {
 }
 
 // Rooms
-model room {
-  id                  Int    @id @default(autoincrement())
-  name                String @unique
+model Room {
+  id                  Int           @id @default(autoincrement())
+  title               String        @unique
   floor               Int
   capacity            Int
   // Working hours added in the model for possible future updates, rooms might have different working hours
-  working_hours_start String @default("09:00")
-  working_hours_end   String @default("19:00")
+  working_hours_start String        @default("09:00")
+  working_hours_end   String        @default("19:00")
+  reservations        Reservation[]
+}
+
+model Reservation {
+  id                String   @id() @default(uuid())
+  title             String
+  user              User?    @relation(fields: [reserved_by], references: [id], onDelete: SetNull)
+  reserved_by       Int?
+  reserver_username String // If user's account become deleted reservation should be visible for other users
+  room              Room     @relation(fields: [room_id], references: [id], onDelete: Cascade)
+  room_id           Int
+  time_start        DateTime
+  time_end          DateTime
+  created_at        DateTime @default(now())
+
+  @@index([time_start, room_id])
 }
