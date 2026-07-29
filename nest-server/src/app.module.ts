@@ -9,6 +9,7 @@ import appConfig from "./configurations/app.config";
 import dbConfig from "./configurations/db.config";
 import authConfig from "./configurations/auth.config";
 import redisConfig from "./configurations/redis.config";
+import frontendConfig from "./configurations/frontend.config";
 //endregion: Configs
 
 const ENV = process.env.NODE_ENV;
@@ -17,7 +18,7 @@ const ENV = process.env.NODE_ENV;
   imports: [
     // Environments Variables
     ConfigModule.forRoot({
-      load: [appConfig, dbConfig, authConfig, redisConfig],
+      load: [appConfig, dbConfig, authConfig, redisConfig, frontendConfig],
 
       isGlobal: true,
       envFilePath: [`.env.${ENV}.local`, ".env"],
