@@ -13,6 +13,7 @@ import SignUpDto from "./dto/signUp.dto";
 import {UsersService} from "../users/users.service";
 import {Cache, CACHE_MANAGER} from "@nestjs/cache-manager";
 import GoogleUserDto from "./dto/google-user.dto";
+import UpdatePasswordDto from "./dto/update-password.dto";
 
 @Injectable()
 export class AuthService {
@@ -132,6 +133,7 @@ export class AuthService {
   }
   //endregion: # Helper functions
 
+  //region: # Session
   /**
    * Authorizes a user, finding it by an email and comparing passwords' hashes
    */
@@ -175,6 +177,36 @@ export class AuthService {
     await this.databaseService.session.delete({where: {refresh_token: refreshToken}});
   }
 
+  /**
+   * Refreshes access token using refresh token
+   */
+  async refresh(refreshToken: string) {
+    if (!refreshToken) throw AppException.unauthorized();
+
+    const userData = this.validateRefreshToken(refreshToken);
+    const sessionData = await this.databaseService.session.findFirst({
+      where: {
+        refresh_token: refreshToken,
+        revoked_at: null,
+      }
+    });
+
+    if (!userData || !sessionData) throw AppException.unauthorized();
+
+    const user = await this.userService.findById(userData.user_id);
+    if (!user) throw AppException.unauthorized();
+
+    await this.userService.updateLastLogin(user.id)
+
+    return await this.generateAndSaveTokens(
+      user,
+      false,
+      sessionData.session_id,
+    );
+  }
+
+  //endregion: # Session
+
   //region: # Activation
   /**
    * Activates the account
@@ -216,6 +248,7 @@ export class AuthService {
 
   //endregion: # Activation
 
+  //region: # User Account
   /**
    * Returns user personal data
    */
@@ -228,34 +261,9 @@ export class AuthService {
     return new AccessJwtPayload(user)
   }
 
-  /**
-   * Refreshes access token using refresh token
-   */
-  async refresh(refreshToken: string) {
-    if (!refreshToken) throw AppException.unauthorized();
+  //endregion: # User Account
 
-    const userData = this.validateRefreshToken(refreshToken);
-    const sessionData = await this.databaseService.session.findFirst({
-      where: {
-        refresh_token: refreshToken,
-        revoked_at: null,
-      }
-    });
-
-    if (!userData || !sessionData) throw AppException.unauthorized();
-
-    const user = await this.userService.findById(userData.user_id);
-    if (!user) throw AppException.unauthorized();
-
-    await this.userService.updateLastLogin(user.id)
-
-    return await this.generateAndSaveTokens(
-      user,
-      false,
-      sessionData.session_id,
-    );
-  }
-
+  //region: # Google
   /**
    * Validates the user credentials and returns the user information
    */
@@ -266,4 +274,5 @@ export class AuthService {
     return this.userService.createUser(googleUser, true, googleUser.googleid);
   }
 
+  //endregion: # Google
 }

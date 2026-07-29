@@ -20,6 +20,7 @@ export class AuthController {
   ) {
   }
 
+  //region: # Session
   @HttpCode(HttpStatus.OK)
   @Post("sign-in")
   async signIn(
@@ -72,18 +73,6 @@ export class AuthController {
     return;
   }
 
-  @Get("activate/:activation_id")
-  async activate(@Param("activation_id") activationId: string) {
-    return await this.authService.activateAccount(activationId);
-  }
-
-  @Get("activation-link")
-  @Auth()
-  async generateActivationLink(@Req() request: Request & { user?: AccessJwtPayload }) {
-    const userId = request.user!.user_id;
-    return await this.authService.generateActivationLink(userId);
-  }
-
   @Get("refresh")
   async refresh(
     @Cookies("refreshToken") refreshToken: string,
@@ -101,13 +90,34 @@ export class AuthController {
     return userData;
   }
 
+  //endregion: # Session
+
+  //region: # Account Activation
+  @Get("activate/:activation_id")
+  async activate(@Param("activation_id") activationId: string) {
+    return await this.authService.activateAccount(activationId);
+  }
+
+  @Get("activation-link")
+  @Auth()
+  async generateActivationLink(@Req() request: Request & { user: AccessJwtPayload }) {
+    const userId = request.user.user_id;
+    return await this.authService.generateActivationLink(userId);
+  }
+
+  //endregion: # Account Activation
+
+  //region: # User Account
   @Get("me")
   @Auth()
-  async me(@Req() request: Request & { user?: AccessJwtPayload }) {
-    const userId = request.user!.user_id;
+  async me(@Req() request: Request & { user: AccessJwtPayload }) {
+    const userId = request.user.user_id;
     return await this.authService.getUser(userId)
   }
 
+  //endregion: # User Account
+
+  //region: # Google OAuth
   @Get("google/sign-in")
   @UseGuards(GoogleAuthGuard)
   googleSignIn() {
@@ -129,4 +139,6 @@ export class AuthController {
 
     return response.redirect(clientUrl + profileRoute);
   }
+
+  //endregion: # Google OAuth
 }
