@@ -16,5 +16,14 @@ export const AppExceptionBodyCode = {
   noPassword: "NO_PASSWORD",
   passwordMismatch: "PASSWORD_MISMATCH",
   resourceNotFound: "RESOURCE_NOT_FOUND",
+  userNotFound: "USER_NOT_FOUND",
+  roomNotFound: "ROOM_NOT_FOUND",
+  invalidEndTime: "INVALID_END_TIME",
+  timeMustBeAMultipleOf30: "TIME_MUST_BE_A_MULTIPLE_OF_30",
+  reservationTooShort: "RESERVATION_TOO_SHORT",
+  reservationTooLong: "RESERVATION_TOO_LONG",
+  reservationMustBeInFuture: "RESERVATION_MUST_BE_IN_FUTURE",
+  reservationMustBeInWorkHours: "RESERVATION_MUST_BE_IN_WORK_HOURS",
+  reservationTimeConflict: "RESERVATION_TIME_CONFLICT",
 } as const
 export type AppExceptionBodyCodes = (typeof AppExceptionBodyCode)[keyof typeof AppExceptionBodyCode]

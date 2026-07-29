@@ -6,6 +6,8 @@ import {UsersModule} from './modules/users/users.module';
 import {createKeyv, Keyv} from "@keyv/redis";
 import {CacheableMemory} from "cacheable";
 import {CacheModule} from "@nestjs/cache-manager";
+import {MailModule} from './modules/mail/mail.module';
+import {RoomsModule} from './modules/rooms/rooms.module';
 
 //region: Configs
 import appConfig from "./configurations/app.config";
@@ -28,6 +30,9 @@ const ENV = process.env.NODE_ENV;
       envFilePath: [`.env.${ENV}.local`, ".env"],
     }),
 
+    // Nest JS Cache module based on redis
+    // used for caching user's activation links
+    // TODO: should be used for caching rooms
     CacheModule.registerAsync({
       isGlobal: true,
       imports: [ConfigModule],
@@ -59,6 +64,8 @@ const ENV = process.env.NODE_ENV;
     UsersModule,
 
     MailModule,
+
+    RoomsModule,
 
 
   ],
