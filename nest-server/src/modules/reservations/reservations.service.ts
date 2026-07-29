@@ -8,6 +8,8 @@ import {AppExceptionBodyCode} from "../../common/errors/app-exception-body.inter
 import {Room} from "../../generated/prisma/client";
 import {ConfigService} from "@nestjs/config";
 import {DateTime} from 'luxon';
+import GetMyReservationsDto, {ReservationFilter} from "./dto/get-my-reservations.dto";
+import {ReservationOrderByWithRelationInput, ReservationWhereInput} from "../../generated/prisma/models/Reservation";
 
 @Injectable()
 export class ReservationsService {
@@ -122,11 +124,35 @@ export class ReservationsService {
     });
   }
 
-  async getUserReservations(userId: number, timeStart?: Date, timeEnd?: Date) {
-    return this.databaseService.reservation.findMany({
-      where: {
-        reserved_by: userId
-      }
-    })
+  async getUserReservations(userId: number, query: GetMyReservationsDto) {
+    const now = new Date()
+
+    const filterOptions: ReservationWhereInput = {
+      reserved_by: userId,
+      // Currently going reservations is considered as future reservations because they haven't finished yet
+      ...(query.filter === ReservationFilter.FUTURE && {time_end: {gte: now}}),
+      ...(query.filter === ReservationFilter.PAST && {time_end: {lte: now}})
+    }
+
+    const orderBy: ReservationOrderByWithRelationInput = {
+      ...(query.filter === ReservationFilter.FUTURE && {time_start: 'asc'}),
+      ...(query.filter === ReservationFilter.PAST && {time_start: 'desc'})
+    }
+
+    const [reservations, total] = await this.databaseService.$transaction([
+      this.databaseService.reservation.findMany({
+        skip: (query.page - 1) * query.limit,
+        take: query.limit,
+        where: filterOptions,
+        orderBy,
+        include: {room: true}
+      }),
+      this.databaseService.reservation.count({where: filterOptions}),
+    ])
+
+    return {
+      items: reservations,
+      total
+    }
   }
 }

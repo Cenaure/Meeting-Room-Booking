@@ -1,9 +1,10 @@
-import {Body, Controller, Delete, Get, Post, Req} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Post, Query, Req} from '@nestjs/common';
 import {ReservationsService} from './reservations.service';
 import CreateReservationDto from "./dto/create-reservation.dto";
 import type {Request} from "express";
 import {AccessJwtPayload} from "../../common/dto/jwt-payload.dto";
 import {Auth} from "../auth/decorators/auth.decorator";
+import GetMyReservationsDto from "./dto/get-my-reservations.dto";
 
 @Controller('reservations')
 export class ReservationsController {
@@ -27,10 +28,11 @@ export class ReservationsController {
   @Get("my")
   @Auth()
   async getMyReservations(
-    @Req() request: Request & { user: AccessJwtPayload }
+    @Req() request: Request & { user: AccessJwtPayload },
+    @Query() query: GetMyReservationsDto
   ) {
     const userId = request.user.user_id;
-    return await this.reservationsService.getUserReservations(userId);
+    return await this.reservationsService.getUserReservations(userId, query);
   }
 
   @Delete(":reservationId")
