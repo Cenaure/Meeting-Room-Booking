@@ -34,4 +34,8 @@ export class RoomsService implements OnModuleInit {
   async getRooms() {
     return this.databaseService.room.findMany();
   }
+
+  async findById(roomId: number) {
+    return this.databaseService.room.findFirst({where: {id: roomId}});
+  }
 }
