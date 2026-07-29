@@ -13,5 +13,8 @@ export const AppExceptionBodyCode = {
   passwordRequired: "PASSWORD_REQUIRED",
   unauthorized: "UNAUTHORIZED",
   sessionNotFound: "SESSION_NOT_FOUND",
+  noPassword: "NO_PASSWORD",
+  passwordMismatch: "PASSWORD_MISMATCH",
+  resourceNotFound: "RESOURCE_NOT_FOUND",
 } as const
 export type AppExceptionBodyCodes = (typeof AppExceptionBodyCode)[keyof typeof AppExceptionBodyCode]

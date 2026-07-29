@@ -11,4 +11,14 @@ export class AppException {
     return new UnauthorizedException(body);
   }
 
+  static conflict(body: AppExceptionBody) {
+    return new BadRequestException(body)
+  }
+
+  static notFound(body: AppExceptionBody = {
+    code: AppExceptionBodyCode.resourceNotFound,
+    message: "Resource not found"
+  }) {
+    return new BadRequestException(body)
+  }
 }

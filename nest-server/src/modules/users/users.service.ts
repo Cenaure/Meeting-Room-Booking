@@ -66,6 +66,15 @@ export class UsersService {
     return this.databaseService.user.findFirst({where: {id}});
   }
 
+  async setNewPassword(userId: number, newPassword: string) {
+    const passwordHash = await bcrypt.hash(newPassword, 12);
+
+    await this.databaseService.user.update({
+      where: {id: userId},
+      data: {password_hash: passwordHash}
+    });
+  }
+
   async updateLastLogin(userId: number) {
     await this.databaseService.user.update({
       where: {id: userId},

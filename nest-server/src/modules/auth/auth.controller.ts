@@ -10,6 +10,7 @@ import {Cookies} from "../../common/decorators/cookies.decorator";
 import {GoogleAuthGuard} from "./guards/google-auth.guard";
 import {User} from "../../generated/prisma/client";
 import {ConfigService} from "@nestjs/config";
+import UpdatePasswordDto from "./dto/update-password.dto";
 
 @Controller('auth')
 export class AuthController {
@@ -141,4 +142,17 @@ export class AuthController {
   }
 
   //endregion: # Google OAuth
+
+  //region: # Password Management
+  @Patch("password")
+  @Auth()
+  async updatePassword(
+    @Body() body: UpdatePasswordDto,
+    @Req() request: Request & { user: AccessJwtPayload }
+  ) {
+    const userId = request.user.user_id;
+    return await this.authService.updatePassword(userId, body);
+  }
+
+  //endregion: # Password Management
 }

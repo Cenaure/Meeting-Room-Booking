@@ -275,4 +275,35 @@ export class AuthService {
   }
 
   //endregion: # Google
+
+  //region: # Password Management
+  /**
+   * Updates the password for the user with the given user ID
+   */
+  async updatePassword(userId: number, dto: UpdatePasswordDto) {
+    const user = await this.userService.findById(userId);
+    if (!user) throw AppException.unauthorized();
+
+    if (!user.password_hash)
+      throw AppException.conflict({code: AppExceptionBodyCode.noPassword, message: "User has no password"});
+
+    const isPasswordEquals = await bcrypt.compare(
+      dto.oldPassword,
+      user.password_hash
+    );
+
+    if (!isPasswordEquals)
+      throw AppException.badRequest({
+        code: AppExceptionBodyCode.passwordMismatch,
+        message: "Provided password is incorrect"
+      });
+
+    await this.userService.setNewPassword(userId, dto.newPassword)
+
+    return {success: true};
+  }
+
+  // There is no Password Recovery logic, as it requires mail service and smtp functionality
+
+  //endregion: # Password Management
 }
