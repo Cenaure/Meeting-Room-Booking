@@ -13,17 +13,17 @@ export class RoomsService implements OnModuleInit {
    */
   async onModuleInit() {
     const rooms = [
-      {name: "Кімната #001", floor: 1, capacity: 10},
-      {name: "Кімната #003", floor: 1, capacity: 4},
-      {name: "Кімната #010", floor: 1, capacity: 15},
-      {name: "Кімната #102", floor: 2, capacity: 7},
-      {name: "Кімната #104", floor: 2, capacity: 5},
-      {name: "Кімната #201", floor: 3, capacity: 14},
+      {title: "Кімната #001", floor: 1, capacity: 10},
+      {title: "Кімната #003", floor: 1, capacity: 4},
+      {title: "Кімната #010", floor: 1, capacity: 15},
+      {title: "Кімната #102", floor: 2, capacity: 7},
+      {title: "Кімната #104", floor: 2, capacity: 5},
+      {title: "Кімната #201", floor: 3, capacity: 14},
     ]
 
     for (const room of rooms) {
       await this.databaseService.room.upsert({
-        where: {name: room.name},
+        where: {title: room.title},
         update: {},
         create: room,
       });
