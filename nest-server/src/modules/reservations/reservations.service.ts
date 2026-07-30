@@ -14,6 +14,7 @@ import {InjectQueue} from "@nestjs/bullmq";
 import {RESERVATIONS_QUEUE_EVENTS} from "./reservations-queue-events.provider";
 import {Queue, QueueEvents} from "bullmq";
 import GetReservationsDto from "./dto/get-reservations.dto";
+import {NotificationSchedulerService} from "../notifications/services/notification-scheduler.service";
 
 @Injectable()
 export class ReservationsService {
@@ -22,6 +23,8 @@ export class ReservationsService {
     private readonly configService: ConfigService,
     private readonly roomsService: RoomsService,
     private readonly usersService: UsersService,
+    private readonly notificationSchedulerService: NotificationSchedulerService,
+
     @Inject(RESERVATIONS_QUEUE_EVENTS) private readonly queueEvents: QueueEvents,
     @InjectQueue("reservations-queue") private readonly reservationsQueue: Queue
   ) {
@@ -199,10 +202,28 @@ export class ReservationsService {
         message: "Reservation cancellation too late"
       })
 
-    return this.databaseService.reservation.update({
+    const updatedReservation = await this.databaseService.reservation.update({
       where: {id: reservationId},
       data: {status: "cancelled"}
     })
+
+    //region: # Notifications Canceling
+    const {leftAdjacent, rightAdjacent} = await this.findAdjacentReservations({
+      room_id: updatedReservation.room_id,
+      start_date: reservation.time_start,
+      end_date: reservation.time_end,
+    })
+
+    // If there is left adjacent reservation, we cancel Its notification
+    if (leftAdjacent)
+      await this.notificationSchedulerService.cancelScheduleReservationEndingNotification(leftAdjacent.id);
+
+    // If there is right adjacent reservation, we cancel Our reservation's notification
+    if (rightAdjacent)
+      await this.notificationSchedulerService.cancelScheduleReservationEndingNotification(updatedReservation.id);
+    //endregion: # Notifications Canceling
+
+    return updatedReservation;
   }
 
   async findReservationById(reservationId: string) {
