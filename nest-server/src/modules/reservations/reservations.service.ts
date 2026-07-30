@@ -33,7 +33,7 @@ export class ReservationsService {
     const start = DateTime.fromJSDate(timeStart, {zone: officeTimezone});
     const end = DateTime.fromJSDate(timeEnd, {zone: officeTimezone});
 
-    if (end <= start)
+    if (end < start)
       throw AppException.badRequest({code: AppExceptionBodyCode.invalidEndTime, message: "Invalid end time"});
 
     const isAlignedTo30 = (dt: DateTime) =>
@@ -89,7 +89,7 @@ export class ReservationsService {
   async createReservation(userId: number, dto: CreateReservationDto) {
     const user = await this.usersService.findById(userId)
     if (!user)
-      throw AppException.badRequest({code: AppExceptionBodyCode.userNotFound, message: "User not found"})
+      throw AppException.unauthorized()
 
     const room = await this.roomsService.findById(dto.room_id);
     if (!room)
@@ -97,21 +97,20 @@ export class ReservationsService {
 
     // Validates Correctness of the reservation time
     this.validateReservationTime(dto.time_start, dto.time_end, room);
-    console.log("success")
+
     const job = await this.reservationsQueue.add('create-reservation', {
       ...dto,
       user
     }, {
       jobId: `${room.id}_${Date.now()}`,
     });
-    console.log("aft job")
 
     try {
       return await job.waitUntilFinished(this.queueEvents);
     } catch (err) {
       throw AppException.conflict({
         code: AppExceptionBodyCode.reservationTimeConflict,
-        message: err.message ?? 'Reservation time is already taken',
+        message: err.message,
       });
     }
   }
