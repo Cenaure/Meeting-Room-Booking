@@ -9,6 +9,8 @@ import {CacheModule} from "@nestjs/cache-manager";
 import {MailModule} from './modules/mail/mail.module';
 import {RoomsModule} from "./modules/rooms/rooms.module";
 import {ReservationsModule} from "./modules/reservations/reservations.module";
+import {BullModule} from "@nestjs/bullmq";
+import {NotificationsModule} from './modules/notifications/notifications.module';
 
 //region: Configs
 import appConfig from "./configurations/app.config";
@@ -81,6 +83,7 @@ const ENV = process.env.NODE_ENV;
     MailModule,
     RoomsModule,
     ReservationsModule,
+    NotificationsModule,
   ],
 
   controllers: [],
