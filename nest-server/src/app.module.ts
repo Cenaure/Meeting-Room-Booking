@@ -16,6 +16,7 @@ import dbConfig from "./configurations/db.config";
 import authConfig from "./configurations/auth.config";
 import redisConfig from "./configurations/redis.config";
 import frontendConfig from "./configurations/frontend.config";
+import {BullModule} from "@nestjs/bullmq";
 //endregion: Configs
 
 const ENV = process.env.NODE_ENV;
@@ -59,6 +60,7 @@ const ENV = process.env.NODE_ENV;
 
     // Used for preventing race condition when creating a reservation
     BullModule.forRootAsync({
+      inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
         const host = configService.get('redis.host');
         const port = configService.get('redis.port');
@@ -84,8 +86,6 @@ const ENV = process.env.NODE_ENV;
     MailModule,
     RoomsModule,
     ReservationsModule,
-
-
   ],
 
   controllers: [],
