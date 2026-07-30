@@ -9,6 +9,8 @@ import cookieParser = require("cookie-parser");
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  app.use(helmet());
+
   const configService = app.get(ConfigService);
   const serverPort = configService.get<number>('app.server_port');
 
