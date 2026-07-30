@@ -1,4 +1,4 @@
-import {Module} from '@nestjs/common';
+import {forwardRef, Module} from '@nestjs/common';
 import {ReservationsService} from './reservations.service';
 import {ReservationsController} from './reservations.controller';
 import {RoomsModule} from "../rooms/rooms.module";
@@ -18,10 +18,11 @@ import {NotificationsModule} from "../notifications/notifications.module";
     ConfigModule,
     UsersModule,
     JwtModule,
-    NotificationsModule
+    forwardRef(() => NotificationsModule)
   ],
   controllers: [ReservationsController],
   providers: [ReservationsService, ReservationsProcessor, reservationsQueueEventsProvider],
+  exports: [ReservationsService]
 })
 export class ReservationsModule {
 }
