@@ -7,8 +7,6 @@ import {createKeyv, Keyv} from "@keyv/redis";
 import {CacheableMemory} from "cacheable";
 import {CacheModule} from "@nestjs/cache-manager";
 import {MailModule} from './modules/mail/mail.module';
-import {RoomsModule} from './modules/rooms/rooms.module';
-import {ReservationsModule} from './modules/reservations/reservations.module';
 
 //region: Configs
 import appConfig from "./configurations/app.config";
@@ -16,9 +14,9 @@ import dbConfig from "./configurations/db.config";
 import authConfig from "./configurations/auth.config";
 import redisConfig from "./configurations/redis.config";
 import frontendConfig from "./configurations/frontend.config";
-import {BullModule} from "@nestjs/bullmq";
 import {RoomsModule} from "./modules/rooms/rooms.module";
 import {ReservationsModule} from "./modules/reservations/reservations.module";
+import {BullModule} from "@nestjs/bullmq";
 //endregion: Configs
 
 const ENV = process.env.NODE_ENV;
