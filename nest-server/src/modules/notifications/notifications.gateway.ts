@@ -2,7 +2,6 @@ import {
   OnGatewayConnection,
   OnGatewayDisconnect,
   OnGatewayInit,
-  SubscribeMessage,
   WebSocketGateway,
   WebSocketServer
 } from '@nestjs/websockets';
@@ -32,7 +31,7 @@ export class NotificationsGateway implements OnGatewayInit, OnGatewayConnection,
   @WebSocketServer()
   server: Server;
 
-  afterInit(server: Server) {
+  afterInit() {
     this.logger.log("WebSocket Gateway initialized");
   }
 
@@ -44,7 +43,7 @@ export class NotificationsGateway implements OnGatewayInit, OnGatewayConnection,
 
       if (!token) {
         this.logger.warn(`Client ${client.id} tried to connect without token`);
-        client.disconnect();
+        client.disconnect(true);
         return;
       }
 
@@ -52,12 +51,13 @@ export class NotificationsGateway implements OnGatewayInit, OnGatewayConnection,
 
       if (!user) {
         this.logger.warn(`Client ${client.id} provided invalid token`);
-        client.disconnect();
+        client.disconnect(true);
         return;
       }
 
       await client.join(user.user_id.toString());
-    } catch {
+    } catch (error) {
+      this.logger.error(error)
       client.disconnect();
     }
   }
@@ -78,8 +78,12 @@ export class NotificationsGateway implements OnGatewayInit, OnGatewayConnection,
     }
   }
 
-  @SubscribeMessage('message')
-  handleMessage(client: any, payload: any): string {
-    return 'Hello world!';
+  sendReservationEndingReminder(
+    userId: number,
+    freeRoomBefore: Date,
+  ) {
+    this.server.to(userId.toString()).emit("reservation_ending_soon", {
+      free_room_before: freeRoomBefore,
+    });
   }
 }
