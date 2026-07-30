@@ -11,8 +11,8 @@ import {DateTime} from 'luxon';
 import GetMyReservationsDto, {ReservationFilter} from "./dto/get-my-reservations.dto";
 import {ReservationOrderByWithRelationInput, ReservationWhereInput} from "../../generated/prisma/models/Reservation";
 import {InjectQueue} from "@nestjs/bullmq";
-import {Queue, QueueEvents} from "bullmq";
 import {RESERVATIONS_QUEUE_EVENTS} from "./reservations-queue-events.provider";
+import {Queue, QueueEvents} from "bullmq";
 
 @Injectable()
 export class ReservationsService {
