@@ -1,10 +1,11 @@
-import {Body, Controller, Delete, Get, Post, Query, Req} from '@nestjs/common';
+import {Body, Controller, Get, Param, Post, Query, Req} from '@nestjs/common';
 import {ReservationsService} from './reservations.service';
 import CreateReservationDto from "./dto/create-reservation.dto";
 import type {Request} from "express";
 import {AccessJwtPayload} from "../../common/dto/jwt-payload.dto";
 import {Auth} from "../auth/decorators/auth.decorator";
 import GetMyReservationsDto from "./dto/get-my-reservations.dto";
+import GetReservationsDto from "./dto/get-reservations.dto";
 
 @Controller('reservations')
 export class ReservationsController {
@@ -22,7 +23,10 @@ export class ReservationsController {
   }
 
   @Get()
-  async getReservations() {
+  async getReservations(
+    @Query() dto: GetReservationsDto,
+  ) {
+    return this.reservationsService.getReservations(dto)
   }
 
   @Get("my")

@@ -13,6 +13,7 @@ import {ReservationOrderByWithRelationInput, ReservationWhereInput} from "../../
 import {InjectQueue} from "@nestjs/bullmq";
 import {RESERVATIONS_QUEUE_EVENTS} from "./reservations-queue-events.provider";
 import {Queue, QueueEvents} from "bullmq";
+import GetReservationsDto from "./dto/get-reservations.dto";
 
 @Injectable()
 export class ReservationsService {
@@ -115,13 +116,25 @@ export class ReservationsService {
     }
   }
 
-  async getReservations(roomId: number, timeStart: Date, timeEnd: Date) {
+  async getReservations(query: GetReservationsDto) {
+    const {room_id, end_date, start_date} = query
+
+    if (DateTime.fromJSDate(end_date).diff(DateTime.fromJSDate(start_date), "days").days > 7)
+      throw AppException.badRequest({
+        code: AppExceptionBodyCode.requestedIntervalTooLong,
+        message: "Requested interval too long"
+      })
+
     return this.databaseService.reservation.findMany({
       where: {
         room_id: roomId,
         time_start: {lt: timeEnd},
         time_end: {gt: timeStart},
       }
+        room_id,
+        time_start: {lt: end_date},
+        time_end: {gt: start_date},
+      },
     });
   }
 

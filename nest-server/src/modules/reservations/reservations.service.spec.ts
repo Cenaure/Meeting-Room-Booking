@@ -305,21 +305,33 @@ describe('ReservationsService', () => {
       const ourStart = date.set({hour: 10}).toJSDate()
       const ourEnd = date.set({hour: 11}).toJSDate()
 
-      await expect(service.getReservations(1, ourStart, ourEnd)).resolves.toHaveLength(0);
+      await expect(service.getReservations({
+        room_id: 1,
+        start_date: ourStart,
+        end_date: ourEnd
+      })).resolves.toHaveLength(0);
     });
 
     it('shouldn\'t return any reservations if reservation we\'re searching for is touching some interval from the left', async () => {
       const ourStart = date.set({hour: 9, minute: 30}).toJSDate()
       const ourEnd = date.set({hour: 10}).toJSDate()
 
-      await expect(service.getReservations(2, ourStart, ourEnd)).resolves.toHaveLength(0);
+      await expect(service.getReservations({
+        room_id: 2,
+        start_date: ourStart,
+        end_date: ourEnd
+      })).resolves.toHaveLength(0);
     });
 
     it('shouldn\'t return any reservations if reservation we\'re searching for is touching some intervals from both sides', async () => {
       const ourStart = date.set({hour: 10}).toJSDate()
       const ourEnd = date.set({hour: 11, minute: 30}).toJSDate()
 
-      await expect(service.getReservations(1, ourStart, ourEnd)).resolves.toHaveLength(0);
+      await expect(service.getReservations({
+        room_id: 1,
+        start_date: ourStart,
+        end_date: ourEnd
+      })).resolves.toHaveLength(0);
     });
 
     // Crossing reservations
@@ -327,28 +339,44 @@ describe('ReservationsService', () => {
       const ourStart = date.set({hour: 12}).toJSDate()
       const ourEnd = date.set({hour: 13, minute: 30}).toJSDate()
 
-      await expect(service.getReservations(1, ourStart, ourEnd)).resolves.not.toHaveLength(0);
+      await expect(service.getReservations({
+        room_id: 1,
+        start_date: ourStart,
+        end_date: ourEnd
+      })).resolves.not.toHaveLength(0);
     });
 
     it('should return a reservation if we\'re crossing its interval from the left', async () => {
       const ourStart = date.set({hour: 11}).toJSDate()
       const ourEnd = date.set({hour: 12}).toJSDate()
 
-      await expect(service.getReservations(1, ourStart, ourEnd)).resolves.not.toHaveLength(0);
+      await expect(service.getReservations({
+        room_id: 1,
+        start_date: ourStart,
+        end_date: ourEnd
+      })).resolves.not.toHaveLength(0);
     });
 
     it('should return a reservation if we\'re crossing its interval completely', async () => {
       const ourStart = date.set({hour: 9}).toJSDate()
       const ourEnd = date.set({hour: 10}).toJSDate()
 
-      await expect(service.getReservations(1, ourStart, ourEnd)).resolves.not.toHaveLength(0);
+      await expect(service.getReservations({
+        room_id: 1,
+        start_date: ourStart,
+        end_date: ourEnd
+      })).resolves.not.toHaveLength(0);
     });
 
     it('shouldn\t return a reservation if we\'re crossing its interval completely on the next day', async () => {
       const ourStart = date.plus({day: 1}).set({hour: 9}).toJSDate()
       const ourEnd = date.plus({day: 1}).set({hour: 10}).toJSDate()
 
-      await expect(service.getReservations(1, ourStart, ourEnd)).resolves.toHaveLength(0);
+      await expect(service.getReservations({
+        room_id: 1,
+        start_date: ourStart,
+        end_date: ourEnd
+      })).resolves.toHaveLength(0);
     });
   })
 });

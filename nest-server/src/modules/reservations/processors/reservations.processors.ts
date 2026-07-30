@@ -19,7 +19,12 @@ export class ReservationsProcessor extends WorkerHost {
     console.log("Processing job", job.id);
     const {room_id, time_start, time_end, title, user} = job.data;
 
-    const reservations = await this.reservationsService.getReservations(room_id, time_start, time_end);
+    const reservations = await this.reservationsService.getReservations({
+      room_id,
+      start_date: time_start,
+      end_date: time_end
+    });
+
     if (reservations.length > 0)
       throw Error("Reservation already exists for this time")
 
