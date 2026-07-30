@@ -6,9 +6,14 @@ import {JwtModule} from "@nestjs/jwt";
 @Module({
   imports: [ConfigModule, JwtModule],
   providers: [NotificationsGateway],
+  ],
   providers: [
     NotificationsGateway,
+    NotificationsService,
   ],
+  controllers: [NotificationsController],
+
+  exports: [NotificationSchedulerService],
 })
 export class NotificationsModule {
 }
