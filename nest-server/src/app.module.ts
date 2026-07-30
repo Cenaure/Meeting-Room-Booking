@@ -42,10 +42,8 @@ const ENV = process.env.NODE_ENV;
         const host = configService.get('redis.host');
         const port = configService.get('redis.port');
         const redisPass = configService.get('redis.password');
-        const nodeEnv = configService.get('app.node_env');
 
-        const password = nodeEnv === 'production' ? `:${redisPass}@` : '';
-        const link = `redis://${password}${host}:${port}`;
+        const link = `redis://${redisPass}${host}:${port}`;
 
         return {
           stores: [
@@ -65,15 +63,12 @@ const ENV = process.env.NODE_ENV;
         const host = configService.get('redis.host');
         const port = configService.get('redis.port');
         const redisPass = configService.get('redis.password');
-        const nodeEnv = configService.get('app.node_env');
-
-        const password = nodeEnv === 'production' ? redisPass : undefined;
 
         return {
           connection: {
             host,
             port,
-            password
+            password: redisPass
           },
         }
       }

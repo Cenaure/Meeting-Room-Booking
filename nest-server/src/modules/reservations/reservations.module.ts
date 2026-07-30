@@ -7,6 +7,7 @@ import {UsersModule} from "../users/users.module";
 import {JwtModule} from "@nestjs/jwt";
 import {reservationsQueueEventsProvider} from "./reservations-queue-events.provider";
 import {BullModule} from "@nestjs/bullmq";
+import {ReservationsProcessor} from "./processors/reservations.processors";
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import {BullModule} from "@nestjs/bullmq";
     JwtModule
   ],
   controllers: [ReservationsController],
-  providers: [ReservationsService, reservationsQueueEventsProvider],
+  providers: [ReservationsService, ReservationsProcessor, reservationsQueueEventsProvider],
 })
 export class ReservationsModule {
 }

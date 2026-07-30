@@ -16,6 +16,7 @@ export class ReservationsProcessor extends WorkerHost {
   }
 
   async process(job: Job<CreateReservationDto & { user: User }>) {
+    console.log("Processing job", job.id);
     const {room_id, time_start, time_end, title, user} = job.data;
 
     const reservations = await this.reservationsService.getReservations(room_id, time_start, time_end);

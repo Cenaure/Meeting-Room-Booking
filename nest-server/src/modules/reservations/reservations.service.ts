@@ -97,13 +97,14 @@ export class ReservationsService {
 
     // Validates Correctness of the reservation time
     this.validateReservationTime(dto.time_start, dto.time_end, room);
-
+    console.log("success")
     const job = await this.reservationsQueue.add('create-reservation', {
       ...dto,
       user
     }, {
       jobId: `${room.id}_${Date.now()}`,
     });
+    console.log("aft job")
 
     try {
       return await job.waitUntilFinished(this.queueEvents);
