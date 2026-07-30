@@ -13,6 +13,7 @@ import dbConfig from "./configurations/db.config";
 import authConfig from "./configurations/auth.config";
 import redisConfig from "./configurations/redis.config";
 import frontendConfig from "./configurations/frontend.config";
+import {MailModule} from "./modules/mail/mail.module";
 //endregion: Configs
 
 const ENV = process.env.NODE_ENV;
@@ -25,6 +26,30 @@ const ENV = process.env.NODE_ENV;
 
       isGlobal: true,
       envFilePath: [`.env.${ENV}.local`, ".env"],
+    }),
+
+    CacheModule.registerAsync({
+      isGlobal: true,
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => {
+        const host = configService.get('redis.host');
+        const port = configService.get('redis.port');
+        const redisPass = configService.get('redis.password');
+        const nodeEnv = configService.get('app.node_env');
+
+        const password = nodeEnv === 'production' ? `:${redisPass}@` : '';
+        const link = `redis://${password}${host}:${port}`;
+
+        return {
+          stores: [
+            new Keyv({
+              store: new CacheableMemory({ttl: 60000, lruSize: 5000}),
+            }),
+            createKeyv(link),
+          ],
+        };
+      },
     }),
 
     DatabaseModule,
