@@ -27,5 +27,8 @@ export const AppExceptionBodyCode = {
   reservationTimeConflict: "RESERVATION_TIME_CONFLICT",
   reservationMustNotSpanMultipleDays: "RESERVATION_MUST_NOT_SPAN_MULTIPLE_DAYS",
   requestedIntervalTooLong: "REQUESTED_INTERVAL_TOO_LONG",
+  reservationNotFound: "RESERVATION_NOT_FOUND",
+  forbidden: "FORBIDDEN",
+  reservationCancelationTooLate: "RESERVATION_CANCELATION_TOO_LATE",
 } as const
 export type AppExceptionBodyCodes = (typeof AppExceptionBodyCode)[keyof typeof AppExceptionBodyCode]

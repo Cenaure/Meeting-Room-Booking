@@ -1,4 +1,10 @@
-import {BadRequestException, ConflictException, NotFoundException, UnauthorizedException} from "@nestjs/common";
+import {
+  BadRequestException,
+  ConflictException,
+  ForbiddenException,
+  NotFoundException,
+  UnauthorizedException
+} from "@nestjs/common";
 import {AppExceptionBody, AppExceptionBodyCode} from "./app-exception-body.interface";
 
 export class AppException {
@@ -20,5 +26,12 @@ export class AppException {
     message: "Resource not found"
   }) {
     return new NotFoundException(body)
+  }
+
+  static forbidden(body: AppExceptionBody = {
+    code: AppExceptionBodyCode.forbidden,
+    message: "Forbidden operation"
+  }) {
+    return new ForbiddenException(body)
   }
 }

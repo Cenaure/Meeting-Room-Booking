@@ -39,7 +39,13 @@ export class ReservationsController {
     return await this.reservationsService.getUserReservations(userId, query);
   }
 
-  @Delete(":reservationId")
-  async cancelReservation() {
+  @Get("cancel/:reservationId")
+  @Auth()
+  async cancelReservation(
+    @Req() request: Request & { user: AccessJwtPayload },
+    @Param("reservationId") reservationId: string
+  ) {
+    const userId = request.user.user_id;
+    return await this.reservationsService.cancelReservation(userId, reservationId);
   }
 }

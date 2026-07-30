@@ -127,13 +127,10 @@ export class ReservationsService {
 
     return this.databaseService.reservation.findMany({
       where: {
-        room_id: roomId,
-        time_start: {lt: timeEnd},
-        time_end: {gt: timeStart},
-      }
         room_id,
         time_start: {lt: end_date},
         time_end: {gt: start_date},
+        status: "active"
       },
     });
   }
@@ -168,5 +165,34 @@ export class ReservationsService {
       items: reservations,
       total
     }
+  }
+
+  async cancelReservation(userId: number, reservationId: string) {
+    // default - 15 minutes
+    const preventCancellationBeforeMinutes = this.configService.get("reservations.prevent_cancellation_before_minutes")
+
+    const reservation = await this.findReservationById(reservationId);
+    if (!reservation)
+      throw AppException.notFound({code: AppExceptionBodyCode.reservationNotFound, message: "Reservation not found"})
+
+    if (reservation.reserved_by !== userId)
+      throw AppException.forbidden()
+
+    if (DateTime.fromJSDate(reservation.time_start).diff(DateTime.now(), "minutes").minutes < preventCancellationBeforeMinutes)
+      throw AppException.badRequest({
+        code: AppExceptionBodyCode.reservationCancelationTooLate,
+        message: "Reservation cancellation too late"
+      })
+
+    return this.databaseService.reservation.update({
+      where: {id: reservationId},
+      data: {status: "cancelled"}
+    })
+  }
+
+  async findReservationById(reservationId: string) {
+    return this.databaseService.reservation.findFirst({
+      where: {id: reservationId}
+    })
   }
 }
