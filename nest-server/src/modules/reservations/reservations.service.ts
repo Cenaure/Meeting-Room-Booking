@@ -135,6 +135,21 @@ export class ReservationsService {
     });
   }
 
+  /**
+   * Finds adjacent reservations. Reservations that start right at the time provided reservation ends or
+   end at the time provided reservation starts.
+   */
+  async findAdjacentReservations(query: GetReservationsDto) {
+    const {start_date, end_date, room_id} = query
+
+    const [leftAdjacent, rightAdjacent] = await this.databaseService.$transaction([
+      this.databaseService.reservation.findFirst({where: {room_id, time_end: start_date}}),
+      this.databaseService.reservation.findFirst({where: {room_id, time_start: end_date}}),
+    ])
+
+    return {leftAdjacent, rightAdjacent}
+  }
+
   async getUserReservations(userId: number, query: GetMyReservationsDto) {
     const now = new Date()
 
