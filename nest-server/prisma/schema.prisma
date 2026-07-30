@@ -49,17 +49,23 @@ model Room {
   reservations        Reservation[]
 }
 
+enum ReservationStatus {
+  cancelled
+  active
+}
+
 model Reservation {
-  id                String   @id() @default(uuid())
+  id                String            @id() @default(uuid())
   title             String
-  user              User?    @relation(fields: [reserved_by], references: [id], onDelete: SetNull)
+  user              User?             @relation(fields: [reserved_by], references: [id], onDelete: SetNull)
   reserved_by       Int?
   reserver_username String // If user's account become deleted reservation should be visible for other users
-  room              Room     @relation(fields: [room_id], references: [id], onDelete: Cascade)
+  room              Room              @relation(fields: [room_id], references: [id], onDelete: Cascade)
   room_id           Int
   time_start        DateTime
   time_end          DateTime
-  created_at        DateTime @default(now())
+  created_at        DateTime          @default(now())
+  status            ReservationStatus @default(active)
 
-  @@index([time_start, room_id])
+  @@index([time_start, time_end, room_id, status])
 }
