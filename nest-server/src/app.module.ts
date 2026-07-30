@@ -16,7 +16,7 @@ import dbConfig from "./configurations/db.config";
 import authConfig from "./configurations/auth.config";
 import redisConfig from "./configurations/redis.config";
 import frontendConfig from "./configurations/frontend.config";
-import {BullModule} from "@nestjs/bullmq";
+import reservationConfig from "./configurations/reservation.config";
 //endregion: Configs
 
 const ENV = process.env.NODE_ENV;
@@ -25,7 +25,7 @@ const ENV = process.env.NODE_ENV;
   imports: [
     // Environments Variables
     ConfigModule.forRoot({
-      load: [appConfig, dbConfig, authConfig, redisConfig, frontendConfig],
+      load: [appConfig, dbConfig, authConfig, redisConfig, frontendConfig, reservationConfig],
 
       isGlobal: true,
       envFilePath: [`.env.${ENV}.local`, ".env"],
