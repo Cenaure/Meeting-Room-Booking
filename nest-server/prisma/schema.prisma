@@ -69,3 +69,17 @@ model Reservation {
 
   @@index([time_start, time_end, room_id, status])
 }
+
+// Notifications
+model Notification {
+  id             String    @id @default(uuid())
+  user_id        Int
+  reservation_id String?
+  type           String
+  body           Json
+  sent_at        DateTime?
+  read_at        DateTime?
+  created_at     DateTime  @default(now())
+
+  @@unique([reservation_id, type])
+}
