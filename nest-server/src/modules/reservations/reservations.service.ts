@@ -1,4 +1,4 @@
-import {Injectable} from '@nestjs/common';
+import {Inject, Injectable} from '@nestjs/common';
 import {DatabaseService} from "../../database/database.service";
 import CreateReservationDto from "./dto/create-reservation.dto";
 import {RoomsService} from "../rooms/rooms.service";
@@ -10,6 +10,9 @@ import {ConfigService} from "@nestjs/config";
 import {DateTime} from 'luxon';
 import GetMyReservationsDto, {ReservationFilter} from "./dto/get-my-reservations.dto";
 import {ReservationOrderByWithRelationInput, ReservationWhereInput} from "../../generated/prisma/models/Reservation";
+import {InjectQueue} from "@nestjs/bullmq";
+import {Queue, QueueEvents} from "bullmq";
+import {RESERVATIONS_QUEUE_EVENTS} from "./reservations-queue-events.provider";
 
 @Injectable()
 export class ReservationsService {
@@ -18,6 +21,8 @@ export class ReservationsService {
     private readonly configService: ConfigService,
     private readonly roomsService: RoomsService,
     private readonly usersService: UsersService,
+    @Inject(RESERVATIONS_QUEUE_EVENTS) private readonly queueEvents: QueueEvents,
+    @InjectQueue("reservations-queue") private readonly reservationsQueue: Queue
   ) {
   }
 
@@ -93,25 +98,21 @@ export class ReservationsService {
     // Validates Correctness of the reservation time
     this.validateReservationTime(dto.time_start, dto.time_end, room);
 
-    // Validate availability of the reservation according to its time
-    //TODO: Nest JS queue
-    const reservations = await this.getReservations(room.id, dto.time_start, dto.time_end);
-    if (reservations.length > 0)
+    const job = await this.reservationsQueue.add('create-reservation', {
+      ...dto,
+      user
+    }, {
+      jobId: `${room.id}_${Date.now()}`,
+    });
+
+    try {
+      return await job.waitUntilFinished(this.queueEvents);
+    } catch (err) {
       throw AppException.conflict({
         code: AppExceptionBodyCode.reservationTimeConflict,
-        message: "Reservation time is already taken"
-      })
-
-    return this.databaseService.reservation.create({
-      data: {
-        title: dto.title,
-        reserved_by: user.id,
-        reserver_username: user.username,
-        room_id: dto.room_id,
-        time_start: dto.time_start,
-        time_end: dto.time_end
-      }
-    })
+        message: err.message ?? 'Reservation time is already taken',
+      });
+    }
   }
 
   async getReservations(roomId: number, timeStart: Date, timeEnd: Date) {

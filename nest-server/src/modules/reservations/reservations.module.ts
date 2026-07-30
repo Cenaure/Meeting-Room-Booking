@@ -5,11 +5,20 @@ import {RoomsModule} from "../rooms/rooms.module";
 import {ConfigModule} from "@nestjs/config";
 import {UsersModule} from "../users/users.module";
 import {JwtModule} from "@nestjs/jwt";
+import {BullModule} from "@nestjs/bullmq";
+import {reservationsQueueEventsProvider} from "./reservations-queue-events.provider";
 
 @Module({
-  imports: [RoomsModule, ConfigModule, UsersModule, JwtModule],
+  imports: [
+    BullModule.registerQueue({name: "reservation-queue"}),
+
+    RoomsModule,
+    ConfigModule,
+    UsersModule,
+    JwtModule
+  ],
   controllers: [ReservationsController],
-  providers: [ReservationsService],
+  providers: [ReservationsService, reservationsQueueEventsProvider],
 })
 export class ReservationsModule {
 }
