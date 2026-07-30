@@ -2,6 +2,8 @@ import {NestFactory} from '@nestjs/core';
 import {AppModule} from './app.module';
 import {ConfigService} from "@nestjs/config";
 import {ValidationPipe} from "@nestjs/common";
+import compression from 'compression';
+import helmet from 'helmet';
 import cookieParser = require("cookie-parser");
 
 async function bootstrap() {
@@ -15,6 +17,8 @@ async function bootstrap() {
   }));
 
   app.use(cookieParser());
+
+  app.use(compression());
 
   await app.listen(serverPort!, "0.0.0.0");
 }
