@@ -1,4 +1,4 @@
-import {BadRequestException, UnauthorizedException} from "@nestjs/common";
+import {BadRequestException, ConflictException, NotFoundException, UnauthorizedException} from "@nestjs/common";
 import {AppExceptionBody, AppExceptionBodyCode} from "./app-exception-body.interface";
 
 export class AppException {
@@ -12,13 +12,13 @@ export class AppException {
   }
 
   static conflict(body: AppExceptionBody) {
-    return new BadRequestException(body)
+    return new ConflictException(body)
   }
 
   static notFound(body: AppExceptionBody = {
     code: AppExceptionBodyCode.resourceNotFound,
     message: "Resource not found"
   }) {
-    return new BadRequestException(body)
+    return new NotFoundException(body)
   }
 }

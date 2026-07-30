@@ -79,7 +79,7 @@ export class ReservationsService {
 
     if (!start.hasSame(end, 'day'))
       throw AppException.badRequest({
-        code: AppExceptionBodyCode.reservationMustBeInWorkHours,
+        code: AppExceptionBodyCode.reservationMustNotSpanMultipleDays,
         message: "Reservation cannot span across days"
       });
   }

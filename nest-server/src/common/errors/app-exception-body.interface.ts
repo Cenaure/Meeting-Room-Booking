@@ -25,5 +25,6 @@ export const AppExceptionBodyCode = {
   reservationMustBeInFuture: "RESERVATION_MUST_BE_IN_FUTURE",
   reservationMustBeInWorkHours: "RESERVATION_MUST_BE_IN_WORK_HOURS",
   reservationTimeConflict: "RESERVATION_TIME_CONFLICT",
+  reservationMustNotSpanMultipleDays: "RESERVATION_MUST_NOT_SPAN_MULTIPLE_DAYS",
 } as const
 export type AppExceptionBodyCodes = (typeof AppExceptionBodyCode)[keyof typeof AppExceptionBodyCode]
