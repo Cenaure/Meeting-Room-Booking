@@ -10,6 +10,11 @@ import {JwtModule} from "@nestjs/jwt";
   providers: [
     NotificationsGateway,
     NotificationsService,
+
+    ReservationEndingSoonHandler,
+
+    notificationHandlerRegistryProvider,
+    NotificationHandlerRegistry
   ],
   controllers: [NotificationsController],
 
