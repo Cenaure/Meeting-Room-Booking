@@ -11,28 +11,24 @@ export class AuthGuard implements CanActivate {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService
   ) {
+    this.accessJwtSecret = this.configService.get("auth.access_token_secret") as string;
   }
+
+  private readonly accessJwtSecret: string
 
   canActivate(context: ExecutionContext): boolean {
     const request: Request & { user?: AccessJwtPayload } = context
       .switchToHttp()
       .getRequest();
 
-    const accessJwtSecret = this.configService.get("auth.access_token_secret")
+    const token: string | undefined = request.cookies?.["access_token"];
+
+    if (!token) throw AppException.unauthorized();
 
     try {
-      const authHeader: string | undefined = request.headers.authorization;
-
-      const type = authHeader?.split(" ")[0];
-      const token = authHeader?.split(" ")[1];
-
-      if (type !== "Bearer" || !token)
-        throw AppException.unauthorized();
-
-      const user: AccessJwtPayload = this.jwtService.verify(token, {
-        secret: accessJwtSecret,
-      });
-      request.user = user;
+      request.user = this.jwtService.verify(token, {
+        secret: this.accessJwtSecret,
+      }) as AccessJwtPayload;
 
       return true;
     } catch {
