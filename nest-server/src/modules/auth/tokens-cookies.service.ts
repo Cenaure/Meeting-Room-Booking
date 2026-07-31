@@ -29,12 +29,12 @@ export class TokensCookiesService {
       domain: nodeEnv === "production" ? `.${domain}` : undefined,
     };
 
-    response.cookie("accessToken", tokens.accessToken, {
+    response.cookie("access_token", tokens.accessToken, {
       ...cookieOptions,
       maxAge: accessTokenTTL,
     });
 
-    response.cookie("refreshToken", tokens.refreshToken, {
+    response.cookie("refresh_token", tokens.refreshToken, {
       ...cookieOptions,
       path: "/auth/refresh", //TODO: May cause errors, should be reviewed whether it works correctly
       maxAge: refreshTokenTTL,
