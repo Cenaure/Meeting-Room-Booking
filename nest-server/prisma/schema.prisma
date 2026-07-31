@@ -55,19 +55,20 @@ enum ReservationStatus {
 }
 
 model Reservation {
-  id                String            @id() @default(uuid())
-  title             String
-  user              User?             @relation(fields: [reserved_by], references: [id], onDelete: SetNull)
-  reserved_by       Int?
-  reserver_username String // If user's account become deleted reservation should be visible for other users
-  room              Room              @relation(fields: [room_id], references: [id], onDelete: Cascade)
-  room_id           Int
-  time_start        DateTime
-  time_end          DateTime
-  created_at        DateTime          @default(now())
-  status            ReservationStatus @default(active)
+  id                    String            @id() @default(uuid())
+  title                 String
+  user                  User?             @relation(fields: [reserved_by], references: [id], onDelete: SetNull)
+  reserved_by           Int?
+  reserver_username     String // If user's account become deleted reservation should be visible for other users
+  room                  Room              @relation(fields: [room_id], references: [id], onDelete: Cascade)
+  room_id               Int
+  time_start            DateTime
+  time_end              DateTime
+  created_at            DateTime          @default(now())
+  status                ReservationStatus @default(active)
+  reservation_series_id String?
 
-  @@index([time_start, time_end, room_id, status])
+  @@index([time_start, time_end, room_id, status, reservation_series_id])
 }
 
 // Notifications
