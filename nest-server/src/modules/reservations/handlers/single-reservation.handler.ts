@@ -22,7 +22,10 @@ export class SingleReservationHandler implements ReservationHandler<ISingleReser
   }
 
   async processReservation(job: Job<ISingleReservationJobData>): Promise<Reservation> {
-    const {room_id, time_start, time_end, title, user} = job.data;
+    const {room_id, title, user} = job.data;
+
+    const time_start = new Date(job.data.time_start);
+    const time_end = new Date(job.data.time_end);
 
     const reservations = await this.reservationsService.getReservations({
       room_id,
