@@ -15,6 +15,8 @@ import {RESERVATIONS_QUEUE_EVENTS} from "./reservations-queue-events.provider";
 import {Queue, QueueEvents} from "bullmq";
 import GetReservationsDto from "./dto/get-reservations.dto";
 import {NotificationSchedulerService} from "../notifications/services/notification-scheduler.service";
+import CreateReservationSeriesDto from "./dto/create-reservation-series.dto";
+import {ReservationType} from "./utils/reservation-types.constants";
 
 @Injectable()
 export class ReservationsService {
@@ -90,6 +92,7 @@ export class ReservationsService {
 
   //endregion: # Helper functions
 
+  //region: # Create Reservation / Reservation Series
   async createReservation(userId: number, dto: CreateReservationDto) {
     const user = await this.usersService.findById(userId)
     if (!user)
@@ -102,7 +105,7 @@ export class ReservationsService {
     // Validates Correctness of the reservation time
     this.validateReservationTime(dto.time_start, dto.time_end, room);
 
-    const job = await this.reservationsQueue.add('create-reservation', {
+    const job = await this.reservationsQueue.add(ReservationType.SingleReservation, {
       ...dto,
       user
     }, {
@@ -118,6 +121,23 @@ export class ReservationsService {
       });
     }
   }
+
+  async createReservationSeries(userId: number, dto: CreateReservationSeriesDto) {
+    const user = await this.usersService.findById(userId)
+    if (!user)
+      throw AppException.unauthorized()
+
+    const room = await this.roomsService.findById(dto.room_id);
+    if (!room)
+      throw AppException.notFound({code: AppExceptionBodyCode.roomNotFound, message: "Room not found"})
+
+    // Validates Correctness of the reservation time
+    this.validateReservationTime(dto.time_start, dto.time_end, room);
+
+
+  }
+
+  //endregion: # Create Reservation / Reservation Series
 
   async getReservations(query: GetReservationsDto) {
     const {room_id, end_date, start_date} = query

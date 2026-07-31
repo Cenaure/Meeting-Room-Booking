@@ -9,6 +9,9 @@ import {reservationsQueueEventsProvider} from "./reservations-queue-events.provi
 import {BullModule} from "@nestjs/bullmq";
 import {ReservationsProcessor} from "./processors/reservations.processor";
 import {NotificationsModule} from "../notifications/notifications.module";
+import {reservationHandlerRegistryProvider} from "./registries/reservation-handler-registry.provider";
+import {ReservationHandlerRegistry} from "./registries/reservation-handlers.registry";
+import {SingleReservationHandler} from "./handlers/single-reservation.handler";
 
 @Module({
   imports: [
@@ -21,7 +24,16 @@ import {NotificationsModule} from "../notifications/notifications.module";
     forwardRef(() => NotificationsModule)
   ],
   controllers: [ReservationsController],
-  providers: [ReservationsService, ReservationsProcessor, reservationsQueueEventsProvider],
+  providers: [
+    ReservationsService,
+    ReservationsProcessor,
+    reservationsQueueEventsProvider,
+
+    SingleReservationHandler,
+
+    reservationHandlerRegistryProvider,
+    ReservationHandlerRegistry
+  ],
   exports: [ReservationsService]
 })
 export class ReservationsModule {
