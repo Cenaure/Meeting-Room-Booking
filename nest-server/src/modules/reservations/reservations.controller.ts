@@ -6,6 +6,7 @@ import {AccessJwtPayload} from "../../common/dto/jwt-payload.dto";
 import {Auth} from "../auth/decorators/auth.decorator";
 import GetMyReservationsDto from "./dto/get-my-reservations.dto";
 import GetReservationsDto from "./dto/get-reservations.dto";
+import {AccountActivated} from "../auth/decorators/account-activated.decorator";
 
 @Controller('reservations')
 export class ReservationsController {
@@ -13,6 +14,7 @@ export class ReservationsController {
   }
 
   @Post()
+  @AccountActivated()
   @Auth()
   async createReservation(
     @Body() dto: CreateReservationDto,
