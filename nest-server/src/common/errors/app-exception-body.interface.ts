@@ -30,5 +30,6 @@ export const AppExceptionBodyCode = {
   reservationNotFound: "RESERVATION_NOT_FOUND",
   forbidden: "FORBIDDEN",
   reservationCancelationTooLate: "RESERVATION_CANCELATION_TOO_LATE",
+  accountMustBeActivated: "ACCOUNT_MUST_BE_ACTIVATED",
 } as const
 export type AppExceptionBodyCodes = (typeof AppExceptionBodyCode)[keyof typeof AppExceptionBodyCode]
