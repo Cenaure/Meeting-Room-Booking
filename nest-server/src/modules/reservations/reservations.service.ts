@@ -134,7 +134,19 @@ export class ReservationsService {
     // Validates Correctness of the reservation time
     this.validateReservationTime(dto.time_start, dto.time_end, room);
 
+    const job = await this.reservationsQueue.add(ReservationType.ReservationSeries, {
+      ...dto,
+      user
+    }, {
+      jobId: `series_${room.id}_${Date.now()}`,
+    });
 
+    try {
+      return await job.waitUntilFinished(this.queueEvents);
+    } catch (error) {
+      const errorBody = JSON.parse(error.message)
+      throw AppException.conflict(errorBody)
+    }
   }
 
   //endregion: # Create Reservation / Reservation Series

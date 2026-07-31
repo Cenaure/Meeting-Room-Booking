@@ -7,12 +7,14 @@ import {Auth} from "../auth/decorators/auth.decorator";
 import GetMyReservationsDto from "./dto/get-my-reservations.dto";
 import GetReservationsDto from "./dto/get-reservations.dto";
 import {AccountActivated} from "../auth/decorators/account-activated.decorator";
+import CreateReservationSeriesDto from "./dto/create-reservation-series.dto";
 
 @Controller('reservations')
 export class ReservationsController {
   constructor(private readonly reservationsService: ReservationsService) {
   }
 
+  //region: # Create Reservation / Reservation Series
   @Post()
   @AccountActivated()
   @Auth()
@@ -23,6 +25,20 @@ export class ReservationsController {
     const userId = request.user.user_id;
     return await this.reservationsService.createReservation(userId, dto)
   }
+
+  @Post("new-series")
+  @AccountActivated()
+  @Auth()
+  async createReservationSeries(
+    @Body() dto: CreateReservationSeriesDto,
+    @Req() request: Request & { user: AccessJwtPayload }
+  ) {
+    const userId = request.user.user_id;
+    return await this.reservationsService.createReservationSeries(userId, dto)
+  }
+
+  //endregion: # Create Reservation / Reservation Series
+
 
   @Get()
   async getReservations(

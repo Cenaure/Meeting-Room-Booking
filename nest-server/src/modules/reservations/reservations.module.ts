@@ -12,6 +12,7 @@ import {NotificationsModule} from "../notifications/notifications.module";
 import {reservationHandlerRegistryProvider} from "./registries/reservation-handler-registry.provider";
 import {ReservationHandlerRegistry} from "./registries/reservation-handlers.registry";
 import {SingleReservationHandler} from "./handlers/single-reservation.handler";
+import {ReservationSeriesHandler} from "./handlers/reservation-series.handler";
 
 @Module({
   imports: [
@@ -29,7 +30,9 @@ import {SingleReservationHandler} from "./handlers/single-reservation.handler";
     ReservationsProcessor,
     reservationsQueueEventsProvider,
 
+    // Handlers
     SingleReservationHandler,
+    ReservationSeriesHandler,
 
     reservationHandlerRegistryProvider,
     ReservationHandlerRegistry
