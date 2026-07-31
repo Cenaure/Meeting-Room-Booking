@@ -105,3 +105,5 @@ I assumed that the application is small or medium-sized, so the queue won't be a
 
 If you expect a larger number of users to reserve rooms, this approach might be improved by creating a detached queue
 for every room.
+
+![Fox](https://tenor.com/tzWsHCZvz41.gif)
