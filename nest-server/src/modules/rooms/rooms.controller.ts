@@ -1,5 +1,6 @@
-import {Controller, Get} from '@nestjs/common';
+import {Controller, Get, Query} from '@nestjs/common';
 import {RoomsService} from './rooms.service';
+import GetRoomsDto from "./dto/get-rooms.dto";
 
 @Controller('rooms')
 export class RoomsController {
@@ -7,7 +8,9 @@ export class RoomsController {
   }
 
   @Get()
-  async getRooms() {
-    return await this.roomsService.getRooms();
+  async getRooms(
+    @Query() query: GetRoomsDto
+  ) {
+    return await this.roomsService.getRooms(query);
   }
 }

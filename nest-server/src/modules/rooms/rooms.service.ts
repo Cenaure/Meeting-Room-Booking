@@ -1,5 +1,6 @@
 import {Injectable, OnModuleInit} from '@nestjs/common';
 import {DatabaseService} from "../../database/database.service";
+import GetRoomsDto from "./dto/get-rooms.dto";
 
 @Injectable()
 export class RoomsService implements OnModuleInit {
@@ -31,8 +32,17 @@ export class RoomsService implements OnModuleInit {
   }
 
 
-  async getRooms() {
-    return this.databaseService.room.findMany();
+  async getRooms(query: GetRoomsDto) {
+    const rooms = await this.databaseService.room.findMany({
+      where: {capacity: {gte: query.wishedCapacity}},
+      skip: (query.page - 1) * query.limit,
+      take: query.limit
+    });
+
+    return {
+      items: rooms,
+      total: rooms.length,
+    };
   }
 
   async findById(roomId: number) {
