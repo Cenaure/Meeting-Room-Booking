@@ -15,14 +15,14 @@ export default class GetMyReservationsDto {
 
   @IsOptional()
   @Type(() => Number)
-  @IsNumber()
+  @IsNumber({maxDecimalPlaces: 0})
   @Min(1)
-  page: number;
+  page: number = 1;
 
   @IsOptional()
   @Type(() => Number)
-  @IsNumber()
+  @IsNumber({maxDecimalPlaces: 0})
   @Min(1)
   @Max(100)
-  limit: number;
+  limit: number = 12;
 }

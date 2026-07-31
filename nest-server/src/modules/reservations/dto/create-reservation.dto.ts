@@ -8,14 +8,16 @@ export default class CreateReservationDto {
   @MaxLength(100)
   title: string;
 
-  @IsNumber()
+  @IsNumber({maxDecimalPlaces: 0})
   @Min(1)
   room_id: number;
 
+  @IsNotEmpty()
   @Type(() => Date)
   @IsDate()
   time_start: Date;
 
+  @IsNotEmpty()
   @Type(() => Date)
   @IsDate()
   time_end: Date;
