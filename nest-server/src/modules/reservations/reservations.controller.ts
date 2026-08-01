@@ -36,7 +36,6 @@ export class ReservationsController {
     const userId = request.user.user_id;
     return await this.reservationsService.createReservationSeries(userId, dto)
   }
-
   //endregion: # Create Reservation / Reservation Series
 
 
@@ -57,6 +56,7 @@ export class ReservationsController {
     return await this.reservationsService.getUserReservations(userId, query);
   }
 
+  //region: # Reservation Cancellation
   @Get("cancel/:reservationId")
   @Auth()
   async cancelReservation(
@@ -66,4 +66,17 @@ export class ReservationsController {
     const userId = request.user.user_id;
     return await this.reservationsService.cancelReservation(userId, reservationId);
   }
+
+  @Get("cancel-series/:reservationSeriesId")
+  @Auth()
+  async cancelReservationSeries(
+    @Req() request: Request & { user: AccessJwtPayload },
+    @Param("reservationSeriesId") reservationSeriesId: string
+  ) {
+    const userId = request.user.user_id;
+    return this.reservationsService.cancelReservationSeries(userId, reservationSeriesId);
+  }
+
+  //endregion: # Reservation Cancellation
+
 }

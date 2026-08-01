@@ -217,6 +217,7 @@ export class ReservationsService {
     }
   }
 
+  //region: # Reservation Cancellation
   async cancelReservation(userId: number, reservationId: string) {
     // default - 15 minutes
     const preventCancellationBeforeMinutes = this.configService.get("reservations.prevent_cancellation_before_minutes")
@@ -232,6 +233,12 @@ export class ReservationsService {
       throw AppException.badRequest({
         code: AppExceptionBodyCode.reservationCancelationTooLate,
         message: "Reservation cancellation too late"
+      })
+
+    if (reservation.time_start > new Date())
+      throw AppException.badRequest({
+        code: AppExceptionBodyCode.reservationCancelationTooLate,
+        message: "Reservation time is already started or finished"
       })
 
     const updatedReservation = await this.databaseService.reservation.update({
@@ -258,9 +265,73 @@ export class ReservationsService {
     return updatedReservation;
   }
 
+  async cancelReservationSeries(userId: number, reservationSeriesId: string) {
+    // default - 15 minutes
+    const preventCancellationBeforeMinutes = this.configService.get("reservations.prevent_cancellation_before_minutes")
+
+    const reservations = await this.findReservationsBySeriesId(reservationSeriesId);
+    if (!reservations || reservations.length === 0)
+      throw AppException.notFound({
+        code: AppExceptionBodyCode.reservationSeriesNotFound,
+        message: "Reservations not found"
+      })
+
+    if (reservations[0].reserved_by !== userId)
+      throw AppException.forbidden()
+
+    const now = DateTime.now();
+    const hasTooLateReservation = reservations.some(
+      (reservation) => DateTime.fromJSDate(reservation.time_start).diff(now, "minutes").minutes < preventCancellationBeforeMinutes
+    );
+    if (hasTooLateReservation)
+      throw AppException.badRequest({
+        code: AppExceptionBodyCode.reservationCancelationTooLate,
+        message: "Reservation cancellation too late"
+      })
+
+    const updatedReservations = await Promise.all(
+      reservations.map((reservation) =>
+        this.databaseService.reservation.update({
+          where: {
+            id: reservation.id,
+            time_start: {gt: new Date()}
+          },
+          data: {status: "cancelled"}
+        })
+      )
+    );
+
+    //region: # Notifications Canceling
+    await Promise.all(
+      updatedReservations.map(async (updatedReservation) => {
+        const {leftAdjacent, rightAdjacent} = await this.findAdjacentReservations({
+          room_id: updatedReservation.room_id,
+          start_date: updatedReservation.time_start,
+          end_date: updatedReservation.time_end,
+        })
+
+        if (leftAdjacent)
+          await this.notificationSchedulerService.cancelScheduleReservationEndingNotification(leftAdjacent.id);
+
+        if (rightAdjacent)
+          await this.notificationSchedulerService.cancelScheduleReservationEndingNotification(updatedReservation.id);
+      })
+    );
+    //endregion: # Notifications Canceling
+    return updatedReservations;
+  }
+
+  //endregion: # Reservation Cancellation
+
   async findReservationById(reservationId: string) {
     return this.databaseService.reservation.findFirst({
       where: {id: reservationId}
+    })
+  }
+
+  async findReservationsBySeriesId(reservationSeriesId: string) {
+    return this.databaseService.reservation.findMany({
+      where: {reservation_series_id: reservationSeriesId}
     })
   }
 }
