@@ -1,4 +1,18 @@
 services:
+  web:
+    build:
+      context: ./next-web
+      target: development
+    ports:
+      - "3000:3000"
+    env_file: ./next-web/.env.development.local
+    depends_on:
+      server:
+        condition: service_started
+    restart: unless-stopped
+    networks:
+      - app-network
+
   server:
     build:
       context: ./nest-server
@@ -12,6 +26,7 @@ services:
     command: npm run start:dev
     stdin_open: true
     tty: true
+    restart: unless-stopped
     depends_on:
       postgres:
         condition: service_healthy
@@ -30,6 +45,7 @@ services:
       - pg_data:/var/lib/postgresql
     ports:
       - "5432:5432"
+    restart: unless-stopped
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}" ]
       interval: 3s
