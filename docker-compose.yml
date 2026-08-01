@@ -5,6 +5,9 @@ services:
       target: development
     ports:
       - "3000:3000"
+    volumes:
+      - ./next-web:/app
+      - /app/node_modules
     env_file: ./next-web/.env.development.local
     depends_on:
       server:
