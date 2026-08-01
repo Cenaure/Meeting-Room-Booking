@@ -37,7 +37,7 @@ export class AuthController {
       refreshToken,
     });
 
-    return response.json({user: result.user})
+    return response.json({user: result.user, accessToken, refreshToken})
   }
 
   @HttpCode(HttpStatus.CREATED)
@@ -55,7 +55,7 @@ export class AuthController {
       refreshToken,
     });
 
-    return response.json({user: result.user})
+    return response.json({user: result.user, accessToken, refreshToken})
   }
 
   @HttpCode(HttpStatus.OK)
@@ -119,7 +119,7 @@ export class AuthController {
   //endregion: # User Account
 
   //region: # Google OAuth
-  @Get("google/sign-in")
+  @Get("google/(.)auth")
   @UseGuards(GoogleAuthGuard)
   googleSignIn() {
   }
