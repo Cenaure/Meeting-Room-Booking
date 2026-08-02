@@ -1,4 +1,5 @@
 import axios from "axios";
+import {cookies} from "next/headers";
 
 export const API_URL = process.env.NEXT_PUBLIC_INTERNAL_API_URL
 
@@ -15,7 +16,7 @@ const flushQueue = (error: unknown) => {
   queue = [];
 };
 
-const createInstance = () => {
+const createInstance = async () => {
   const instance = axios.create({
     withCredentials: true,
     baseURL: API_URL,
@@ -24,7 +25,10 @@ const createInstance = () => {
     },
   });
 
-  if (typeof window !== "undefined") {
+  if (typeof window == "undefined") {
+    const cookieStore = await cookies();
+    instance.defaults.headers.common["Cookie"] = cookieStore.toString();
+  } else {
     instance.interceptors.response.use(
       (res) => res,
       async (error) => {
@@ -65,7 +69,7 @@ const createInstance = () => {
         } catch (refreshError) {
           console.error("Error refreshing token:", refreshError);
           flushQueue(refreshError);
-          window.location.href = "/auth/(.)auth";
+          window.location.href = "/auth/sign-in";
           return Promise.reject(refreshError);
         } finally {
           isRefreshing = false;

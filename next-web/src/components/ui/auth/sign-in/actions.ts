@@ -9,7 +9,7 @@ export async function signIn(
   password: string
 ) {
   try {
-    const instance = createInstance();
+    const instance = await createInstance();
     const response = await instance.post(`/auth/sign-in`, {email, password});
 
     if (response.data.accessToken) await setTokenCookies(response.data);

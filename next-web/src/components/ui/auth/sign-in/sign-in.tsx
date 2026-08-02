@@ -10,8 +10,11 @@ import Link from "next/link";
 import {signIn} from "@/components/ui/auth/sign-in/actions";
 import {router} from "next/client";
 import React from "react";
+import {useUser} from "@/stores/user.store";
 
 export default function SignInComponent() {
+  const setUser = useUser((state) => state.setUser);
+
   const {
     register,
     handleSubmit,
@@ -32,6 +35,7 @@ export default function SignInComponent() {
       return;
     }
 
+    setUser(result.data.user);
     await router.push("/");
   }
 
@@ -39,12 +43,12 @@ export default function SignInComponent() {
     e.preventDefault();
 
     window.location.href =
-      process.env.NEXT_PUBLIC_API_URL + "/auth/google/(.)auth";
+      process.env.NEXT_PUBLIC_API_URL + "/auth/google/sign-in";
   }
 
   return (
     <div
-      className="md:grid md:grid-cols-2 gap-4 md:max-w-4xl mx-auto relative bg-surface-0 rounded-xl ring-1 ring-border">
+      className="md:grid md:grid-cols-2 md:max-w-4xl mx-auto relative bg-surface-0 rounded-md shadow-xs ring-2 ring-border">
       <form onSubmit={handleSubmit(onSubmit)} className="p-8 space-y-2 w-md">
         <h1 className="mb-8 w-full text-2xl font-bold text-center">
           Вхід до акаунту
@@ -115,10 +119,10 @@ export default function SignInComponent() {
 
           <Link
             // variant="link"
-            className="text-emerald-500"
+            className="text-lavender-400 underline underline-offset-2 hover:text-lavender-500"
             // onClick={() => handleExit(sign_up_route)}
             type="button"
-            href="/auth/sign-up"
+            href="/next-web/src/app/auth/sign-up"
           >
             Створити обліковий запис
           </Link>
@@ -132,7 +136,7 @@ export default function SignInComponent() {
             alt="Cute fox looking at the sign in form"
             objectFit="cover"
             fill
-            className="rounded-r-xl object-contain"
+            className="rounded-r-md object-contain"
             priority
           />
         </div>
