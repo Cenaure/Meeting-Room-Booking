@@ -11,8 +11,8 @@ export default async function serverLogout() {
 
   await instance.post(`${API_URL}/auth/logout`);
 
-  cookieStore.delete("accessToken");
-  cookieStore.delete("refreshToken");
+  cookieStore.delete("access_token");
+  cookieStore.delete("refresh_token");
 
   return
 }
