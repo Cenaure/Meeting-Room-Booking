@@ -2,6 +2,8 @@ import type {Metadata} from "next";
 import {Geologica, Inter} from "next/font/google";
 import "./globals.css";
 import {ThemeProvider} from "next-themes";
+import {ReactNode} from "react";
+import {AuthProvider} from "@/providers/auth-provider";
 
 const geologica = Geologica({
   subsets: ["latin", "cyrillic"],
@@ -20,8 +22,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
                                      children,
+                                     modal
                                    }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode,
+  modal: ReactNode
 }>) {
   return (
     <html
@@ -31,7 +35,10 @@ export default function RootLayout({
     >
     <body className="min-h-full flex flex-col h-full">
     <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-      {children}
+      <AuthProvider>
+        {children}
+        {modal}
+      </AuthProvider>
     </ThemeProvider>
     </body>
     </html>
