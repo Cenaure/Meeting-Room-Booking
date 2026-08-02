@@ -3,6 +3,7 @@
 import {HTMLAttributes, ReactNode, useEffect, useState} from "react";
 import {createPortal} from "react-dom";
 import {cva, VariantProps} from "class-variance-authority";
+import {useModal} from "@/stores/modal.store";
 
 const modalStyles = cva(
   "bg-transparent duration-200",
@@ -44,6 +45,9 @@ export interface ModalProps
 const ANIMATION_DURATION = 200;
 
 export default function Modal({children, onClose, className}: ModalProps) {
+  const close = useModal(state => state.close);
+  const setClose = useModal(state => state.setClose);
+
   const [isClosing, setIsClosing] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -63,6 +67,7 @@ export default function Modal({children, onClose, className}: ModalProps) {
 
     setTimeout(() => {
       onClose();
+      setClose(false)
     }, ANIMATION_DURATION);
   };
 
@@ -78,6 +83,11 @@ export default function Modal({children, onClose, className}: ModalProps) {
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, [isClosing]);
+
+  useEffect(() => {
+    if (!close) return;
+    handleClose();
+  }, [close]);
 
   if (!mounted) return null;
 

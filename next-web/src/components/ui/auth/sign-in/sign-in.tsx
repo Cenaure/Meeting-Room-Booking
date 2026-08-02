@@ -8,12 +8,16 @@ import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import Link from "next/link";
 import {signIn} from "@/components/ui/auth/sign-in/actions";
-import {router} from "next/client";
 import React from "react";
 import {useUser} from "@/stores/user.store";
+import {useRouter} from "next/navigation";
+import {useModal} from "@/stores/modal.store";
 
 export default function SignInComponent() {
-  const setUser = useUser((state) => state.setUser);
+  const setUser = useUser(state => state.setUser);
+  const setClose = useModal(state => state.setClose)
+
+  const router = useRouter();
 
   const {
     register,
@@ -36,7 +40,10 @@ export default function SignInComponent() {
     }
 
     setUser(result.data.user);
-    await router.push("/");
+
+    setClose(true)
+
+    router.back()
   }
 
   const handleContinueWithGoogle = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -102,6 +109,7 @@ export default function SignInComponent() {
             variant="outline"
             size="lg"
             fullWidth
+            type="button"
             onClick={(e) => handleContinueWithGoogle(e)}
           >
             <Image
