@@ -3,17 +3,17 @@
 import Image from "next/image";
 import Button from "@/components/ui/shared/button/button";
 import TextInput from "@/components/ui/shared/inputs/text-input";
-import {SignInFormValues, signInSchema} from "@/lib/schemas/sign-in.zod.schema";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {signIn} from "@/components/ui/auth/sign-in/actions";
 import React from "react";
 import {useUser} from "@/stores/user.store";
 import {useRouter} from "next/navigation";
 import {useModal} from "@/stores/modal.store";
-import {sign_up_route} from "@/lib/routes";
+import {signUp} from "@/components/ui/auth/sign-up/actions";
+import {SignUpFormValues, signUpSchema} from "@/lib/schemas/sign-up.zod.schema";
+import {sign_in_route} from "@/lib/routes";
 
-export default function SignInComponent() {
+export default function SignUpComponent() {
   const setUser = useUser(state => state.setUser);
   const setClose = useModal(state => state.setClose)
 
@@ -25,14 +25,14 @@ export default function SignInComponent() {
     formState: {errors, isSubmitting},
     setError,
     clearErrors
-  } = useForm<SignInFormValues>({
-    resolver: zodResolver(signInSchema),
+  } = useForm<SignUpFormValues>({
+    resolver: zodResolver(signUpSchema),
   });
 
-  async function onSubmit(values: SignInFormValues) {
+  async function onSubmit(values: SignUpFormValues) {
     clearErrors();
 
-    const result = await signIn(values.email, values.password);
+    const result = await signUp(values.username, values.email, values.password);
 
     if (!result.ok) {
       setError("root", {message: result.message});
@@ -58,8 +58,16 @@ export default function SignInComponent() {
       className="md:grid md:grid-cols-2 md:max-w-4xl mx-auto relative bg-surface-0 rounded-md shadow-xs ring-2 ring-border">
       <form onSubmit={handleSubmit(onSubmit)} className="p-8 space-y-2 w-md">
         <h1 className="mb-8 w-full text-2xl font-bold text-center">
-          Вхід до акаунту
+          Створення акаунта
         </h1>
+
+        <TextInput
+          label="Введіть ім'я"
+          type="text"
+          placeholder="example@gmail.com"
+          {...register("username")}
+          error={errors.username?.message}
+        />
 
         <TextInput
           label="Введіть Вашу пошту"
@@ -70,11 +78,19 @@ export default function SignInComponent() {
         />
 
         <TextInput
-          label="Введіть Ваш пароль"
+          label="Введіть пароль"
           type="password"
           placeholder="******"
           {...register("password")}
           error={errors.password?.message}
+        />
+
+        <TextInput
+          label="Повторіть пароль"
+          type="password"
+          placeholder="******"
+          {...register("confirmPassword")}
+          error={errors.confirmPassword?.message}
         />
 
         <div className="space-y-4">
@@ -89,7 +105,7 @@ export default function SignInComponent() {
               loading={isSubmitting}
               type="submit"
             >
-              Вхід
+              Створити акаунт
             </Button>
           </div>
 
@@ -123,14 +139,14 @@ export default function SignInComponent() {
         </div>
 
         <div className="mt-2 gap-2 text-sm flex items-center justify-center">
-          <p className="text-foreground/60">Не маєте акаунту?</p>
+          <p className="text-foreground/60">Вже зареєстровані?</p>
 
           <button
             type="button"
             className="text-lavender-400 underline underline-offset-2 hover:text-lavender-500"
-            onClick={() => router.replace(sign_up_route)}
+            onClick={() => router.replace(sign_in_route)}
           >
-            Створити обліковий запис
+            Вхід до акаунту
           </button>
         </div>
       </form>

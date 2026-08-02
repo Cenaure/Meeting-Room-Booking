@@ -4,7 +4,7 @@ export const errorMessages: Record<AppExceptionBodyCodes, string> = {
   [AppExceptionBodyCode.wrongEmailOrPassword]: "Неправильна пошта або пароль",
   [AppExceptionBodyCode.emailRequired]: "Вкажіть електронну пошту",
   [AppExceptionBodyCode.usernameRequired]: "Вкажіть імʼя користувача",
-  [AppExceptionBodyCode.emailTaken]: "Ця пошта вже зареєстрована",
+  [AppExceptionBodyCode.emailTaken]: "Акаунт з цією поштою вже існує",
   [AppExceptionBodyCode.activationLinkExpired]: "Термін дії посилання для активації минув",
   [AppExceptionBodyCode.activationNotNeeded]: "Акаунт вже активовано",
   [AppExceptionBodyCode.passwordRequired]: "Вкажіть пароль",
