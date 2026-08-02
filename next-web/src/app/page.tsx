@@ -2,7 +2,7 @@ import HeaderComponent from "@/components/ui/header/header-component";
 
 export default function Home() {
   return (
-    <div className="h-full relative grid grid-cols-[1fr_3.5fr_1fr] bg-zinc-50 ">
+    <div className="h-full relative flex flex-col md:grid md:grid-cols-[1fr_3.5fr_1fr] bg-zinc-50 ">
       <aside className="bg-surface-0 pt-4 border-r">
         Calendar
       </aside>

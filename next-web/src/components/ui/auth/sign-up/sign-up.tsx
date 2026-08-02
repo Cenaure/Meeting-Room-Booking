@@ -56,7 +56,7 @@ export default function SignUpComponent() {
   return (
     <div
       className="md:grid md:grid-cols-2 md:max-w-4xl mx-auto relative bg-surface-0 rounded-md shadow-xs ring-2 ring-border">
-      <form onSubmit={handleSubmit(onSubmit)} className="p-8 space-y-2 w-md">
+      <form onSubmit={handleSubmit(onSubmit)} className="p-4 md:p-8 space-y-2 w-screen h-screen md:h-auto md:w-md">
         <h1 className="mb-8 w-full text-2xl font-bold text-center">
           Створення акаунта
         </h1>

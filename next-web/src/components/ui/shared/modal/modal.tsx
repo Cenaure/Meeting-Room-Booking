@@ -4,6 +4,8 @@ import {HTMLAttributes, ReactNode, useEffect, useState} from "react";
 import {createPortal} from "react-dom";
 import {cva, VariantProps} from "class-variance-authority";
 import {useModal} from "@/stores/modal.store";
+import Button from "@/components/ui/shared/button/button";
+import {XIcon} from "@phosphor-icons/react/ssr";
 
 const modalStyles = cva(
   "bg-transparent duration-200",
@@ -21,7 +23,7 @@ const modalStyles = cva(
 );
 
 const backdropStyles = cva(
-  "fixed inset-0 z-50 flex items-center justify-center dark:bg-zinc-900/20 bg-zinc-900/50 duration-200 backdrop-blur-xs",
+  "fixed inset-0 z-50 md:flex md:items-center md:justify-center dark:bg-zinc-900/20 bg-zinc-900/50 duration-200 backdrop-blur-xs",
   {
     variants: {
       animationState: {
@@ -64,10 +66,10 @@ export default function Modal({children, onClose, className}: ModalProps) {
   const handleClose = () => {
     if (isClosing) return;
     setIsClosing(true);
+    setClose(false)
 
     setTimeout(() => {
       onClose();
-      setClose(false)
     }, ANIMATION_DURATION);
   };
 
@@ -104,6 +106,19 @@ export default function Modal({children, onClose, className}: ModalProps) {
         aria-modal="true"
         onClick={(e) => e.stopPropagation()}
       >
+        <div
+          className="md:hidden relative w-full"
+        >
+          <Button
+            className="absolute right-0 top-4 z-50"
+            variant="ghost"
+            onClick={() => handleClose()}
+          >
+            <XIcon size={24}/>
+          </Button>
+        </div>
+
+
         {children}
       </div>
     </div>,

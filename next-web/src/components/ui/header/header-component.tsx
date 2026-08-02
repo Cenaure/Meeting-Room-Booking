@@ -12,14 +12,14 @@ export default function HeaderComponent() {
   const isLoaded = useUser((state) => state.isLoaded);
 
   return (
-    <div className="py-1 flex justify-end">
+    <div className="py-1 flex justify-end space-x-2">
       {isLoaded && (!user
           ? <ButtonLink href={sign_in_route}><UserIcon size={18} weight="bold"/>Увійти до акаунту</ButtonLink>
           : <AccountDropdown user={user}/>
       )
       }
 
-      <Button variant="ghost" size="auto" className="ml-2 aspect-square w-8 group">
+      <Button variant="ghost" size="auto" className="aspect-square w-8 group">
         <GearIcon size={20} weight="regular"
                   className="text-foreground/90 group-hover:rotate-90 duration-200 transition-all"/>
       </Button>
