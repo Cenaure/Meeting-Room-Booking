@@ -1,4 +1,16 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, Patch, Post, Req, Res, UseGuards, } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import SignInDto from './dto/signIn.dto';
 import SignUpDto from './dto/signUp.dto';
@@ -57,7 +69,9 @@ export class AuthController {
     @Req() request: Request,
     @Res({ passthrough: true }) response: Response,
   ) {
-    const { refreshToken } = request.cookies as { refreshToken: string };
+    const { refresh_token: refreshToken } = request.cookies as {
+      refresh_token: string;
+    };
 
     await this.authService.logout(refreshToken);
 
