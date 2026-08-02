@@ -1,27 +1,30 @@
-import {CanActivate, ExecutionContext, Injectable} from "@nestjs/common";
-import {JwtService} from "@nestjs/jwt";
-import {AccessJwtPayload} from "../../../common/dto/jwt-payload.dto";
-import {Request} from "express";
-import {AppException} from "../../../common/errors/app-exception";
-import {ConfigService} from "@nestjs/config";
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { AccessJwtPayload } from '../../../common/dto/jwt-payload.dto';
+import { Request } from 'express';
+import { AppException } from '../../../common/errors/app-exception';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
     private readonly jwtService: JwtService,
-    private readonly configService: ConfigService
+    private readonly configService: ConfigService,
   ) {
-    this.accessJwtSecret = this.configService.get("auth.access_token_secret") as string;
+    this.accessJwtSecret = this.configService.get(
+      'auth.access_token_secret',
+    ) as string;
   }
 
-  private readonly accessJwtSecret: string
+  private readonly accessJwtSecret: string;
 
   canActivate(context: ExecutionContext): boolean {
     const request: Request & { user?: AccessJwtPayload } = context
       .switchToHttp()
       .getRequest();
 
-    const token: string | undefined = request.cookies?.["access_token"];
+    const token: string | undefined = request.cookies?.['access_token'];
+    console.log(token);
 
     if (!token) throw AppException.unauthorized();
 

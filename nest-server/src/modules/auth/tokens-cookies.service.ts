@@ -1,20 +1,17 @@
-import {Injectable} from '@nestjs/common';
-import {Response} from "express";
-import {ConfigService} from "@nestjs/config";
+import { Injectable } from '@nestjs/common';
+import { Response } from 'express';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class TokensCookiesService {
-  constructor(
-    private readonly configService: ConfigService
-  ) {
-  }
+  constructor(private readonly configService: ConfigService) {}
 
   /**
    * Add access and refresh tokens in the set-cookie header
    */
   setCookies(
     response: Response,
-    tokens: { accessToken: string; refreshToken: string }
+    tokens: { accessToken: string; refreshToken: string },
   ) {
     const nodeEnv = this.configService.get('app.node_env');
     const domain = this.configService.get('frontend.domain');
@@ -23,20 +20,19 @@ export class TokensCookiesService {
 
     const cookieOptions = {
       httpOnly: true,
-      secure: nodeEnv === "production",
-      sameSite: "lax" as const,
-      path: "/",
-      domain: nodeEnv === "production" ? `.${domain}` : undefined,
+      secure: nodeEnv === 'production',
+      sameSite: 'lax' as const,
+      path: '/',
+      domain: nodeEnv === 'production' ? `.${domain}` : undefined,
     };
 
-    response.cookie("access_token", tokens.accessToken, {
+    response.cookie('access_token', tokens.accessToken, {
       ...cookieOptions,
       maxAge: accessTokenTTL,
     });
 
-    response.cookie("refresh_token", tokens.refreshToken, {
+    response.cookie('refresh_token', tokens.refreshToken, {
       ...cookieOptions,
-      path: "/auth/refresh", //TODO: May cause errors, should be reviewed whether it works correctly
       maxAge: refreshTokenTTL,
     });
 
