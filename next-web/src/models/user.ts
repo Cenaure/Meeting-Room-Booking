@@ -3,5 +3,6 @@ export interface User {
   email: string;
   username: string;
   type: "access";
+  google_id?: string;
   is_activated: boolean;
 }
