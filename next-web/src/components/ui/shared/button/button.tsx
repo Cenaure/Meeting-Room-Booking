@@ -1,7 +1,8 @@
 import {cva, type VariantProps} from "class-variance-authority";
 import {ButtonHTMLAttributes, ReactNode} from "react";
+import {CircleNotchIcon} from "@phosphor-icons/react/ssr";
 
-const buttonStyles = cva(
+export const buttonStyles = cva(
   [
     "inline-flex items-center justify-center gap-2",
     "rounded-md font-medium tracking-tight",
@@ -64,8 +65,8 @@ export default function Button({
       disabled={disabled || loading}
       {...props}
     >
-      {loading && null}
+      {loading && <CircleNotchIcon size={16} className="animate-spin"/>}
       {children}
     </button>
-  );
+  )
 }
