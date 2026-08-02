@@ -18,7 +18,8 @@
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "react-hook-form": "^7.84.0",
-    "zod": "link:@hookform/resolvers/zod"
+    "zod": "link:@hookform/resolvers/zod",
+    "zustand": "^5.0.14"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -28,6 +29,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.12",
     "tailwindcss": "^4",
+    "tailwindcss-animate": "^1.0.7",
     "typescript": "^5"
   }
 }
