@@ -23,6 +23,10 @@ export const buttonStyles = cva(
           "ring-1 ring-border",
           "hover:bg-surface-3/50 hover:ring-gray-300"
         ],
+        destructive: [
+          "bg-red-500/20 ring-1 ring-red-400 text-red-500/90",
+          "hover:bg-red-500/15 text-red-500 hover:ring-2"
+        ],
         ghost: "bg-transparent text-foreground hover:bg-zinc-200/90 dark:hover:bg-zinc-800/90",
       },
       size: {

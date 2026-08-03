@@ -4,6 +4,7 @@ import {useEffect, useRef, useState} from "react";
 import {User} from "@/models/user";
 import logout from "@/app/(misc)/actions/user/logout";
 import Link from "next/link";
+import {profile_route} from "@/lib/routes";
 
 interface AccountDropdownProps {
   user: User;
@@ -51,7 +52,7 @@ export default function AccountDropdown({
           <div className="py-1">
             <Link
               className="w-full px-4 py-2 flex text-left text-sm hover:bg-surface-2/40"
-              href={"/profile"}
+              href={profile_route}
               onClick={() => setOpen(false)}
             >
               Налаштування
