@@ -16,7 +16,7 @@ export default function MonthCalendarHeader() {
   const [monthLabel, setMonthLabel] = useState(Info.months("long", {locale: "uk"})[currentDate.month - 1]);
 
   const goToToday = () => {
-    setCurrentDate(DateTime.local())
+    setCurrentDate(DateTime.now())
   }
 
   const goToNextMonth = () => {
@@ -32,11 +32,11 @@ export default function MonthCalendarHeader() {
   }, [currentDate]);
 
   return (
-    <div className="flex justify-between items-center px-2">
+    <div className="flex justify-between items-center px-2.5">
       <p className="text-sm font-medium">{capitalizeFirst(monthLabel)} {currentDate.year}</p>
 
       <div>
-        {currentDate.diffNow("months").months > 0 && (
+        {!currentDate.hasSame(DateTime.now(), "month") && (
           <Hint content={"Повернутися до сьогодні"} position="top">
             <Button
               variant="ghost"
