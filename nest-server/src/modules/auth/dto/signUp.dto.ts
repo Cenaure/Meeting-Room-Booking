@@ -1,16 +1,18 @@
-import {IsEmail, IsNotEmpty, MaxLength, MinLength} from "class-validator";
-import {Transform} from "class-transformer";
+import { IsEmail, IsNotEmpty, MaxLength, MinLength } from 'class-validator';
+import { Transform } from 'class-transformer';
 
 export default class SignUpDto {
   @IsEmail()
   @IsNotEmpty()
-  @Transform(({value}) => (typeof value === 'string' ? value.trim().toLowerCase() : value))
+  @Transform(({ value }) =>
+    typeof value === 'string' ? value.trim().toLowerCase() : value,
+  )
   email: string;
 
   @IsNotEmpty()
-  @MinLength(4)
+  @MinLength(2)
   @MaxLength(32)
-  username: string
+  username: string;
 
   @IsNotEmpty()
   @MinLength(8)

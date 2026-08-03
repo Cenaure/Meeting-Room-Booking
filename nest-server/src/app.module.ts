@@ -1,24 +1,24 @@
-import {Module} from '@nestjs/common';
-import {ConfigModule, ConfigService} from "@nestjs/config";
-import {DatabaseModule} from './database/database.module';
-import {AuthModule} from './modules/auth/auth.module';
-import {UsersModule} from './modules/users/users.module';
-import {createKeyv, Keyv} from "@keyv/redis";
-import {CacheableMemory} from "cacheable";
-import {CacheModule} from "@nestjs/cache-manager";
-import {MailModule} from './modules/mail/mail.module';
-import {RoomsModule} from "./modules/rooms/rooms.module";
-import {ReservationsModule} from "./modules/reservations/reservations.module";
-import {BullModule} from "@nestjs/bullmq";
-import {NotificationsModule} from './modules/notifications/notifications.module';
+import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { DatabaseModule } from './database/database.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { UsersModule } from './modules/users/users.module';
+import { createKeyv, Keyv } from '@keyv/redis';
+import { CacheableMemory } from 'cacheable';
+import { CacheModule } from '@nestjs/cache-manager';
+import { MailModule } from './modules/mail/mail.module';
+import { RoomsModule } from './modules/rooms/rooms.module';
+import { ReservationsModule } from './modules/reservations/reservations.module';
+import { BullModule } from '@nestjs/bullmq';
+import { NotificationsModule } from './modules/notifications/notifications.module';
 
 //region: Configs
-import appConfig from "./configurations/app.config";
-import dbConfig from "./configurations/db.config";
-import authConfig from "./configurations/auth.config";
-import redisConfig from "./configurations/redis.config";
-import frontendConfig from "./configurations/frontend.config";
-import reservationConfig from "./configurations/reservation.config";
+import appConfig from './configurations/app.config';
+import dbConfig from './configurations/db.config';
+import authConfig from './configurations/auth.config';
+import redisConfig from './configurations/redis.config';
+import frontendConfig from './configurations/frontend.config';
+import reservationConfig from './configurations/reservation.config';
 //endregion: Configs
 
 const ENV = process.env.NODE_ENV;
@@ -27,10 +27,17 @@ const ENV = process.env.NODE_ENV;
   imports: [
     // Environments Variables
     ConfigModule.forRoot({
-      load: [appConfig, dbConfig, authConfig, redisConfig, frontendConfig, reservationConfig],
+      load: [
+        appConfig,
+        dbConfig,
+        authConfig,
+        redisConfig,
+        frontendConfig,
+        reservationConfig,
+      ],
 
       isGlobal: true,
-      envFilePath: [`.env.${ENV}.local`, ".env"],
+      envFilePath: [`.env.${ENV}.local`, '.env'],
     }),
 
     // Nest JS Cache module based on redis
@@ -41,16 +48,16 @@ const ENV = process.env.NODE_ENV;
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
-        const host = configService.get('redis.host');
-        const port = configService.get('redis.port');
-        const redisPass = configService.get('redis.password');
+        const host = configService.get<string>('redis.host');
+        const port = configService.get<number>('redis.port');
+        const redisPass = configService.get<string>('redis.password');
 
-        const link = `redis://${redisPass}${host}:${port}`;
+        const link = `redis://:${redisPass}@${host}:${port}`;
 
         return {
           stores: [
             new Keyv({
-              store: new CacheableMemory({ttl: 60000, lruSize: 5000}),
+              store: new CacheableMemory({ ttl: 60000, lruSize: 5000 }),
             }),
             createKeyv(link),
           ],
@@ -70,12 +77,11 @@ const ENV = process.env.NODE_ENV;
           connection: {
             host,
             port,
-            password: redisPass
+            password: redisPass,
           },
-        }
-      }
+        };
+      },
     }),
-
 
     DatabaseModule,
     AuthModule,
