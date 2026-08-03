@@ -32,7 +32,7 @@ export default function MonthCalendarHeader() {
   }, [currentDate]);
 
   return (
-    <div className="flex justify-between items-center px-2.5">
+    <div className="flex justify-between items-center">
       <p className="text-sm font-medium">{capitalizeFirst(monthLabel)} {currentDate.year}</p>
 
       <div>
