@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
 import {useEffect, useRef, useState} from "react";
 import Button from "@/components/ui/shared/button/button";
-import {MailboxIcon} from "@phosphor-icons/react/ssr";
+import {EnvelopeSimpleIcon} from "@phosphor-icons/react/ssr";
 import {resendActivation} from "@/app/settings/actions";
 
 const COOLDOWN_SECONDS = 60;
@@ -50,22 +50,35 @@ export default function EmailActivationAlert() {
 
   return (
     <div
-      className="flex items-center justify-between gap-4 rounded-md border border-amber-400/40 bg-amber-400/10 px-4 py-3">
-      <div className="flex items-center gap-2 text-sm">
-        <MailboxIcon size={18} className="shrink-0 text-amber-500"/>
-        <span>
-          Ваша пошта не активована.{" "}
-          {error && <span className="text-red-500">{error}</span>}
-        </span>
+      className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 rounded-md border border-amber-500/30 bg-amber-50 dark:bg-amber-950/30 p-4 text-amber-900 dark:text-amber-200 transition-all">
+      <div className="flex items-start gap-3">
+        <EnvelopeSimpleIcon
+          size={20}
+          className="mt-0.5 shrink-0 text-amber-600 dark:text-amber-400"
+        />
+        <div className="flex flex-col gap-0.5 text-sm">
+          <span className="font-medium leading-snug">
+            Вашу електронну пошту не підтверджено
+          </span>
+          <span className="text-xs text-amber-800/80 dark:text-amber-300/80">
+            Ви не зможете бронювати кімнати, доки не підтвердите її.
+          </span>
+          {error && (
+            <span className="mt-1 text-xs font-semibold text-red-600 dark:text-red-400">
+              {error}
+            </span>
+          )}
+        </div>
       </div>
 
       <Button
-        size="sm"
-        variant="outline"
+        size="auto"
+        variant="none"
         type="button"
         loading={isSending}
         disabled={secondsLeft > 0 || isSending}
         onClick={handleResend}
+        className="self-end sm:self-center shrink-0 whitespace-nowrap text-xs font-semibold text-amber-700 hover:text-amber-900 dark:text-amber-300 dark:hover:text-amber-100 underline decoration-amber-500/40 hover:decoration-amber-500 transition-colors disabled:opacity-50 disabled:no-underline disabled:cursor-not-allowed"
       >
         {secondsLeft > 0 ? `Повторно через ${secondsLeft}с` : "Надіслати лист"}
       </Button>

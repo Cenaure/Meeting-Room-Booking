@@ -4,8 +4,8 @@ import {useState} from "react";
 
 import {useUser} from "@/stores/user.store";
 import {PaletteIcon, UserIcon} from "@phosphor-icons/react/ssr";
-import AppearanceTab from "@/components/ui/profile/tabs/appearance-tab";
-import ProfileTab from "@/components/ui/profile/tabs/profile-tab";
+import ProfileTab from "@/components/ui/settings/tabs/profile-tab";
+import AppearanceTab from "@/components/ui/settings/tabs/appearance-tab";
 
 type Tab = "profile" | "appearance";
 

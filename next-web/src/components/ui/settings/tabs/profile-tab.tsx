@@ -1,5 +1,3 @@
-import EmailActivationAlert from "@/components/ui/profile/email-activation-alert";
-import ChangePasswordComponent from "@/components/ui/profile/change-password";
 import Button from "@/components/ui/shared/button/button";
 import {SignInIcon, SignOutIcon} from "@phosphor-icons/react/ssr";
 import logout from "@/app/(misc)/actions/user/logout";
@@ -7,6 +5,8 @@ import {User} from "@/models/user";
 import {sign_in_route} from "@/lib/routes";
 import {useRouter} from "next/navigation";
 import {useModal} from "@/stores/modal.store";
+import EmailActivationAlert from "@/components/ui/settings/email-activation-alert";
+import ChangePasswordComponent from "@/components/ui/settings/change-password";
 
 export default function ProfileTab({user}: { user: User | null }) {
   const router = useRouter();
