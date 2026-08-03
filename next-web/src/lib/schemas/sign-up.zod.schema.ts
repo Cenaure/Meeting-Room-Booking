@@ -24,7 +24,7 @@ export const signUpSchema = z.object({
     error: "Підтвердіть пароль",
   }),
 }).refine((data) => data.password === data.confirmPassword, {
-  message: "Паролі не співпадають",
+  message: "Паролі не збігаються",
   path: ["confirmPassword"],
 });
 

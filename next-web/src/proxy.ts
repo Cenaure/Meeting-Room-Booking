@@ -26,7 +26,7 @@ const refreshTokens = async (refreshToken: string) => {
   return res.json() as Promise<{ accessToken: string; refreshToken: string }>;
 };
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const response = NextResponse.next();
 
