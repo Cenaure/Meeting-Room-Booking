@@ -23,7 +23,7 @@ export async function changePassword(
 export const resendActivation = async () => {
   try {
     const instance = await createInstance();
-    const {data} = await instance.post(`${API_URL}/auth/activation-link`);
+    const {data} = await instance.get(`${API_URL}/auth/activation-link`);
     return success(data);
   } catch (error) {
     const errorMessage = parseApiError(error);
