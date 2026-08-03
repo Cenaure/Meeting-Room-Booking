@@ -9,7 +9,7 @@ import React from "react";
 import {useUser} from "@/stores/user.store";
 import {useRouter} from "next/navigation";
 import {useModal} from "@/stores/modal.store";
-import {signUp} from "@/components/ui/auth/sign-up/actions";
+import {signUp} from "@/app/auth/sign-up/actions";
 import {SignUpFormValues, signUpSchema} from "@/lib/schemas/sign-up.zod.schema";
 import {sign_in_route} from "@/lib/routes";
 

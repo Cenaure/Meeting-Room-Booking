@@ -6,7 +6,7 @@ import TextInput from "@/components/ui/shared/inputs/text-input";
 import {SignInFormValues, signInSchema} from "@/lib/schemas/sign-in.zod.schema";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {signIn} from "@/components/ui/auth/sign-in/actions";
+import {signIn} from "@/app/auth/sign-in/actions";
 import React from "react";
 import {useUser} from "@/stores/user.store";
 import {useRouter} from "next/navigation";

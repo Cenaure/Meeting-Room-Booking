@@ -3,6 +3,7 @@
 import {useEffect, useRef, useState} from "react";
 import {User} from "@/models/user";
 import logout from "@/app/(misc)/actions/user/logout";
+import Link from "next/link";
 
 interface AccountDropdownProps {
   user: User;
@@ -33,7 +34,7 @@ export default function AccountDropdown({
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex h-9 w-9 items-center justify-center rounded-full text-lavender-50 bg-lavender-500 font-semibold transition hover:bg-lavender-600"
+        className="flex h-8 w-8 items-center justify-center rounded-full text-lavender-50 bg-lavender-500 font-semibold transition hover:bg-lavender-600"
       >
         {user.username.charAt(0).toUpperCase()}
       </button>
@@ -43,16 +44,18 @@ export default function AccountDropdown({
           <div className="border-b px-4 py-3">
             <p className="font-medium">{user.username}</p>
             {"email" in user && user.email && (
-              <p className="text-sm text-neutral-500">{user.email}</p>
+              <p className="text-sm text-mauve-400">{user.email}</p>
             )}
           </div>
 
           <div className="py-1">
-            <button
-              className="w-full px-4 py-2 text-left text-sm hover:bg-surface-2/40"
+            <Link
+              className="w-full px-4 py-2 flex text-left text-sm hover:bg-surface-2/40"
+              href={"/profile"}
+              onClick={() => setOpen(false)}
             >
               Налаштування
-            </button>
+            </Link>
 
             <button
               onClick={logout}
