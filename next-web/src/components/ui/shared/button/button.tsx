@@ -28,6 +28,7 @@ export const buttonStyles = cva(
           "hover:bg-red-500/15 text-red-500 hover:ring-2"
         ],
         ghost: "bg-transparent text-foreground hover:bg-zinc-200/90 dark:hover:bg-zinc-800/90",
+        none: ""
       },
       size: {
         auto: "text-sm",
