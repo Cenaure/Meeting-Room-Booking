@@ -5,6 +5,7 @@ import {ThemeProvider} from "next-themes";
 import {ReactNode} from "react";
 import {AuthProvider} from "@/providers/auth-provider";
 import {Toaster} from "react-hot-toast";
+import ServerStatusScreen from "@/components/ui/server-status/server-status-screen";
 
 const geologica = Geologica({
   subsets: ["latin", "cyrillic"],
@@ -37,10 +38,12 @@ export default function RootLayout({
     <body className="min-h-full flex flex-col h-full caret-lavender-400!">
     <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
       <AuthProvider>
-        {children}
-        {modal}
+        <ServerStatusScreen>
+          {children}
+          {modal}
 
-        <Toaster/>
+          <Toaster/>
+        </ServerStatusScreen>
       </AuthProvider>
     </ThemeProvider>
     </body>

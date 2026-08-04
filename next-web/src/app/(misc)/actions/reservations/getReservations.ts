@@ -1,6 +1,6 @@
 "use server";
 import {Reservation} from "@/models/reservation";
-import {failure, parseApiError, success} from "@/lib/errors/api-errors-handler";
+import {parseApiError, success} from "@/lib/errors/api-errors-handler";
 import serverFetch from "@/utils/serverFetch";
 
 interface GetReservationsDto {
@@ -24,6 +24,6 @@ export async function getReservations(dto: GetReservationsDto) {
 
     return success<Reservation[]>(result);
   } catch (error) {
-    return failure(parseApiError(error));
+    return parseApiError(error);
   }
 }

@@ -1,7 +1,7 @@
 "use server"
 
 import createInstance, {API_URL} from "@/utils/http";
-import {failure, parseApiError, success} from "@/lib/errors/api-errors-handler";
+import {parseApiError, success} from "@/lib/errors/api-errors-handler";
 
 export async function changePassword(
   oldPassword: string,
@@ -15,8 +15,7 @@ export async function changePassword(
     });
     return success(data);
   } catch (error) {
-    const errorMessage = parseApiError(error);
-    return failure(errorMessage);
+    return parseApiError(error);
   }
 }
 
@@ -26,7 +25,6 @@ export const resendActivation = async () => {
     const {data} = await instance.get(`${API_URL}/auth/activation-link`);
     return success(data);
   } catch (error) {
-    const errorMessage = parseApiError(error);
-    return failure(errorMessage);
+    return parseApiError(error);
   }
 };

@@ -7,7 +7,7 @@ import {DateTime, Info} from "luxon";
 import DayColumn from "@/components/ui/week-grid/day-column";
 
 import dynamic from "next/dynamic";
-import {useReservations} from "@/components/hooks/useReservations";
+import {useReservations} from "@/hooks/useReservations";
 import TimeAxisWrapper from "@/components/ui/week-grid/time-axis-wrapper";
 
 const CurrentTimeLine = dynamic(
