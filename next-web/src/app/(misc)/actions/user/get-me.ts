@@ -9,11 +9,9 @@ export const getMe = async () => {
     const instance = await createInstance();
 
     const {data} = await instance.get(`${API_URL}/auth/me`);
-    console.log(data)
     return success<User>(data);
   } catch (error) {
     const errorMessage = parseApiError(error);
-    console.log(errorMessage)
     return failure(errorMessage);
   }
 };

@@ -5,12 +5,16 @@ import {capitalizeFirst} from "@/utils/capitalize-first";
 import {useEffect, useMemo} from "react";
 import {DateTime, Info} from "luxon";
 import DayColumn from "@/components/ui/week-grid/day-column";
-import CurrentTimeLine from "@/components/ui/week-grid/current-time-line";
 
 import dynamic from "next/dynamic";
+import {useReservations} from "@/components/hooks/useReservations";
 
 const TimeAxis = dynamic(
   () => import("@/components/ui/week-grid/time-axis"), {ssr: false}
+)
+
+const CurrentTimeLine = dynamic(
+  () => import("@/components/ui/week-grid/current-time-line"), {ssr: false}
 )
 
 const HOUR_PX = 74;
@@ -53,6 +57,8 @@ export default function WeekGrid() {
     setHourInterval(start, end);
   }, []);
 
+  const {reservations, error} = useReservations();
+
   return (
     <div className="h-full flex flex-col">
       <p className="text-2xl! mb-4 font-medium px-4 shrink-0">
@@ -72,6 +78,7 @@ export default function WeekGrid() {
               hoursCount={hours.length}
               hourHeight={HOUR_PX}
               hours={hours}
+              reservations={reservations}
             />
           ))}
         </div>

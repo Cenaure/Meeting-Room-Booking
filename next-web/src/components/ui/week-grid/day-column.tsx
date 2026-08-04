@@ -1,6 +1,8 @@
 import {useCalendar} from "@/stores/calendar.store";
 import {capitalizeFirst} from "@/utils/capitalize-first";
 import {DateTime, Info} from "luxon";
+import ReservationBlock from "@/components/ui/week-grid/reservation-block";
+import {Reservation} from "@/models/reservation";
 
 interface DayColumnProps {
   headerHeight: number;
@@ -8,6 +10,7 @@ interface DayColumnProps {
   hoursCount: number;
   hourHeight: number;
   hours: number[];
+  reservations: Reservation[];
 }
 
 export default function DayColumn({
@@ -16,9 +19,14 @@ export default function DayColumn({
                                     hours,
                                     hourHeight,
                                     hoursCount,
+                                    reservations,
                                   }: DayColumnProps) {
   const selectedDate = useCalendar(state => state.selectedDate);
   const setSelectedDate = useCalendar(state => state.setSelectedDate);
+
+  const dayReservations = reservations.filter((reservation) =>
+    DateTime.fromISO(reservation.time_start).hasSame(day, "day")
+  );
 
   return (
     <div
@@ -50,6 +58,16 @@ export default function DayColumn({
           />
         ))}
       </div>
+
+      {dayReservations.map((reservation) => (
+        <ReservationBlock
+          key={reservation.id}
+          reservation={reservation}
+          hourHeight={hourHeight}
+          headerHeight={headerHeight}
+          gridStart={hours[0]}
+        />
+      ))}
     </div>
   )
 }
