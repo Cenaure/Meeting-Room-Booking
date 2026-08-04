@@ -11,6 +11,7 @@ import { RoomsModule } from './modules/rooms/rooms.module';
 import { ReservationsModule } from './modules/reservations/reservations.module';
 import { BullModule } from '@nestjs/bullmq';
 import { NotificationsModule } from './modules/notifications/notifications.module';
+import { HealthModule } from './health/health.module';
 
 //region: Configs
 import appConfig from './configurations/app.config';
@@ -90,6 +91,7 @@ const ENV = process.env.NODE_ENV;
     RoomsModule,
     ReservationsModule,
     NotificationsModule,
+    HealthModule,
   ],
 
   controllers: [],
