@@ -34,12 +34,12 @@ export default function ReservationBlock({reservation, hourHeight, gridStart, he
 
   const timeLabel = `${dateTimeStart.toFormat("HH:mm")} - ${dateTimeEnd.toFormat("HH:mm")}`;
 
-  const isUser = user?.user_id == reservation.reserved_by || true;
+  const isUser = user?.user_id == reservation.reserved_by;
 
   return (
     <div
       className={`absolute z-10 inset-x-2 flex flex-col overflow-hidden rounded-md border-2 px-2 py-1 select-none 
-        ${isUser ? "border-lavender-400/60 bg-lavender-200/50 dark:bg-lavender-700/50" : "border-border bg-surface-2/80 dark:bg-surface-2/40"}`
+        ${isUser ? "border-lavender-400/60 bg-lavender-200/50 dark:bg-lavender-700/50" : "border-border bg-surface-2/80 dark:bg-surface-2/20"}`
       }
       style={{top, height: `${height}px`}}
       title={`${reservation.title}\n${timeLabel}\n${reservation.reserver_username}`}

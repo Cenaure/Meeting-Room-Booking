@@ -3,6 +3,7 @@ import {capitalizeFirst} from "@/utils/capitalize-first";
 import {DateTime, Info} from "luxon";
 import ReservationBlock from "@/components/ui/week-grid/reservation-block";
 import {Reservation} from "@/models/reservation";
+import {useEffect, useRef} from "react";
 
 interface DayColumnProps {
   headerHeight: number;
@@ -24,12 +25,27 @@ export default function DayColumn({
   const selectedDate = useCalendar(state => state.selectedDate);
   const setSelectedDate = useCalendar(state => state.setSelectedDate);
 
+  const columnRef = useRef<HTMLDivElement>(null);
+  const isSelected = !!selectedDate && day.startOf("day").equals(selectedDate.startOf("day"));
+
   const dayReservations = reservations.filter((reservation) =>
     DateTime.fromISO(reservation.time_start).hasSame(day, "day")
   );
 
+  // On mobile devices scrolls to this day when selected
+  useEffect(() => {
+    if (isSelected) {
+      columnRef.current?.scrollIntoView({
+        behavior: "smooth",
+        inline: "center",
+        block: "nearest",
+      });
+    }
+  }, [isSelected]);
+
   return (
     <div
+      ref={columnRef}
       className={`flex flex-col relative`}
     >
       <div className={`absolute inset-0 z-2 rounded-lg

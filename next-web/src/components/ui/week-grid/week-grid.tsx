@@ -64,7 +64,7 @@ export default function WeekGrid() {
 
       <div className="min-h-0 flex-1 overflow-x-auto overflow-y-auto">
         <div
-          className="grid grid-cols-[60px_repeat(7,calc((100vw-60px)/2))] md:grid-cols-[80px_repeat(7,1fr)] md:min-w-max relative">
+          className="grid grid-cols-[60px_repeat(7,calc((100vw-60px)/2))] md:grid-cols-[60px_repeat(7,calc((100vw-60px)/4))] lg:grid-cols-[80px_repeat(7,1fr)] md:min-w-max relative">
           <CurrentTimeLine hourStart={hourStart} hourEnd={hourEnd} hourHeight={HOUR_PX} headerHeight={HEADER_HEIGHT}/>
 
           <TimeAxisWrapper hours={hours} hourHeight={HOUR_PX} headerHeight={HEADER_HEIGHT}/>

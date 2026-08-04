@@ -48,7 +48,7 @@ export default function CurrentTimeLine({hourStart, hourEnd, hourHeight, headerH
       style={{top}}
     >
       <div
-        className="absolute flex h-3 w-[60px] md:w-[80px] items-center justify-end z-20 bg-surface-1"
+        className="absolute flex h-3 w-[60px] lg:w-[80px] items-center justify-end z-20 bg-surface-1"
       >
         <p className="bg-surface-1 pr-2 text-xs! font-medium text-lavender-500">
           {now.toFormat("HH:mm")}
