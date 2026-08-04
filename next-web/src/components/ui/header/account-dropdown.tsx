@@ -4,7 +4,7 @@ import {useEffect, useRef, useState} from "react";
 import {User} from "@/models/user";
 import logout from "@/app/(misc)/actions/user/logout";
 import Link from "next/link";
-import {profile_route} from "@/lib/routes";
+import {my_reservations_route, profile_route} from "@/lib/routes";
 
 interface AccountDropdownProps {
   user: User;
@@ -37,19 +37,29 @@ export default function AccountDropdown({
         onClick={() => setOpen((v) => !v)}
         className="flex h-8 w-8 items-center justify-center rounded-full text-lavender-50 bg-lavender-500 font-semibold transition hover:bg-lavender-600"
       >
-        {user.username.charAt(0).toUpperCase()}
+        <p>
+          {user.username.charAt(0).toUpperCase()}
+        </p>
       </button>
 
       {open && (
         <div className="absolute right-0 z-40 mt-2 w-64 overflow-hidden rounded-md border bg-surface-1">
           <div className="border-b px-4 py-3">
-            <p className="font-medium">{user.username}</p>
+            <p className="font-medium truncate">{user.username}</p>
             {"email" in user && user.email && (
-              <p className="text-sm text-mauve-400">{user.email}</p>
+              <p className="text-sm text-mauve-400 truncate">{user.email}</p>
             )}
           </div>
 
           <div className="py-1">
+            <Link
+              className="w-full px-4 py-2 flex text-left text-sm hover:bg-surface-2/40"
+              href={my_reservations_route}
+              onClick={() => setOpen(false)}
+            >
+              Мої бронювання
+            </Link>
+
             <Link
               className="w-full px-4 py-2 flex text-left text-sm hover:bg-surface-2/40"
               href={profile_route}

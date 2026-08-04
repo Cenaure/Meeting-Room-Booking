@@ -19,3 +19,9 @@ export type Reservation = {
   reservation_series_id?: string,
   room?: Room
 }
+
+export const ReservationFilter = {
+  PAST: "past",     // that are finished
+  FUTURE: "future", // that are not finished yet
+} as const
+export type ReservationFilters = (typeof ReservationFilter)[keyof typeof ReservationFilter]
