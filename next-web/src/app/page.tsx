@@ -1,6 +1,7 @@
 import HeaderComponent from "@/components/ui/header/header-component";
 import AsideNavigation from "@/components/ui/aside-navigation/aside-navigation";
 import WeekGrid from "@/components/ui/week-grid/week-grid";
+import TimezoneDiffersToast from "@/components/ui/header/timezone-differs-toast";
 
 export default function Home() {
   return (
@@ -25,7 +26,10 @@ export default function Home() {
           <h1>Створити бронювання</h1>
           <h6>Оберіть інтрервал в середені тиждня</h6>
         </div>
+
       </div>
+
+      <TimezoneDiffersToast/>
 
     </div>
   );

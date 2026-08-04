@@ -4,6 +4,7 @@ import "./globals.css";
 import {ThemeProvider} from "next-themes";
 import {ReactNode} from "react";
 import {AuthProvider} from "@/providers/auth-provider";
+import {Toaster} from "react-hot-toast";
 
 const geologica = Geologica({
   subsets: ["latin", "cyrillic"],
@@ -38,6 +39,8 @@ export default function RootLayout({
       <AuthProvider>
         {children}
         {modal}
+
+        <Toaster/>
       </AuthProvider>
     </ThemeProvider>
     </body>

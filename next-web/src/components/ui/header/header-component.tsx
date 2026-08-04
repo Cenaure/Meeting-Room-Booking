@@ -9,7 +9,6 @@ import {useAside} from "@/stores/aside.store";
 import Hint from "@/components/ui/shared/hint/hint";
 import Button from "@/components/ui/shared/button/button";
 import {useCalendar} from "@/stores/calendar.store";
-import TimezoneDiffersAlert from "@/components/ui/header/timezone-differs-alert";
 
 export default function HeaderComponent() {
   const user = useUser(state => state.user);
@@ -39,6 +38,7 @@ export default function HeaderComponent() {
             </Button>
           </Hint>
         )}
+
       </div>
 
       <div className="space-x-2 flex">
