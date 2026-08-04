@@ -1,10 +1,11 @@
 "use client"
 
-import MonthCalendar from "@/components/ui/calendar/month-calendar";
+import MonthCalendar from "@/components/ui/aside-navigation/calendar/month-calendar";
 import Button from "@/components/ui/shared/button/button";
 import {useAside} from "@/stores/aside.store";
 import {SidebarSimpleIcon} from "@phosphor-icons/react/ssr";
 import Hint from "@/components/ui/shared/hint/hint";
+import MyReservationsAsideButton from "@/components/ui/aside-navigation/my-reservations-button";
 
 export default function AsideNavigation() {
   const isActive = useAside(state => state.isActive);
@@ -18,8 +19,9 @@ export default function AsideNavigation() {
         </Button>
       </Hint>
 
-
       <MonthCalendar/>
+
+      <MyReservationsAsideButton/>
     </aside>
   )
 }
