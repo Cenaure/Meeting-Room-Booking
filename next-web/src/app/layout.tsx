@@ -1,4 +1,4 @@
-import type {Metadata} from "next";
+import type {Metadata, Viewport} from "next";
 import {Geologica, Inter} from "next/font/google";
 import "./globals.css";
 import {ThemeProvider} from "next-themes";
@@ -49,4 +49,11 @@ export default function RootLayout({
     </body>
     </html>
   );
+}
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 }
