@@ -13,6 +13,8 @@ interface CalendarDay {
 export default function MonthCalendarBody() {
   const currentDate = useCalendar(state => state.currentDate);
   const setCurrentDate = useCalendar(state => state.setCurrentDate);
+  // For wink animation
+  const setSelectedDate = useCalendar(state => state.setSelectedDate);
 
   const dayLabels = useMemo(() => Info.weekdays("short", {locale: "uk"}), []);
 
@@ -42,6 +44,7 @@ export default function MonthCalendarBody() {
 
   function handleDayClick(date: DateTime) {
     setCurrentDate(date);
+    setSelectedDate(date);
   }
 
   const commonDayClasses =

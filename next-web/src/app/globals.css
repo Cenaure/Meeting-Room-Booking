@@ -13,7 +13,9 @@
     --surface-2: #e2e1e7;
     --surface-3: #d7d4de;
 
-    --border: #d4e0d6
+    --border: #d4e0d6;
+
+    --wink-color: var(--color-lavender-400);
 }
 
 .dark {
@@ -26,6 +28,8 @@
     --surface-3: #131013;
 
     --border: #2e2b2f;
+
+    --wink-color: var(--color-lavender-600);
 }
 
 @theme inline {
@@ -120,4 +124,22 @@ p {
 
 button, a {
     cursor: pointer;
+}
+
+@keyframes wink {
+    10% {
+        background-color: var(--wink-color);
+        opacity: 0.6;
+    }
+    40% {
+        background-color: var(--wink-color);
+        opacity: 0.6;
+    }
+    100% {
+        background-color: transparent;
+    }
+}
+
+.animate-wink {
+    animation: wink 1000ms ease-out forwards;
 }

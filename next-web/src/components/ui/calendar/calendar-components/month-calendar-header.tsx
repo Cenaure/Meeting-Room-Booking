@@ -2,7 +2,7 @@
 
 import {useCalendar} from "@/stores/calendar.store";
 import {DateTime, Info} from "luxon";
-import {useEffect, useState} from "react";
+import {useMemo} from "react";
 import Button from "@/components/ui/shared/button/button";
 import {capitalizeFirst} from "@/utils/capitalize-first";
 import {ArrowUUpLeftIcon} from "@phosphor-icons/react";
@@ -13,7 +13,7 @@ export default function MonthCalendarHeader() {
   const currentDate = useCalendar(state => state.currentDate);
   const setCurrentDate = useCalendar(state => state.setCurrentDate);
 
-  const [monthLabel, setMonthLabel] = useState(Info.months("long", {locale: "uk"})[currentDate.month - 1]);
+  const monthLabel = useMemo(() => Info.months("long", {locale: "uk"})[currentDate.month - 1], [currentDate]);
 
   const goToToday = () => {
     setCurrentDate(DateTime.now())
@@ -26,10 +26,6 @@ export default function MonthCalendarHeader() {
   const goToPrevMonth = () => {
     setCurrentDate(currentDate.minus({months: 1}))
   }
-
-  useEffect(() => {
-    setMonthLabel(Info.months("long", {locale: "uk"})[currentDate.month - 1]);
-  }, [currentDate]);
 
   return (
     <div className="flex justify-between items-center">
