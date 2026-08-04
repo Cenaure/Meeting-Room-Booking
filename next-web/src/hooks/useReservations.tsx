@@ -45,7 +45,7 @@ export function useReservations() {
 
         setLoading(false);
       });
-    }, 100);
+    }, 0);
 
     return () => {
       cancelled = true;
