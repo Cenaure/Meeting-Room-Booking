@@ -1,6 +1,6 @@
 "use client";
 
-import {HTMLAttributes, ReactNode, useEffect, useState} from "react";
+import {HTMLAttributes, ReactNode, useEffect, useRef, useState} from "react";
 import {createPortal} from "react-dom";
 import {cva, VariantProps} from "class-variance-authority";
 import {useModal} from "@/stores/modal.store";
@@ -50,6 +50,8 @@ export default function Modal({children, onClose, className}: ModalProps) {
   const close = useModal(state => state.close);
   const setClose = useModal(state => state.setClose);
 
+  const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const [isClosing, setIsClosing] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -63,15 +65,21 @@ export default function Modal({children, onClose, className}: ModalProps) {
     };
   }, []);
 
+
   const handleClose = () => {
     if (isClosing) return;
     setIsClosing(true);
-    setClose(false)
-
-    setTimeout(() => {
+    setClose(false);
+    closeTimeoutRef.current = setTimeout(() => {
       onClose();
     }, ANIMATION_DURATION);
   };
+
+  useEffect(() => {
+    return () => {
+      if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
+    };
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
