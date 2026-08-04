@@ -5,8 +5,13 @@ import {capitalizeFirst} from "@/utils/capitalize-first";
 import {useEffect, useMemo} from "react";
 import {DateTime, Info} from "luxon";
 import DayColumn from "@/components/ui/week-grid/day-column";
-import TimeAxis from "@/components/ui/week-grid/time-axis";
 import CurrentTimeLine from "@/components/ui/week-grid/current-time-line";
+
+import dynamic from "next/dynamic";
+
+const TimeAxis = dynamic(
+  () => import("@/components/ui/week-grid/time-axis"), {ssr: false}
+)
 
 const HOUR_PX = 74;
 const HEADER_HEIGHT = 26;
