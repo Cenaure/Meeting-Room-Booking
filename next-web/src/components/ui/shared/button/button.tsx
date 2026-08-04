@@ -15,17 +15,17 @@ export const buttonStyles = cva(
       variant: {
         primary: [
           "bg-lavender-950 text-lavender-50 dark:bg-zinc-800/80",
-          "ring-1 ring-border",
-          "hover:bg-lavender-900 hover:ring-gray-700  dark:hover:bg-zinc-700/50 dark:hover:ring-zinc-800 hover:text-white",
+          "border-1 border-border",
+          "hover:bg-lavender-900 hover:border-gray-700  dark:hover:bg-zinc-700/50 dark:hover:border-zinc-800 hover:text-white",
         ],
         outline: [
           "bg-surface-3/25",
-          "ring-1 ring-border",
-          "hover:bg-surface-3/50 hover:ring-gray-300"
+          "border border-border",
+          "hover:bg-surface-3/50 hover:border-gray-300  dark:hover:border-zinc-800"
         ],
         destructive: [
-          "bg-red-500/20 ring-1 ring-red-400 text-red-500/90",
-          "hover:bg-red-500/15 text-red-500 hover:ring-2"
+          "bg-red-500/20 border-1 border-red-400 text-red-500/90",
+          "hover:bg-red-500/15 text-red-500 hover:border-2"
         ],
         ghost: "bg-transparent text-foreground hover:bg-zinc-200/90 dark:hover:bg-zinc-800/90",
         none: ""
