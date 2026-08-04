@@ -8,10 +8,7 @@ import DayColumn from "@/components/ui/week-grid/day-column";
 
 import dynamic from "next/dynamic";
 import {useReservations} from "@/components/hooks/useReservations";
-
-const TimeAxis = dynamic(
-  () => import("@/components/ui/week-grid/time-axis"), {ssr: false}
-)
+import TimeAxisWrapper from "@/components/ui/week-grid/time-axis-wrapper";
 
 const CurrentTimeLine = dynamic(
   () => import("@/components/ui/week-grid/current-time-line"), {ssr: false}
@@ -69,7 +66,8 @@ export default function WeekGrid() {
         <div className="grid grid-cols-[80px_repeat(7,1fr)] min-w-max relative">
           <CurrentTimeLine hourStart={hourStart} hourEnd={hourEnd} hourHeight={HOUR_PX} headerHeight={HEADER_HEIGHT}/>
 
-          <TimeAxis hours={hours} hourHeight={HOUR_PX} headerHeight={HEADER_HEIGHT}/>
+          <TimeAxisWrapper hours={hours} hourHeight={HOUR_PX} headerHeight={HEADER_HEIGHT}/>
+
           {days.map((day) => (
             <DayColumn
               key={day.toISODate()}

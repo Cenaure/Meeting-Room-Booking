@@ -1,6 +1,6 @@
 import {DateTime} from "luxon";
 
-interface TimeAxisProps {
+export interface TimeAxisProps {
   hours: number[];
   hourHeight: number;
   headerHeight: number;
