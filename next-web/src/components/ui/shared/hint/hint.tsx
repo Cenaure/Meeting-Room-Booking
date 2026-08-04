@@ -109,7 +109,7 @@ export default function Hint({
 
   return (
     <div
-      className="relative inline-flex items-center group"
+      className={`relative inline-flex items-center group ${className}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onFocus={handleMouseEnter}
@@ -121,7 +121,7 @@ export default function Hint({
         <div
           id={tooltipId}
           role="tooltip"
-          className={hintStyles({position, className})}
+          className={hintStyles({position})}
           {...props}
         >
           {content}
