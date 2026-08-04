@@ -48,7 +48,7 @@ export default function WeekGrid() {
 
     const mod24 = (h: number) => ((h + diffHours) % 24 + 24) % 24;
 
-    const start = mod24(9);
+    const start = mod24(9); //TODO: depend on a room
     const end = mod24(19);
 
     setHourInterval(start, end);
@@ -61,9 +61,10 @@ export default function WeekGrid() {
       <p className="text-2xl! mb-4 font-medium px-4 shrink-0">
         {capitalizeFirst(monthLabel)} {currentDate.year}
       </p>
-      <div className="min-h-0 flex-1 overflow-auto">
 
-        <div className="grid grid-cols-[80px_repeat(7,1fr)] min-w-max relative">
+      <div className="min-h-0 flex-1 overflow-x-auto overflow-y-auto">
+        <div
+          className="grid grid-cols-[60px_repeat(7,calc((100vw-60px)/2))] md:grid-cols-[80px_repeat(7,1fr)] md:min-w-max relative">
           <CurrentTimeLine hourStart={hourStart} hourEnd={hourEnd} hourHeight={HOUR_PX} headerHeight={HEADER_HEIGHT}/>
 
           <TimeAxisWrapper hours={hours} hourHeight={HOUR_PX} headerHeight={HEADER_HEIGHT}/>

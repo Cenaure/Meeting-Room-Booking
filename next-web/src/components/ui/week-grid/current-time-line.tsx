@@ -44,11 +44,11 @@ export default function CurrentTimeLine({hourStart, hourEnd, hourHeight, headerH
 
   return (
     <div
-      className="absolute left-0 right-0 z-10 pointer-events-none flex items-center"
+      className="absolute inset-x-0 z-10 flex items-center col-span-full"
       style={{top}}
     >
       <div
-        className="absolute flex h-3 w-[80px] items-center justify-end z-20 bg-surface-1"
+        className="absolute flex h-3 w-[60px] md:w-[80px] items-center justify-end z-20 bg-surface-1"
       >
         <p className="bg-surface-1 pr-2 text-xs! font-medium text-lavender-500">
           {now.toFormat("HH:mm")}
