@@ -22,10 +22,24 @@ export default function CurrentTimeLine({hourStart, hourEnd, hourHeight, headerH
     return () => clearInterval(interval);
   }, []);
 
-  const isWithinBounds = now.hour >= hourStart && now.hour < hourEnd;
+  const nowMinutes = now.hour * 60 + now.minute;
+  const startMinutes = hourStart * 60;
+  const endMinutes = hourEnd * 60;
+
+  const crossesMidnight = endMinutes <= startMinutes;
+
+  const isWithinBounds = crossesMidnight
+    ? nowMinutes >= startMinutes || nowMinutes < endMinutes
+    : nowMinutes >= startMinutes && nowMinutes < endMinutes;
+
   if (!isWithinBounds) return null;
 
-  const minutesFromStart = (now.hour - hourStart) * 60 + now.minute;
+  const minutesFromStart = crossesMidnight
+    ? nowMinutes >= startMinutes
+      ? nowMinutes - startMinutes
+      : 24 * 60 - startMinutes + nowMinutes
+    : nowMinutes - startMinutes;
+
   const top = (minutesFromStart / 60) * hourHeight + headerHeight;
 
   return (
