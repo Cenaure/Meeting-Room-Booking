@@ -3,6 +3,7 @@ import {DateTime} from "luxon";
 
 interface CalendarStore {
   selectedRoomId: number;
+  setSelectedRoomId: (roomId: number) => void;
 
   currentDate: DateTime;
   setCurrentDate: (date: DateTime) => void;
@@ -17,6 +18,7 @@ interface CalendarStore {
 
 export const useCalendar = create<CalendarStore>((set) => ({
   selectedRoomId: 1,
+  setSelectedRoomId: (roomId: number) => set({selectedRoomId: roomId}),
 
   currentDate: DateTime.now().set({hour: 14}),
   setCurrentDate: (date: DateTime) => set({currentDate: date}),

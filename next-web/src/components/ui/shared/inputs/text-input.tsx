@@ -22,6 +22,7 @@ const inputStyles = cva(
       state: {
         default: "",
         error: "ring-red-500 focus:ring-red-500",
+        noError: ""
       },
     },
     defaultVariants: {
@@ -83,12 +84,12 @@ const TextInput = forwardRef<HTMLInputElement, InputProps>(
           )}
         </div>
 
-        <span
+        {state != "noError" && <span
           id={errorId}
           className="text-sm text-red-500 min-h-5 block"
         >
           {error ?? " "}
-        </span>
+        </span>}
       </div>
     );
   }
