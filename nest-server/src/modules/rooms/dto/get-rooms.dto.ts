@@ -12,7 +12,7 @@ export default class GetRoomsDto {
   @IsOptional()
   @IsString()
   @MinLength(1)
-  search: string;
+  search?: string;
 
   @IsOptional()
   @Min(1)
@@ -28,8 +28,8 @@ export default class GetRoomsDto {
   limit: number = 12;
 
   @IsOptional()
-  @Min(1)
+  @Min(0)
   @IsNumber({ maxDecimalPlaces: 0 })
   @Type(() => Number)
-  wishedCapacity: number = 0;
+  wishedCapacity?: number = 0;
 }

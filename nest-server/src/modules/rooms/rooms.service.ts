@@ -1,6 +1,7 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { DatabaseService } from '../../database/database.service';
 import GetRoomsDto from './dto/get-rooms.dto';
+import { RoomWhereInput } from '../../generated/prisma/models/Room';
 
 @Injectable()
 export class RoomsService implements OnModuleInit {
@@ -29,9 +30,20 @@ export class RoomsService implements OnModuleInit {
   }
 
   async getRooms(query: GetRoomsDto) {
+    const where: RoomWhereInput = {
+      ...(query.wishedCapacity && {
+        capacity: { gte: query.wishedCapacity },
+      }),
+      ...(query.search && {
+        title: {
+          search: query.search,
+        },
+      }),
+    };
+
     const [rooms, total] = await this.databaseService.$transaction([
       this.databaseService.room.findMany({
-        where: { capacity: { gte: query.wishedCapacity } },
+        where,
         orderBy: query.search
           ? {
               _relevance: {
@@ -44,14 +56,14 @@ export class RoomsService implements OnModuleInit {
         skip: (query.page - 1) * query.limit,
         take: query.limit,
       }),
-      this.databaseService.room.findMany({
-        where: { capacity: { gte: query.wishedCapacity } },
+      this.databaseService.room.count({
+        where,
       }),
     ]);
 
     return {
       items: rooms,
-      total: total,
+      total,
     };
   }
 
