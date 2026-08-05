@@ -1,5 +1,4 @@
 import {NextRequest, NextResponse} from "next/server";
-import {sign_in_route} from "@/lib/routes";
 import COOKIE_BASE from "@/lib/auth/cookie-base";
 import jwt from "jsonwebtoken";
 
@@ -27,46 +26,42 @@ const refreshTokens = async (refreshToken: string) => {
 };
 
 export async function proxy(request: NextRequest) {
-  const pathname = request.nextUrl.pathname;
-  const response = NextResponse.next();
+  const refreshToken = request.cookies.get("refresh_token")?.value;
 
-  const isProtected = pathname.startsWith("/profile");
-  if (!isProtected) return response;
+  if (!refreshToken) return NextResponse.next();
 
-  const cookies = request.cookies;
-  let accessToken = cookies.get("access_token")?.value;
-  const refreshToken = cookies.get("refresh_token")?.value;
+  const accessToken = request.cookies.get("access_token")?.value;
+  if (accessToken && !isTokenExpired(accessToken)) return NextResponse.next();
 
-  if (!refreshToken) {
-    return NextResponse.redirect(new URL(sign_in_route, request.url));
+  let data: { accessToken: string; refreshToken: string };
+  try {
+    data = await refreshTokens(refreshToken);
+  } catch {
+    const response = NextResponse.next();
+    response.cookies.delete("access_token");
+    response.cookies.delete("refresh_token");
+    return response;
   }
 
-  const needsRefresh = !accessToken || isTokenExpired(accessToken);
-  if (needsRefresh) {
-    try {
-      const data = await refreshTokens(refreshToken);
+  request.cookies.set("access_token", data.accessToken);
+  request.cookies.set("refresh_token", data.refreshToken);
 
-      response.cookies.set("access_token", data.accessToken, {
-        ...COOKIE_BASE,
-        maxAge: 30 * 60,
-      });
-      response.cookies.set("refresh_token", data.refreshToken, {
-        ...COOKIE_BASE,
-        maxAge: 30 * 24 * 60 * 60,
-      });
-    } catch {
-      const redirectResponse = NextResponse.redirect(
-        new URL(sign_in_route, request.url),
-      );
-      redirectResponse.cookies.delete("access_token");
-      redirectResponse.cookies.delete("refresh_token");
-      return redirectResponse;
-    }
-  }
+  const response = NextResponse.next({request: {headers: request.headers}});
+
+  response.cookies.set("access_token", data.accessToken, {
+    ...COOKIE_BASE,
+    maxAge: 30 * 60,
+  });
+  response.cookies.set("refresh_token", data.refreshToken, {
+    ...COOKIE_BASE,
+    maxAge: 30 * 24 * 60 * 60,
+  });
 
   return response;
 }
 
 export const config = {
-  matcher: "/profile/:path*",
+  matcher: [
+    "/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)",
+  ],
 };

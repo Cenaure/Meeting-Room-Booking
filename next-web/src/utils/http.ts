@@ -1,82 +1,66 @@
-import axios from "axios";
+import axios, {AxiosError, InternalAxiosRequestConfig} from "axios";
 import {cookies} from "next/headers";
+import COOKIE_BASE from "@/lib/auth/cookie-base";
 
-export const API_URL = process.env.NEXT_PUBLIC_INTERNAL_API_URL
+export const API_URL = process.env.NEXT_PUBLIC_INTERNAL_API_URL;
 
-let isRefreshing = false;
-let queue: Array<{
-  resolve: () => void;
-  reject: (err: unknown) => void;
-}> = [];
+type RetriableConfig = InternalAxiosRequestConfig & { _retry?: boolean };
 
-const flushQueue = (error: unknown) => {
-  queue.forEach(({resolve, reject}) =>
-    error ? reject(error) : resolve(),
-  );
-  queue = [];
-};
+async function refreshTokens(): Promise<string | null> {
+  const cookieStore = await cookies();
+  const refreshToken = cookieStore.get("refresh_token")?.value;
+  if (!refreshToken) return null;
+
+  const res = await fetch(`${API_URL}/auth/refresh`, {
+    headers: {Cookie: `refresh_token=${refreshToken}`},
+    cache: "no-store",
+  });
+  if (!res.ok) return null;
+
+  const data = await res.json();
+
+  try {
+    cookieStore.set("access_token", data.accessToken, {
+      ...COOKIE_BASE,
+      maxAge: 30 * 60,
+    });
+    cookieStore.set("refresh_token", data.refreshToken, {
+      ...COOKIE_BASE,
+      maxAge: 30 * 24 * 60 * 60,
+    });
+  } catch {
+  }
+
+  return data.accessToken;
+}
 
 const createInstance = async () => {
+  const cookieStore = await cookies();
+
   const instance = axios.create({
-    withCredentials: true,
     baseURL: API_URL,
     headers: {
       "Content-Type": "application/json",
+      Cookie: cookieStore.toString(),
     },
   });
 
-  if (typeof window == "undefined") {
-    const cookieStore = await cookies();
-    instance.defaults.headers.common["Cookie"] = cookieStore.toString();
-  } else {
-    instance.interceptors.response.use(
-      (res) => res,
-      async (error) => {
-        const original = error.config;
+  instance.interceptors.response.use(
+    (res) => res,
+    async (error: AxiosError) => {
+      const original = error.config as RetriableConfig | undefined;
+      if (!original || error.response?.status !== 401 || original._retry) {
+        return Promise.reject(error);
+      }
+      original._retry = true;
 
-        if (error.response?.status !== 401 || original._retry) {
-          return Promise.reject(error);
-        }
+      const token = await refreshTokens();
+      if (!token) return Promise.reject(error);
 
-        original._retry = true;
-
-        if (isRefreshing) {
-          return new Promise((resolve, reject) => {
-            queue.push({
-              resolve: () => {
-                // original.headers.Authorization = `Bearer ${token}`;
-                resolve(instance(original));
-              },
-              reject,
-            });
-          });
-        }
-
-        isRefreshing = true;
-
-        try {
-          const {data} = await axios.post<{ accessToken: string }>(
-            "/api/auth/refresh",
-            null,
-            {withCredentials: true},
-          );
-
-          // instance.defaults.headers.common.Authorization = `Bearer ${newToken}`;
-          // original.headers.Authorization = `Bearer ${newToken}`;
-
-          flushQueue(null);
-          return instance(original);
-        } catch (refreshError) {
-          console.error("Error refreshing token:", refreshError);
-          flushQueue(refreshError);
-          window.location.href = "/auth/sign-in";
-          return Promise.reject(refreshError);
-        } finally {
-          isRefreshing = false;
-        }
-      },
-    );
-  }
+      original.headers.Cookie = `access_token=${token}`;
+      return instance(original);
+    },
+  );
 
   return instance;
 };

@@ -1,15 +1,16 @@
 "use server"
 
-import createInstance, {API_URL} from "@/utils/http";
+import createInstance from "@/utils/http";
 import {parseApiError, success} from "@/lib/errors/api-errors-handler";
 
 export async function changePassword(
   oldPassword: string,
   newPassword: string,
 ) {
+  const instance = await createInstance();
+
   try {
-    const instance = await createInstance();
-    const {data} = await instance.patch(`${API_URL}/auth/password`, {
+    const {data} = await instance.patch(`/auth/password`, {
       oldPassword,
       newPassword,
     });
@@ -20,9 +21,10 @@ export async function changePassword(
 }
 
 export const resendActivation = async () => {
+  const instance = await createInstance();
+  
   try {
-    const instance = await createInstance();
-    const {data} = await instance.get(`${API_URL}/auth/activation-link`);
+    const {data} = await instance.get(`/auth/activation-link`);
     return success(data);
   } catch (error) {
     return parseApiError(error);

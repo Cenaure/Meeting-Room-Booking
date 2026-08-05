@@ -9,10 +9,10 @@ export async function signUp(
   email: string,
   password: string
 ) {
+  const instance = await createInstance();
+
   try {
-    const instance = await createInstance();
     const response = await instance.post(`/auth/sign-up`, {username, email, password});
-    console.log(response.data)
     if (response.data.accessToken) await setTokenCookies(response.data);
 
     return success<{ accessToken: string; refreshToken: string, user: User }>(response.data);
