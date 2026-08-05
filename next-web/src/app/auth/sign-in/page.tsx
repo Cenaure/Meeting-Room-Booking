@@ -1,7 +1,5 @@
-import SignInComponent from "@/components/ui/auth/sign-in/sign-in";
+import {redirect} from "next/navigation";
 
 export default function SignInPage() {
-  return (
-    <SignInComponent/>
-  )
+  return redirect("/")
 }
