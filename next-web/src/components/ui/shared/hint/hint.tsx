@@ -4,7 +4,7 @@ import React, {HTMLAttributes, ReactNode, useEffect, useId, useRef, useState} fr
 
 const hintStyles = cva(
   [
-    "absolute rounded-md bg-surface-0 px-2 py-1.5 text-xs shadow-sm ring-1 ring-border z-50",
+    "absolute rounded-md bg-surface-0 px-2 py-1.5 text-xs shadow-sm ring-1 ring-border z-50 hidden lg:flex",
     "pointer-events-none whitespace-nowrap",
     "animate-in fade-in transition-all duration-200 ease-out",
   ],
