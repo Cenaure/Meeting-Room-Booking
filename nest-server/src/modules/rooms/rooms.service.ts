@@ -22,22 +22,36 @@ export class RoomsService implements OnModuleInit {
     for (const room of rooms) {
       await this.databaseService.room.upsert({
         where: { title: room.title },
-        update: { title: room.title },
+        update: {},
         create: room,
       });
     }
   }
 
   async getRooms(query: GetRoomsDto) {
-    const rooms = await this.databaseService.room.findMany({
-      where: { capacity: { gte: query.wishedCapacity } },
-      skip: (query.page - 1) * query.limit,
-      take: query.limit,
-    });
+    const [rooms, total] = await this.databaseService.$transaction([
+      this.databaseService.room.findMany({
+        where: { capacity: { gte: query.wishedCapacity } },
+        orderBy: query.search
+          ? {
+              _relevance: {
+                fields: ['title'],
+                search: query.search,
+                sort: 'desc',
+              },
+            }
+          : { title: 'desc' },
+        skip: (query.page - 1) * query.limit,
+        take: query.limit,
+      }),
+      this.databaseService.room.findMany({
+        where: { capacity: { gte: query.wishedCapacity } },
+      }),
+    ]);
 
     return {
       items: rooms,
-      total: rooms.length,
+      total: total,
     };
   }
 
