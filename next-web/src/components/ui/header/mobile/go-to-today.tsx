@@ -41,9 +41,10 @@ export default function GoToToday() {
       </div>
 
       <div
-        className={`absolute inset-0 transition-all duration-300 inset-y-1 flex items-center justify-center rounded-md bg-lavender-400/40 dark:bg-lavender-700/80 p-1 ${
-          isFuture ? "-left-1" : ""
-        } ${isPast ? "-right-1" : ""}`}
+        className={`absolute inset-0 transition-all duration-300 inset-y-1 flex items-center justify-center rounded-md bg-lavender-400/40 dark:bg-lavender-700/80 p-1 
+                  ${isFuture ? "-right-1" : ""} 
+                  ${isPast ? "-left-1" : ""}
+        `}
       />
     </Button>
   );

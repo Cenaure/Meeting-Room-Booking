@@ -69,7 +69,7 @@ export default function WeekGrid() {
                     md:grid-cols-[60px_repeat(7,calc((100vw-60px)/4))]
                     lg:grid-cols-[80px_repeat(7,1fr)]
                     min-w-max relative
-                    pb-20 lg:pb-0
+                    pb-25 lg:pb-0
           ">
           <CurrentTimeLine hourStart={hourStart} hourEnd={hourEnd} hourHeight={HOUR_PX} headerHeight={HEADER_HEIGHT}/>
 

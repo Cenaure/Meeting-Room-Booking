@@ -3,6 +3,7 @@ import AsideNavigation from "@/components/ui/aside-navigation/aside-navigation";
 import WeekGrid from "@/components/ui/week-grid/week-grid";
 import TimezoneDiffersToast from "@/components/ui/header/timezone-differs-toast";
 import MobileHeaderComponent from "@/components/ui/header/mobile/mobile-header";
+import MobileBottomNavigation from "@/components/ui/mobile-bottom-navigation/mobile-bottom-navigation";
 
 export default function Home() {
   return (
@@ -30,6 +31,8 @@ export default function Home() {
         </div>
 
       </div>
+
+      <MobileBottomNavigation/>
 
       <TimezoneDiffersToast/>
 

@@ -46,7 +46,7 @@ export default function RoomPickerComponent() {
         <WishedCapacityFilter/>
       </div>
 
-      <div className="relative space-y-2 overflow-y-auto max-h-[min(30vh,28rem)] pr-1">
+      <div className="relative space-y-2 overflow-y-auto h-[56vh]  lg:max-h-[min(30vh,28rem)] pr-1">
         {loading && <Loader/>}
 
         {data.items.length > 0 && data.items.map(room => (
