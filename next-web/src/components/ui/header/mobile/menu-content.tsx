@@ -49,9 +49,13 @@ export default function MenuContent({onClose}: { onClose: () => void }) {
       )}
 
       {!user && isLoaded && (
-        <Button fullWidth onClick={handleToSignIn}>
-          Вхід до акаунту
-        </Button>
+        <>
+          <Button fullWidth onClick={handleToSignIn}>
+            Вхід до акаунту
+          </Button>
+
+          <p className="text-foreground/60">Увійдіть будь ласка до акаунту, щоб бронювати переговорні</p>
+        </>
       )}
 
       {user && (
