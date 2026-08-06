@@ -24,6 +24,8 @@ export default function WeekGrid() {
   const hourEnd = useCalendar(state => state.hourEnd);
   const setHourInterval = useCalendar(state => state.setHourInterval);
 
+  const selectedRoom = useCalendar(state => state.selectedRoom);
+
   const hours = useMemo(() => {
     const length = hourEnd > hourStart
       ? hourEnd - hourStart + 1
@@ -48,11 +50,14 @@ export default function WeekGrid() {
 
     const mod24 = (h: number) => ((h + diffHours) % 24 + 24) % 24;
 
-    const start = mod24(9); //TODO: depend on a room
-    const end = mod24(19);
+    const selectedRoomStart = Number(selectedRoom?.working_hours_start.split(":")[0])
+    const selectedRoomEnd = Number(selectedRoom?.working_hours_end.split(":")[0])
+
+    const start = mod24(selectedRoomStart || 9);
+    const end = mod24(selectedRoomEnd || 19);
 
     setHourInterval(start, end);
-  }, []);
+  }, [selectedRoom]);
 
   const {reservations, error} = useReservations();
 

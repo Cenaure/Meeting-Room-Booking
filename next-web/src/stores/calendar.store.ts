@@ -1,9 +1,10 @@
 import {create} from "zustand";
 import {DateTime} from "luxon";
+import {Room} from "@/models/room";
 
 interface CalendarStore {
-  selectedRoomId: number;
-  setSelectedRoomId: (roomId: number) => void;
+  selectedRoom: Room | null;
+  setSelectedRoom: (room: Room) => void;
 
   currentDate: DateTime;
   setCurrentDate: (date: DateTime) => void;
@@ -17,8 +18,8 @@ interface CalendarStore {
 }
 
 export const useCalendar = create<CalendarStore>((set) => ({
-  selectedRoomId: 1,
-  setSelectedRoomId: (roomId: number) => set({selectedRoomId: roomId}),
+  selectedRoom: null,
+  setSelectedRoom: (room: Room) => set({selectedRoom: room}),
 
   currentDate: DateTime.now().set({hour: 14}),
   setCurrentDate: (date: DateTime) => set({currentDate: date}),

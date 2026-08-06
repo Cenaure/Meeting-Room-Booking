@@ -8,12 +8,14 @@ import RoomCard from "@/components/ui/aside-navigation/rooms/room-card";
 import {useCalendar} from "@/stores/calendar.store";
 import {WishedCapacityFilter} from "@/components/ui/aside-navigation/rooms/wished-capacity-filter";
 import dynamic from "next/dynamic";
+import {Room} from "@/models/room";
+import {useEffect} from "react";
 
 const Pagination = dynamic(() => import("@/components/ui/_shared/pagination/pagination"), {ssr: false})
 
 export default function RoomPickerComponent() {
-  const selectedRoomId = useCalendar(state => state.selectedRoomId)
-  const setSelectedRoomId = useCalendar(state => state.setSelectedRoomId)
+  const selectedRoom = useCalendar(state => state.selectedRoom)
+  const setSelectedRoom = useCalendar(state => state.setSelectedRoom)
 
   const searchParams = useSearchParams();
   const page = Number(searchParams.get("page")) || 1;
@@ -27,8 +29,14 @@ export default function RoomPickerComponent() {
     wishedCapacity
   })
 
-  const handleOnRoomSelect = (roomId: number) => {
-    setSelectedRoomId(roomId)
+  useEffect(() => {
+    if (loading || error || selectedRoom) return;
+    const room = data.items[0]
+    if(room) setSelectedRoom(room)
+  }, [loading, error, data, selectedRoom]);
+
+  const handleOnRoomSelect = (room: Room) => {
+    setSelectedRoom(room)
   }
 
   return (
@@ -50,7 +58,7 @@ export default function RoomPickerComponent() {
         {loading && <Loader/>}
 
         {data.items.length > 0 && data.items.map(room => (
-          <RoomCard key={room.id} room={room} selectedRoomId={selectedRoomId} roomSelect={handleOnRoomSelect}/>
+          <RoomCard key={room.id} room={room} selectedRoomId={selectedRoom?.id || -1} roomSelect={handleOnRoomSelect}/>
         ))}
 
         {data.items.length === 0 && !loading && (

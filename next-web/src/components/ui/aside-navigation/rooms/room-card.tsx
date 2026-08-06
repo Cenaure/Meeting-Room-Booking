@@ -3,7 +3,7 @@ import {Room} from "@/models/room";
 interface RoomCardProps {
   room: Room;
   selectedRoomId: number | null;
-  roomSelect: (roomId: number) => void;
+  roomSelect: (room: Room) => void;
 }
 
 export default function RoomCard({
@@ -17,7 +17,7 @@ export default function RoomCard({
         type="radio"
         value={room.id}
         checked={room.id === selectedRoomId}
-        onChange={() => roomSelect(room.id)}
+        onChange={() => roomSelect(room)}
         className="sr-only peer"
       />
 
