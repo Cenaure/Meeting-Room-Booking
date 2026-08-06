@@ -1,7 +1,7 @@
 "use client";
 
 import {useEffect, useRef, useState} from "react";
-import Button from "@/components/ui/shared/button/button";
+import Button from "@/components/ui/_shared/button/button";
 import {EnvelopeSimpleIcon} from "@phosphor-icons/react/ssr";
 import {resendActivation} from "@/app/settings/actions";
 

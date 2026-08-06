@@ -1,7 +1,7 @@
 "use client";
 import {usePathname, useRouter, useSearchParams} from "next/navigation";
 import {ReservationFilters} from "@/models/reservation";
-import Button from "@/components/ui/shared/button/button";
+import Button from "@/components/ui/_shared/button/button";
 
 interface FilterTabsProps {
   activeFilter: ReservationFilters;

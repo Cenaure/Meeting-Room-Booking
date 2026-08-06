@@ -1,7 +1,7 @@
 "use client";
 import {usePathname, useRouter, useSearchParams} from "next/navigation";
 import {CaretLeftIcon, CaretRightIcon} from "@phosphor-icons/react/ssr";
-import Button from "@/components/ui/shared/button/button";
+import Button from "@/components/ui/_shared/button/button";
 
 interface PaginationProps {
   currentPage: number;

@@ -1,8 +1,8 @@
 "use client"
 
 import dynamic from "next/dynamic";
-import Drawer from "@/components/ui/shared/drawer/drawer";
-import Button from "@/components/ui/shared/button/button";
+import Drawer from "@/components/ui/_shared/drawer/drawer";
+import Button from "@/components/ui/_shared/button/button";
 import {useState} from "react";
 import {ListIcon} from "@phosphor-icons/react";
 import MenuContent from "@/components/ui/header/mobile/menu-content";

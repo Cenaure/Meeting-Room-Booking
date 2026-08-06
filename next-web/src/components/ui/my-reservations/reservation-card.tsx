@@ -5,8 +5,8 @@ import {DateTime} from "luxon";
 import {BuildingsIcon, ClockIcon, RepeatIcon, XIcon,} from "@phosphor-icons/react/ssr";
 import {useCalendar} from "@/stores/calendar.store";
 import {useRouter} from "next/navigation";
-import Button from "@/components/ui/shared/button/button";
-import Hint from "@/components/ui/shared/hint/hint";
+import Button from "@/components/ui/_shared/button/button";
+import Hint from "@/components/ui/_shared/hint/hint";
 import {useCancelReservation} from "@/stores/cancel-reservation.store";
 
 interface ReservationCardProps {

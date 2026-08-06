@@ -4,7 +4,7 @@ import {useUser} from "@/stores/user.store";
 import {GearIcon, GearSixIcon} from "@phosphor-icons/react/ssr";
 import {useRouter} from "next/navigation";
 import {appearance_route, profile_route, sign_in_route} from "@/lib/routes";
-import Button from "@/components/ui/shared/button/button";
+import Button from "@/components/ui/_shared/button/button";
 import MyReservationsAsideButton from "@/components/ui/aside-navigation/my-reservations-button";
 
 export default function MenuContent({onClose}: { onClose: () => void }) {

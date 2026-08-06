@@ -1,4 +1,4 @@
-import RoutedModal from "@/components/ui/shared/modal/routed-modal";
+import RoutedModal from "@/components/ui/_shared/modal/routed-modal";
 import SettingsComponent from "@/components/ui/settings/settings-component";
 
 export default function SettingsModal() {

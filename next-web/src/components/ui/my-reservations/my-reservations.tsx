@@ -2,7 +2,7 @@ import {getMyReservations} from "@/app/my-reservations/actions";
 import {ReservationFilters} from "@/models/reservation";
 import ReservationCard from "@/components/ui/my-reservations/reservation-card";
 import FilterTabs from "@/components/ui/my-reservations/filter-tabs";
-import Pagination from "@/components/ui/shared/pagination/pagination";
+import Pagination from "@/components/ui/_shared/pagination/pagination";
 import {CalendarXIcon, WifiSlashIcon} from "@phosphor-icons/react/ssr";
 import CancelReservationApproval from "@/components/ui/my-reservations/cancel-reservation-approval";
 

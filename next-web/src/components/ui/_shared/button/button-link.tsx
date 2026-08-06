@@ -1,5 +1,5 @@
 import Link, {LinkProps} from "next/link";
-import {buttonStyles} from "@/components/ui/shared/button/button";
+import {buttonStyles} from "@/components/ui/_shared/button/button";
 import {VariantProps} from "class-variance-authority";
 import {ReactNode} from "react";
 

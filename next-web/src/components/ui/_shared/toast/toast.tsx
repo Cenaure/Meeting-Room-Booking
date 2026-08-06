@@ -1,4 +1,4 @@
-import Button from "@/components/ui/shared/button/button";
+import Button from "@/components/ui/_shared/button/button";
 import toast from "react-hot-toast";
 import {SmileyIcon, SmileySadIcon, XIcon} from "@phosphor-icons/react/ssr";
 

@@ -2,12 +2,12 @@
 
 import {useCancelReservation} from "@/stores/cancel-reservation.store";
 import {DateTime} from "luxon";
-import Button from "@/components/ui/shared/button/button";
+import Button from "@/components/ui/_shared/button/button";
 import {XIcon} from "@phosphor-icons/react/ssr";
 import {cancelReservation} from "@/app/my-reservations/actions";
 import {useState} from "react";
 import toast from "react-hot-toast";
-import Toast from "@/components/ui/shared/toast/toast";
+import Toast from "@/components/ui/_shared/toast/toast";
 
 export default function CancelReservationApproval() {
   const [isLoading, setIsLoading] = useState(false);

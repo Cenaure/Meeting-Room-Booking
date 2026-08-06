@@ -1,10 +1,10 @@
 "use client"
 
 import MonthCalendar from "@/components/ui/aside-navigation/calendar/month-calendar";
-import Button from "@/components/ui/shared/button/button";
+import Button from "@/components/ui/_shared/button/button";
 import {useAside} from "@/stores/aside.store";
 import {SidebarSimpleIcon} from "@phosphor-icons/react/ssr";
-import Hint from "@/components/ui/shared/hint/hint";
+import Hint from "@/components/ui/_shared/hint/hint";
 import MyReservationsAsideButton from "@/components/ui/aside-navigation/my-reservations-button";
 import RoomPickerComponent from "@/components/ui/aside-navigation/rooms/room-picker-component";
 

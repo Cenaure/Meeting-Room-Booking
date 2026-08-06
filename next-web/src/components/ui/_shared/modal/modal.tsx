@@ -4,7 +4,7 @@ import {HTMLAttributes, ReactNode, useEffect, useState} from "react";
 import {createPortal} from "react-dom";
 import {cva, VariantProps} from "class-variance-authority";
 import {useModal} from "@/stores/modal.store";
-import Button from "@/components/ui/shared/button/button";
+import Button from "@/components/ui/_shared/button/button";
 import {XIcon} from "@phosphor-icons/react/ssr";
 
 const modalStyles = cva(

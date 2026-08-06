@@ -1,6 +1,6 @@
 "use client";
 
-import Button from "@/components/ui/shared/button/button";
+import Button from "@/components/ui/_shared/button/button";
 import {useCalendar} from "@/stores/calendar.store";
 import {DateTime} from "luxon";
 

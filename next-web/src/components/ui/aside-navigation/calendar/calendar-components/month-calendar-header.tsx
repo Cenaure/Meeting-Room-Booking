@@ -3,11 +3,11 @@
 import {useCalendar} from "@/stores/calendar.store";
 import {DateTime, Info} from "luxon";
 import {useMemo} from "react";
-import Button from "@/components/ui/shared/button/button";
+import Button from "@/components/ui/_shared/button/button";
 import {capitalizeFirst} from "@/utils/capitalize-first";
 import {ArrowUUpLeftIcon} from "@phosphor-icons/react";
 import {CaretDownIcon, CaretUpIcon} from "@phosphor-icons/react/ssr";
-import Hint from "@/components/ui/shared/hint/hint";
+import Hint from "@/components/ui/_shared/hint/hint";
 
 export default function MonthCalendarHeader() {
   const currentDate = useCalendar(state => state.currentDate);

@@ -1,6 +1,6 @@
 "use client"
 
-import Drawer from "@/components/ui/shared/drawer/drawer";
+import Drawer from "@/components/ui/_shared/drawer/drawer";
 import {useState} from "react";
 import RoomPickerComponent from "@/components/ui/aside-navigation/rooms/room-picker-component";
 import OpenRoomsDrawerButton from "@/components/ui/mobile-bottom-navigation/open-rooms-drawer";

@@ -3,7 +3,7 @@
 import {usePathname, useRouter, useSearchParams} from "next/navigation";
 import {useEffect, useState} from "react";
 import {useDebounced} from "@/hooks/useDebounced";
-import TextInput from "@/components/ui/shared/inputs/text-input";
+import TextInput from "@/components/ui/_shared/inputs/text-input";
 
 export function WishedCapacityFilter() {
   const router = useRouter();

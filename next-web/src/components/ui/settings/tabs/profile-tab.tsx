@@ -1,4 +1,4 @@
-import Button from "@/components/ui/shared/button/button";
+import Button from "@/components/ui/_shared/button/button";
 import {SignInIcon, SignOutIcon} from "@phosphor-icons/react/ssr";
 import logout from "@/app/(misc)/actions/user/logout";
 import {User} from "@/models/user";

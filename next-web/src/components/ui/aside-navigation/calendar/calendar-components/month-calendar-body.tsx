@@ -2,7 +2,7 @@
 import {DateTime} from "luxon";
 import {useMemo} from "react";
 import {useCalendar} from "@/stores/calendar.store";
-import Button from "@/components/ui/shared/button/button";
+import Button from "@/components/ui/_shared/button/button";
 import CalendarWeekDayLabels
   from "@/components/ui/aside-navigation/calendar/calendar-components/calendar-week-day-labels";
 

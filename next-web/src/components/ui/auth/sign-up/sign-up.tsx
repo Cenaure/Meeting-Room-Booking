@@ -1,8 +1,8 @@
 "use client"
 
 import Image from "next/image";
-import Button from "@/components/ui/shared/button/button";
-import TextInput from "@/components/ui/shared/inputs/text-input";
+import Button from "@/components/ui/_shared/button/button";
+import TextInput from "@/components/ui/_shared/inputs/text-input";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import React from "react";

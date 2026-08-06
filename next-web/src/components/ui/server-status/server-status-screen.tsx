@@ -1,9 +1,9 @@
 "use client"
 
-import Button from "../shared/button/button";
 import {SmileySadIcon} from "@phosphor-icons/react/ssr";
 import {ReactNode} from "react";
 import {useServerStatus} from "@/stores/server-status.store";
+import Button from "@/components/ui/_shared/button/button";
 
 export default function ServerStatusScreen({children}: { children: ReactNode }) {
   const isDown = useServerStatus(state => state.isDown);

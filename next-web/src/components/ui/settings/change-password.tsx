@@ -2,8 +2,8 @@
 
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import Button from "@/components/ui/shared/button/button";
-import TextInput from "@/components/ui/shared/inputs/text-input";
+import Button from "@/components/ui/_shared/button/button";
+import TextInput from "@/components/ui/_shared/inputs/text-input";
 import {ChangePasswordFormValues, changePasswordSchema} from "@/lib/schemas/change-password.schema";
 import {changePassword} from "@/app/settings/actions";
 

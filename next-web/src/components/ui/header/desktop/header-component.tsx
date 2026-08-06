@@ -1,13 +1,13 @@
 "use client"
 
 import {CaretLeftIcon, CaretRightIcon, GearIcon, SidebarSimpleIcon, UserIcon} from "@phosphor-icons/react/ssr";
-import ButtonLink from "@/components/ui/shared/button/button-link";
+import ButtonLink from "@/components/ui/_shared/button/button-link";
 import {appearance_route, sign_in_route} from "@/lib/routes";
 import {useUser} from "@/stores/user.store";
 import AccountDropdown from "@/components/ui/header/desktop/account-dropdown";
 import {useAside} from "@/stores/aside.store";
-import Hint from "@/components/ui/shared/hint/hint";
-import Button from "@/components/ui/shared/button/button";
+import Hint from "@/components/ui/_shared/hint/hint";
+import Button from "@/components/ui/_shared/button/button";
 import {useCalendar} from "@/stores/calendar.store";
 
 export default function HeaderComponent() {

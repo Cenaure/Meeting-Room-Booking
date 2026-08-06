@@ -1,7 +1,7 @@
-import ButtonLink from "@/components/ui/shared/button/button-link";
+import ButtonLink from "@/components/ui/_shared/button/button-link";
 import {my_reservations_route} from "@/lib/routes";
 import {CalendarDotsIcon} from "@phosphor-icons/react/ssr";
-import Hint from "@/components/ui/shared/hint/hint";
+import Hint from "@/components/ui/_shared/hint/hint";
 
 export default function MyReservationsAsideButton() {
 
