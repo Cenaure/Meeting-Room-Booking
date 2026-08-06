@@ -1,0 +1,11 @@
+dist
+node_modules
+
+.env*
+!.env.development.example
+
+Dockerfile*
+
+.prettierrc
+
+.gitignore
