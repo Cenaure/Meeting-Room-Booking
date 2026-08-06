@@ -1,22 +1,22 @@
 "use client";
-import {DateTime, Info} from "luxon";
-import {capitalizeFirst} from "@/utils/capitalize-first";
+import {DateTime} from "luxon";
 import {useMemo} from "react";
 import {useCalendar} from "@/stores/calendar.store";
 import Button from "@/components/ui/shared/button/button";
+import CalendarWeekDayLabels
+  from "@/components/ui/aside-navigation/calendar/calendar-components/calendar-week-day-labels";
 
 interface CalendarDay {
   date: DateTime;
   isCurrentMonth: boolean;
 }
 
-export default function MonthCalendarBody() {
+export default function MonthCalendarBody({isMobile = false}: { isMobile?: boolean }) {
   const currentDate = useCalendar(state => state.currentDate);
   const setCurrentDate = useCalendar(state => state.setCurrentDate);
   // For wink animation
   const setSelectedDate = useCalendar(state => state.setSelectedDate);
 
-  const dayLabels = useMemo(() => Info.weekdays("short", {locale: "uk"}), []);
 
   const now = DateTime.now();
   const thisWeekStart = useMemo(() => currentDate.startOf("week"), [currentDate]);
@@ -54,12 +54,8 @@ export default function MonthCalendarBody() {
   const currentWeekRowClasses = "bg-lavender-200/60  dark:bg-lavender-600/20";
 
   return (
-    <div className="grid grid-cols-7">
-      {dayLabels.map((label) => (
-        <div key={label} className="text-center text-xs text-foreground/60 mb-1">
-          {capitalizeFirst(label)}
-        </div>
-      ))}
+    <>
+      {!isMobile && <CalendarWeekDayLabels/>}
 
       {calendar.map(({date, isCurrentMonth}) => {
         const isToday = date.hasSame(now, "day");
@@ -84,6 +80,6 @@ export default function MonthCalendarBody() {
           </div>
         );
       })}
-    </div>
+    </>
   );
 }

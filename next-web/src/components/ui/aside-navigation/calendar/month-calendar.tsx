@@ -7,7 +7,10 @@ export default function MonthCalendar() {
   return (
     <div>
       <MonthCalendarHeader/>
-      <MonthCalendarBody/>
+
+      <div className="grid grid-cols-7">
+        <MonthCalendarBody/>
+      </div>
     </div>
   )
 }
