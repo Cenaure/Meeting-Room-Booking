@@ -1,6 +1,6 @@
 "use client"
 
-import {useRooms} from "@/hooks/useRooms";
+import {useRooms} from "@/hooks/use-rooms";
 import {useSearchParams} from "next/navigation";
 import {SmileySadIcon} from "@phosphor-icons/react/ssr";
 import Loader from "@/components/ui/_shared/loader/loader";
