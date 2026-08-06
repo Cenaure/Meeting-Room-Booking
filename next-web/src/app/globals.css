@@ -5,6 +5,8 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
+    interpolate-size: allow-keywords;
+
     --background: #d3d8de;
     --foreground: rgb(38 34 40 / 0.90);
 

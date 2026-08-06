@@ -4,7 +4,7 @@ import {CaretLeftIcon, CaretRightIcon, GearIcon, SidebarSimpleIcon, UserIcon} fr
 import ButtonLink from "@/components/ui/shared/button/button-link";
 import {appearance_route, sign_in_route} from "@/lib/routes";
 import {useUser} from "@/stores/user.store";
-import AccountDropdown from "@/components/ui/header/account-dropdown";
+import AccountDropdown from "@/components/ui/header/desktop/account-dropdown";
 import {useAside} from "@/stores/aside.store";
 import Hint from "@/components/ui/shared/hint/hint";
 import Button from "@/components/ui/shared/button/button";
@@ -29,7 +29,7 @@ export default function HeaderComponent() {
   }
 
   return (
-    <div className="py-2 flex justify-between">
+    <div className="py-2 hidden lg:flex justify-between">
       <div>
         {!isActive && (
           <Hint content={"Сховати"}>

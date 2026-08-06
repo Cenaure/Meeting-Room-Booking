@@ -14,7 +14,7 @@ export default function MyReservationsAsideButton() {
         href={my_reservations_route}
       >
         <CalendarDotsIcon size={18} className="mr-2"/>
-        Мої бронювання
+        <p className="flex-1 text-center">Мої бронювання</p>
       </ButtonLink>
     </Hint>
 
