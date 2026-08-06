@@ -9,6 +9,8 @@ import DayColumn from "@/components/ui/week-grid/day-column";
 import dynamic from "next/dynamic";
 import {useReservations} from "@/hooks/use-reservations";
 import TimeAxisWrapper from "@/components/ui/week-grid/time-axis-wrapper";
+import {useCreateReservation} from "@/stores/create-reservation.store";
+import useIntervalSelection from "@/hooks/use-interval-selection";
 
 const CurrentTimeLine = dynamic(
   () => import("@/components/ui/week-grid/current-time-line"), {ssr: false}
@@ -40,8 +42,9 @@ export default function WeekGrid() {
   const monthLabel = useMemo(() => Info.months("long", {locale: "uk"})[currentDate.month - 1], [currentDate]);
 
   // Sets the start and end hours for the user's timezone
+  const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
   useEffect(() => {
-    const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const now = DateTime.now();
 
     const kyivOffset = now.setZone("Europe/Kyiv").offset;
@@ -60,6 +63,40 @@ export default function WeekGrid() {
   }, [selectedRoom]);
 
   const {reservations, error} = useReservations();
+
+
+  //region: # Selection
+  const setTimeStart = useCreateReservation(state => state.setTimeStart);
+  const setTimeEnd = useCreateReservation(state => state.setTimeEnd);
+
+  const isIntervalBlocked = (index: number, day: DateTime) => {
+    reservations.find(r => {
+      const timeStart = DateTime.fromISO(r.time_start).setZone(zone);
+      const timeEnd = DateTime.fromISO(r.time_end).setZone(zone);
+
+      const indexTime = timeStart.startOf("day").plus({minutes: index * 30 + hourStart * 60});
+      console.log(indexTime, timeStart, timeEnd)
+
+      return (timeStart > day.startOf("day") && timeEnd < day.endOf("day")) && (indexTime >= timeStart && indexTime <= timeEnd);
+    })
+
+    return reservations.length > 0;
+  }
+
+  const onSelectionFinish = (start: DateTime, end: DateTime) => {
+    setTimeStart(start);
+    setTimeEnd(end);
+  }
+
+  const selection = useIntervalSelection({
+    hoursCount: hours.length - 1,
+    hourHeight: HOUR_PX,
+    headerHeight: HEADER_HEIGHT,
+    hourStart: hours[0],
+    isIntervalBlocked,
+    onFinish: onSelectionFinish,
+  })
+  //endregion: # Selection
 
   return (
     <div className="h-full flex flex-col">
@@ -89,6 +126,7 @@ export default function WeekGrid() {
               hourHeight={HOUR_PX}
               hours={hours}
               reservations={reservations}
+              selection={selection}
             />
           ))}
         </div>
