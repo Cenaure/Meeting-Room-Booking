@@ -21,8 +21,8 @@ export default function SettingsComponent({defaultTab = "profile"}: { defaultTab
 
   return (
     <div
-      className="w-4xl h-screen md:h-[66vh] md:max-h-[1200px] md:max-w-4xl mx-auto relative bg-surface-0 rounded-md shadow-xs ring-2 ring-border md:grid md:grid-cols-[220px_1fr]">
-      <nav className="border-b md:border-b-0 md:border-r border-border p-4 space-y-1">
+      className="w-full pt-10 lg:pt-0 lg:w-4xl h-screen lg:h-[66vh] lg:max-h-300 lg:max-w-4xl mx-auto relative bg-surface-0 rounded-md shadow-xs ring-2 ring-border md:grid md:grid-cols-[220px_1fr]">
+      <nav className="border-b lg:border-b-0 lg:border-r border-border p-4 space-y-1">
         {TABS.map(({value, label, icon: Icon}) => (
           <button
             key={value}

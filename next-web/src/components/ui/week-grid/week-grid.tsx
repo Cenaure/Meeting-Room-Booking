@@ -58,13 +58,19 @@ export default function WeekGrid() {
 
   return (
     <div className="h-full flex flex-col">
-      <p className="text-2xl! mb-4 font-medium px-4 shrink-0">
+      <p className="text-2xl! mb-4 font-medium px-4 shrink-0 hidden lg:block">
         {capitalizeFirst(monthLabel)} {currentDate.year}
       </p>
 
-      <div className="min-h-0 flex-1 overflow-x-auto overflow-y-auto">
+      <div className="min-h-0 flex-1 overflow-auto">
         <div
-          className="grid grid-cols-[60px_repeat(7,calc((100vw-60px)/2))] md:grid-cols-[60px_repeat(7,calc((100vw-60px)/4))] lg:grid-cols-[80px_repeat(7,1fr)] md:min-w-max relative">
+          className="grid
+                    grid-cols-[60px_repeat(7,calc((100vw-60px)/2))]
+                    md:grid-cols-[60px_repeat(7,calc((100vw-60px)/4))]
+                    lg:grid-cols-[80px_repeat(7,1fr)]
+                    min-w-max relative
+                    pb-20 lg:pb-0
+          ">
           <CurrentTimeLine hourStart={hourStart} hourEnd={hourEnd} hourHeight={HOUR_PX} headerHeight={HEADER_HEIGHT}/>
 
           <TimeAxisWrapper hours={hours} hourHeight={HOUR_PX} headerHeight={HEADER_HEIGHT}/>
