@@ -6,8 +6,10 @@ import {SmileySadIcon} from "@phosphor-icons/react/ssr";
 import Loader from "@/components/ui/shared/loader/loader";
 import RoomCard from "@/components/ui/aside-navigation/rooms/room-card";
 import {useCalendar} from "@/stores/calendar.store";
-import Pagination from "@/components/ui/shared/pagination/pagination";
 import {WishedCapacityFilter} from "@/components/ui/aside-navigation/rooms/wished-capacity-filter";
+import dynamic from "next/dynamic";
+
+const Pagination = dynamic(() => import("@/components/ui/shared/pagination/pagination"), {ssr: false})
 
 export default function RoomPickerComponent() {
   const selectedRoomId = useCalendar(state => state.selectedRoomId)
