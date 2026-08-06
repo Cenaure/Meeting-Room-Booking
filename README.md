@@ -1,109 +1,156 @@
-# Meeting Room Booking
+# Бронювання переговорних кімнат
 
-A web application for booking and managing meeting rooms.
+Вебзастосунок для бронювання переговорних кімнат.
 
-## Table of Contents
+## Зміст
+- [Технічний стек](#технічний-стек)
+- [Технічні особливості](#технічні-особливості)
+- [Початок роботи](#початок-роботи)
+- [Додатково реалізовано](#додатково-реалізовано)
 
-- [Getting Started](#getting-started)
-- [Additional Implemented Features](#additional-implemented-features)
+## Технічний стек
 
-## Getting Started
+**Frontend**
+- **[Next.js](https://nextjs.org/)**
+- **TypeScript**
 
-### Prerequisites
+**Backend**
+- **[NestJS](https://nestjs.com/)**
+- **[Prisma](https://www.prisma.io/)**
 
-Before running the project, make sure you have Docker and Docker Compose installed. You can find installation
-instructions below:
+**Бази даних**
+- **[PostgreSQL](https://www.postgresql.org/)**
+- **[Redis](https://redis.io/)** (BullMq черга обробки бронювань та сповіщень. Також зберігання токенів
+  підтвердження email з автоматичним TTL)
+
+**Інфраструктура**
+- **Docker + Docker Compose**
+
+## Технічні особливості
+### Виявлення перетину бронювань
+**Виявлення перетину інтервалів** реалізовано через запит до бази даних, який знаходить усі наявні активні
+бронювання, що перетинаються із запитуваним проміжком часу. Обробник бронювань блокує створення, якщо запит повертає
+хоча б один результат:
+
+   ```ts
+   return this.databaseService.reservation.findMany({
+      where: {
+         room_id,
+         time_start: { lt: end_date },
+         time_end: { gt: start_date },
+         status: 'active',
+      },
+   });
+   ```
+
+Щоб цей запит Prisma завжди повертав коректні дані,
+написано юніт-тести, які перевіряють правильність результатів цієї функції в усіх можливих сценаріях.
+(повний збіг, частковий збіг з кожної сторони, дотикання з кожної сторони, відсутність збігу)
+
+Уникнення стану гонки описано в розділі [Уникнення стану гонки](#уникнення-стану-гонки).
+
+### Форматування часу
+1. **Час зберігається в UTC** на стороні сервера. Сервер завжди очікує отримати час у форматі UTC та виконує
+   кілька перетворень: наприклад, під час валідації часу він переводить час у київський часовий пояс - для зручності
+   розробки. Це зроблено, щоб полегшити розуміння, налагодження та написання юніт-тестів.
+
+
+2. Сервер повертає час у форматі UTC в усіх відповідях. Клієнт застосовує системний часовий пояс, щоб перетворити його
+   на місцевий час користувача.
+   Також є сповіщення, яке інформує користувача про різницю в часових поясах (якщо його часовий пояс відрізняється від київського).
+
+
+3. Важливо зазначити, що **вебзастосунок працює конкретно з будь-якими часовими зонами**, наприклад, якщо зона суттєво відрізняється від київської
+   головна сітка може починатися навіть з 20:00 години, це не проблема, або навпаки, закінчуватися після 24:00.
+
+### Скасування бронювання може блокуватися
+Цього не було зазначено в технічному завданні, але мені здалося, що це досить логічна поведінка. За замовчуванням сервер не дасть скасувати бронювання за 15 хвилин до його початку.
+
+Це можна відключити, змінивши ```PREVENT_CANCELLATION_BEFORE_MINUTES``` на ```0```.
+
+## Початок роботи
+
+### Передумови
+
+Перед запуском проєкту переконайтеся, що у вас встановлено Docker і Docker Compose. Інструкції зі встановлення можна
+знайти за посиланнями нижче:
 
 - [Docker](https://docs.docker.com/get-docker/)
 - [Docker Compose](https://docs.docker.com/compose/install/)
 
-### 1. Clone the repository
+### 1. Клонування репозиторію
 
 ```shell
 git clone https://github.com/cenaure/Meeting-Room-Booking.git
 cd Meeting-Room-Booking
 ```
 
-### 2. Configure environment files
+### 2. Налаштування файлів середовища
 
-<!-- TODO: check if this section is still needed once Docker Compose uses prebuilt images -->
+<!-- TODO: перевірити, чи потрібен ще цей розділ, коли Docker Compose використовуватиме готові образи -->
 
-There are environment files in the project that need to be configured before running:
+У проєкті є файли середовища, які потрібно налаштувати перед запуском:
 
 - [`.env.example`](./.env.example)
-- [`./nest-server/.env.development.example`](./nest-server/.env.development.example)
-- <!-- TODO: add remaining env file path(s) here -->
+- [`./nest-server/.env.development.example`](nest-server/.env.development.local.example)
+- [`./next-web/.env.development.example`](nest-server/.env.development.local.example)
 
-For each file, remove the `.example` suffix to activate it.
+Для кожного файлу приберіть суфікс `.example`, щоб активувати його.
 
-You can run the project in development mode without any further changes. For production mode, make sure to update
-secrets, Google client credentials, and any other sensitive values.
+Проєкт можна запустити в режимі розробки без будь-яких додаткових змін. Для продакшн-режиму обов’язково оновіть
+секрети, облікові дані клієнта Google та інші конфіденційні значення.
 
-### 3. Run the application
+### 3. Запуск застосунку
 
-From the root of the project directory:
+З кореневої директорії проєкту:
 
 ```shell
 docker compose -f docker-compose.development.yml up --build
 ```
 
-To run in detached mode (without streaming logs):
+Щоб запустити у фоновому режимі (без виведення логів):
 
 ```shell
 docker compose -f docker-compose.development.yml up -d --build
 ```
 
-### 4. Open the application
+### 4. Відкриття застосунку
 
-Once the containers are up and running, open your browser and navigate to:
+Щойно контейнери запустяться, відкрийте браузер і перейдіть за адресою:
 
 ```
 http://localhost:3000
 ```
 
-## Additional Implemented Features
+## Додатково реалізовано
 
-This section highlights notable features implemented beyond the core requirements, as outlined in the technical
-specification (**section 05**).
+У цьому розділі описано додаткові фічі, які реалізовано згідно з технічним завдання
+(**розділ 05**).
 
-1. **One-command setup with Docker Compose**
-   The entire application stack can be built and launched with a single command.
+| № | Можливість                           | Опис                                                                                                                                                                 |
+|:-:|--------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| 1 | **Запуск однією командою**           | Увесь стек збирається та піднімається через Docker Compose.                                                                                                          |
+| 2 | **Підтвердження email**              | Нові облікові записи активуються через лист. Непідтверджені користувачі не можуть створювати бронювання. Активувати акаунти створені через Google OAuth не потрібно. |
+| 3 | **Щотижневі повторювані бронювання** | Бронювання кімнати на щотижневій основі. Скасувати можна як окремий запис, так і всю серію.                                                                          |
+| 4 | **Уникнення стану гонки**            | Черга обробляє бронювання послідовно — двоє користувачів не можуть зайняти той самий слот. [Детальніше](#уникнення-стану-гонки)                                      |
+| 5 | **Сповіщення про завершення**        | Якщо одразу після поточного бронювання починається інше, користувач отримує попередження заздалегідь.                                                                |
+| 6 | **Фільтрація за місткістю**          | Пошук доступних кімнат за бажаною місткістю.                                                                                                                         |
+| 7 | **Адаптивний інтерфейс**             | Повна підтримка десктопів, планшетів і мобільних пристроїв.                                                                                                          |
 
-2. **Email confirmation in development mode**
-   New accounts must be activated via a confirmation email before they can be used. Unconfirmed accounts are restricted
-   from making reservations, ensuring only verified users interact with the reservation system.
+## Уникнення стану гонки
 
-3. **Weekly recurring reservations**
-   Users can book a room on a recurring weekly basis instead of creating individual bookings for each week.
-    <!--TODO CANCELLATION-->
+Уникнення стану гонки досягається за допомогою черги NestJS, яка обробляє кожне бронювання послідовно: це не дозволяє
+двом користувачам одночасно забронювати ту саму кімнату на той самий проміжок часу.
 
-4. **Race condition avoidance**
-   Booking requests are handled in a way that prevents two users from reserving the same room and time slot
-   simultaneously, ensuring data consistency. Check [Race Condition Avoidance](#race-condition-avoidance)
+Одна черга обробляє поодинокі бронювання та серії бронювань по одному за раз, використовуючи різні обробники, що
+реалізує принцип OCP із SOLID.
 
-5. **Upcoming reservation-end notifications**
-   If a reservation is about to end and another reservation is scheduled to begin immediately afterward, the current
-   user is notified in advance.
+Це перше, що прийшло мені на думку, також я виходив із припущення, що застосунок є малим або середнім за розміром, тож послідовна робота черги не буде вузьким
+місцем. Якщо ж очікується більша кількість користувачів, які бронюють кімнати, цей підхід можна покращити, створивши
+окрему чергу для кожної кімнати.
 
-6. <!-- TODO: describe this feature -->
+## Автор
 
-7. **Room filtering by capacity**
-   Users can filter available rooms based on the number of people they need to accommodate, making it easier to find a
-   suitable space.
+**Максим Готвянський** — [GitHub](https://github.com/cenaure) / [LinkedIn](https://linkedin.com/in/maksym-hotvianskyi-453175339/) / cenaureemail@email.com
 
-8. <!-- TODO: describe this feature -->
-
-## Race Condition Avoidance
-
-Race condition avoidance is achieved by using NestJS queue to handle each reservation sequentially, it prevents two
-users from reserving the same room and time slot simultaneously.
-
-One queue processes single reservations and series of reservations one at a time using different handlers realising OCP
-SOLID principle.
-
-I assumed that the application is small or medium-sized, so the queue won't be a bottleneck working sequentially
-
-If you expect a larger number of users to reserve rooms, this approach might be improved by creating a detached queue
-for every room.
-
-![Fox](https://tenor.com/tzWsHCZvz41.gif)
+Проєкт створено як конкурсну роботу.
