@@ -8,9 +8,9 @@ import {
   Max,
   MaxLength,
   Min,
-  MinLength
-} from "class-validator";
-import {Type} from "class-transformer";
+  MinLength,
+} from 'class-validator';
+import { Type } from 'class-transformer';
 
 export default class CreateReservationSeriesDto {
   @IsNotEmpty()
@@ -19,7 +19,7 @@ export default class CreateReservationSeriesDto {
   @MaxLength(100)
   title: string;
 
-  @IsNumber({maxDecimalPlaces: 0})
+  @IsNumber({ maxDecimalPlaces: 0 })
   @Min(1)
   room_id: number;
 
@@ -33,9 +33,9 @@ export default class CreateReservationSeriesDto {
   @IsDate()
   time_end: Date;
 
-  @Min(1)
+  @Min(2)
   @Max(12)
-  @IsNumber({maxDecimalPlaces: 0})
+  @IsNumber({ maxDecimalPlaces: 0 })
   @Type(() => Number)
   repeats: number;
 
