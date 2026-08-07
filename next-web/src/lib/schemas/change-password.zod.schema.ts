@@ -1,6 +1,6 @@
 import {z} from "zod";
 
-export const changePasswordSchema = z
+export const changePasswordZodSchema = z
   .object({
     oldPassword: z.string().min(1, "Введіть поточний пароль"),
     newPassword: z.string().min(8, "Мінімум 8 символів"),
@@ -15,4 +15,4 @@ export const changePasswordSchema = z
     path: ["newPassword"],
   });
 
-export type ChangePasswordFormValues = z.infer<typeof changePasswordSchema>;
+export type ChangePasswordFormValues = z.infer<typeof changePasswordZodSchema>;

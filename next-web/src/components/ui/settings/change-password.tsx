@@ -4,7 +4,7 @@ import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import Button from "@/components/ui/_shared/button/button";
 import TextInput from "@/components/ui/_shared/inputs/text-input";
-import {ChangePasswordFormValues, changePasswordSchema} from "@/lib/schemas/change-password.schema";
+import {ChangePasswordFormValues, changePasswordZodSchema} from "@/lib/schemas/change-password.zod.schema";
 import {changePassword} from "@/app/settings/actions";
 
 export default function ChangePasswordComponent() {
@@ -16,7 +16,7 @@ export default function ChangePasswordComponent() {
     setError,
     clearErrors,
   } = useForm<ChangePasswordFormValues>({
-    resolver: zodResolver(changePasswordSchema),
+    resolver: zodResolver(changePasswordZodSchema),
   });
 
   async function onSubmit(values: ChangePasswordFormValues) {
