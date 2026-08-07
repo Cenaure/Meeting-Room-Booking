@@ -9,6 +9,9 @@ import {useServerStatus} from "@/stores/server-status.store";
 export function useReservations() {
   const selectedRoom = useCalendar(state => state.selectedRoom);
   const currentDate = useCalendar(state => state.currentDate);
+
+  const reservationsRefresh = useCalendar(state => state.reservationsRefresh);
+
   const setIsDown = useServerStatus(state => state.setIsDown)
 
   const startDate = currentDate?.startOf("week").toISO();
@@ -50,7 +53,7 @@ export function useReservations() {
       cancelled = true;
       clearTimeout(timeout);
     };
-  }, [selectedRoom, startDate, endDate]);
+  }, [selectedRoom, startDate, endDate, reservationsRefresh]);
 
   return {reservations, loading, error};
 }

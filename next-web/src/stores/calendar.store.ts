@@ -15,6 +15,9 @@ interface CalendarStore {
   hourStart: number;
   hourEnd: number;
   setHourInterval: (start: number, end: number) => void;
+
+  reservationsRefresh: number;
+  refreshReservations: () => void;
 }
 
 export const useCalendar = create<CalendarStore>((set) => ({
@@ -30,4 +33,8 @@ export const useCalendar = create<CalendarStore>((set) => ({
   hourStart: 0,
   hourEnd: 0,
   setHourInterval: (start: number, end: number) => set({hourStart: start, hourEnd: end}),
+
+  reservationsRefresh: 0,
+  refreshReservations: () =>
+    set((state) => ({ reservationsRefresh: state.reservationsRefresh + 1 })),
 }))

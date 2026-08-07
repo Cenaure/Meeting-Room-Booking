@@ -62,8 +62,6 @@ const TextInput = forwardRef<HTMLInputElement, InputProps>(
             id={inputId}
             ref={ref}
             type={resolvedType}
-            aria-invalid={!!error}
-            aria-describedby={error ? errorId : undefined}
             className={inputStyles({
               size,
               state: error ? "error" : state,

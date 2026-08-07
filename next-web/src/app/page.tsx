@@ -4,6 +4,7 @@ import WeekGrid from "@/components/ui/week-grid/week-grid";
 import TimezoneDiffersToast from "@/components/ui/header/timezone-differs-toast";
 import MobileHeaderComponent from "@/components/ui/header/mobile/mobile-header";
 import MobileBottomNavigation from "@/components/ui/mobile-bottom-navigation/mobile-bottom-navigation";
+import CreateReservation from "@/components/ui/create-reservation/create-reservation";
 
 export default function Home() {
   return (
@@ -25,11 +26,9 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="hidden lg:block bg-surface-1 p-4 w-[380px]">
-          <h1>Створити бронювання</h1>
-          <h6>Оберіть інтрервал в середені тиждня</h6>
+        <div className="hidden lg:block bg-surface-1 p-4 w-95">
+          <CreateReservation />
         </div>
-
       </div>
 
       <MobileBottomNavigation/>

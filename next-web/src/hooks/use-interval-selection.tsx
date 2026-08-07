@@ -30,6 +30,7 @@ export default function useIntervalSelection({
                                                onClear,
                                              }: IntervalSelectionProps) {
   const selectedRoom = useCalendar(state => state.selectedRoom);
+  const reservationsRefresh = useCalendar(state => state.reservationsRefresh);
 
   const setTimeStart = useCreateReservation(state => state.setTimeStart);
   const setTimeEnd = useCreateReservation(state => state.setTimeEnd);
@@ -151,7 +152,7 @@ export default function useIntervalSelection({
     anchorRef.current = null;
     setDraft(null);
     onClear();
-  }, [selectedRoom])
+  }, [selectedRoom, reservationsRefresh])
 
   return { draft, startSelection, expandSelection };
 }
