@@ -8,7 +8,7 @@ export default registerAs("db", () => {
     {
       url: process.env.DATABASE_URL!,
     },
-      //dsadsa
+
     Joi.object({
       url: Joi.string().required(),
     })

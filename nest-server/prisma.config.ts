@@ -2,6 +2,13 @@
 // npm install --save-dev prisma dotenv
 import "dotenv/config";
 import { defineConfig } from "prisma/config";
+import {config} from "dotenv";
+
+const envPath = process.env.NODE_ENV === "development"
+  ? ".env.development.local"
+  : ".env.production.local";
+
+config({path: envPath})
 
 export default defineConfig({
   schema: "prisma/schema.prisma",

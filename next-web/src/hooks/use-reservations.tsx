@@ -1,0 +1,59 @@
+"use client";
+
+import {useEffect, useState} from "react";
+import {Reservation} from "@/models/reservation";
+import {useCalendar} from "@/stores/calendar.store";
+import {getReservations} from "@/app/(misc)/actions/reservations/getReservations";
+import {useServerStatus} from "@/stores/server-status.store";
+
+export function useReservations() {
+  const selectedRoom = useCalendar(state => state.selectedRoom);
+  const currentDate = useCalendar(state => state.currentDate);
+
+  const reservationsRefresh = useCalendar(state => state.reservationsRefresh);
+
+  const setIsDown = useServerStatus(state => state.setIsDown)
+
+  const startDate = currentDate?.startOf("week").toISO();
+  const endDate = currentDate?.endOf("week").toISO();
+
+  const [reservations, setReservations] = useState<Reservation[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!selectedRoom || !startDate || !endDate) return;
+
+    let cancelled = false;
+
+    const timeout = setTimeout(() => {
+      setLoading(true);
+      setError(null);
+
+      getReservations({
+        roomId: selectedRoom.id,
+        startDate,
+        endDate,
+      }).then((result) => {
+        if (cancelled) return;
+        if (result.ok) {
+          setReservations(result.data);
+        } else {
+          if (result.isServerDown)
+            setIsDown(true);
+
+          setError(result.message);
+        }
+
+        setLoading(false);
+      });
+    }, 0);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timeout);
+    };
+  }, [selectedRoom, startDate, endDate, reservationsRefresh]);
+
+  return {reservations, loading, error};
+}

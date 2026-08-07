@@ -1,0 +1,12 @@
+node_modules
+.next
+.pnpm-store
+
+.env*
+!.env.development.local.example
+
+Dockerfile*
+
+*.md
+next-env.d.ts
+.gitignore

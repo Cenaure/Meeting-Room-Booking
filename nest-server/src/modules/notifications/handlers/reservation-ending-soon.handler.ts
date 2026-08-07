@@ -1,0 +1,56 @@
+import {INotificationJobData, NotificationHandler} from "./notification-handler.interface";
+import {Injectable} from "@nestjs/common";
+import {ReservationsService} from "../../reservations/reservations.service";
+import {Job} from "bullmq";
+import {NotificationsService} from "../services/notifications.service";
+import {NotificationsGateway} from "../notifications.gateway";
+import {NotificationType} from "../utils/notification-types.constants";
+
+export interface IReservationEndingSoonJobData extends INotificationJobData {
+  reservationId: string;
+  nextReservationId: string;
+}
+
+@Injectable()
+class ReservationEndingSoonHandler implements NotificationHandler<IReservationEndingSoonJobData> {
+  readonly type: typeof NotificationType.ReservationEndingSoon;
+
+  constructor(
+    private readonly reservationsService: ReservationsService,
+    private readonly notificationsService: NotificationsService,
+    private readonly notificationGateway: NotificationsGateway
+  ) {
+  }
+
+  async processNotification(job: Job<IReservationEndingSoonJobData>): Promise<void> {
+    const {reservationId, nextReservationId, body, userId} = job.data
+
+    const [currentReservation, nextReservation] = await Promise.all([
+      this.reservationsService.findReservationById(reservationId),
+      this.reservationsService.findReservationById(nextReservationId),
+    ])
+
+    // Checks whether the reservations exist and are active (not canceled)
+    if (!currentReservation || !nextReservation || currentReservation.status != "active" || nextReservation.status != "active")
+      return
+
+    try {
+      await this.notificationsService.createNotification({
+        user_id: userId,
+        reservation_id: reservationId,
+        type: this.type,
+        body: {
+          free_before_date: nextReservation.time_start
+        },
+        sent_at: new Date()
+      })
+    } catch {
+      // Notification duplicate
+      return
+    }
+
+    this.notificationGateway.sendReservationEndingReminder(userId, nextReservation.time_start)
+  }
+}
+
+export default ReservationEndingSoonHandler

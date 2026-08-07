@@ -9,18 +9,15 @@ RUN pnpm install --frozen-lockfile
 # Development
 
 FROM base AS development
-ENV CI=true
+ENV NODE_ENV=development
 RUN pnpm install --frozen-lockfile
 COPY . .
-RUN pnpm exec prisma generate
 CMD ["pnpm", "run", "start:dev"]
 
 # Production
 
 FROM dependencies AS build
-ENV CI=true
 COPY . .
-RUN pnpm exec prisma generate
 RUN pnpm run build
 
 FROM node:22-alpine AS production
