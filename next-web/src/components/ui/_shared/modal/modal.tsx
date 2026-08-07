@@ -61,11 +61,9 @@ export default function Modal({children, onClose, className}: ModalProps) {
   }, [setClose]);
 
   const handleClose = () => {
-    setIsClosing((prev) => {
-      if (prev) return prev;
-      setClose(false);
-      return true;
-    });
+    if (isClosing) return;
+    setClose(false);
+    setIsClosing(true);
   };
 
   const handleAnimationEnd = (e: React.AnimationEvent<HTMLDivElement>) => {
