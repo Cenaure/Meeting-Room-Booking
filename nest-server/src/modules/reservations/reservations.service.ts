@@ -8,8 +8,13 @@ import { AppExceptionBodyCode } from '../../common/errors/app-exception-body.int
 import { Room } from '../../generated/prisma/client';
 import { ConfigService } from '@nestjs/config';
 import { DateTime } from 'luxon';
-import GetMyReservationsDto, { ReservationFilter, } from './dto/get-my-reservations.dto';
-import { ReservationOrderByWithRelationInput, ReservationWhereInput, } from '../../generated/prisma/models/Reservation';
+import GetMyReservationsDto, {
+  ReservationFilter,
+} from './dto/get-my-reservations.dto';
+import {
+  ReservationOrderByWithRelationInput,
+  ReservationWhereInput,
+} from '../../generated/prisma/models/Reservation';
 import { InjectQueue } from '@nestjs/bullmq';
 import { RESERVATIONS_QUEUE_EVENTS } from './reservations-queue-events.provider';
 import { Queue, QueueEvents } from 'bullmq';
@@ -234,7 +239,7 @@ export class ReservationsService {
     const filterOptions: ReservationWhereInput = {
       reserved_by: userId,
       status: 'active',
-      // Currently going reservations is considered as future reservations because they haven't finished yet
+      // Currently going reservations are considered as future reservations because they haven't finished yet
       ...(query.filter === ReservationFilter.FUTURE && {
         time_end: { gte: now },
       }),

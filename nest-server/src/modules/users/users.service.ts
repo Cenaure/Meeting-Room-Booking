@@ -66,7 +66,6 @@ export class UsersService {
         google_id: googleId,
       },
     });
-    console.log(user);
 
     if (!isActivated) {
       const activationLinkTTL = this.configService.get(

@@ -52,7 +52,7 @@ export class SingleReservationHandler implements ReservationHandler<
         time_end,
       },
     });
-    console.log(reservation);
+
     //region: # Notifications Scheduling
     const { leftAdjacent, rightAdjacent } =
       await this.reservationsService.findAdjacentReservations({
