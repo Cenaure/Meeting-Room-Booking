@@ -47,7 +47,7 @@ export default async function MyReservationsComponent({searchParams}: MyReservat
             <p className="text-sm font-semibold">
               {response.isServerDown ? "Сервер тимчасово недоступний" : "Не вдалося завантажити бронювання"}
             </p>
-            <p className="max-w-xs text-xs text-foreground/60">{response.message}</p>
+            <p className="max-w-xs text-foreground/60">{response.message}</p>
           </div>
         ) : !data || data.items.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center gap-3 text-center">
@@ -55,7 +55,7 @@ export default async function MyReservationsComponent({searchParams}: MyReservat
             <p className="text-sm font-semibold">
               {filter === "future" ? "Немає майбутніх бронювань" : "Немає минулих бронювань"}
             </p>
-            <p className="max-w-xs text-xs text-foreground/60">
+            <p className="max-w-xs text-foreground/60">
               {filter === "future"
                 ? "Заброньовані переговорні з'являться тут"
                 : "Тут з'являться бронювання, термін яких минув"}
