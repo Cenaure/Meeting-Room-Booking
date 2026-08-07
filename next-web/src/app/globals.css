@@ -145,3 +145,7 @@ button, a {
 .animate-wink {
     animation: wink 1000ms ease-out forwards;
 }
+
+* {
+    user-select: none;
+}
