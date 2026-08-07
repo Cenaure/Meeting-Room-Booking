@@ -1,6 +1,5 @@
 generator client {
   provider     = "prisma-client"
-  previewFeatures = ["fullTextSearchPostgres"]
   output       = "../src/generated/prisma"
   moduleFormat = "cjs"
 }
