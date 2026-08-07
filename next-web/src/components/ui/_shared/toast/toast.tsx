@@ -8,6 +8,7 @@ interface ToastProps {
   message?: string;
   type: "error" | "success" | "default";
   duration?: number;
+  invoke?: () => void;
 }
 
 const iconMap: Record<string, { icon: React.ComponentType<any>, className: string }> = {
@@ -21,27 +22,27 @@ const iconMap: Record<string, { icon: React.ComponentType<any>, className: strin
   },
 };
 
-export default function Toast({t, title, message = "", type = "default"}: ToastProps) {
+export default function Toast({t, title, message = "", type = "default", invoke}: ToastProps) {
   const icon = iconMap[type];
 
   return (
-    <div className={`flex max-w-lg items-start justify-between rounded-md border shadow-lg bg-surface-0 px-4 py-3 select-none
+    <div className={`flex max-w-lg items-start justify-between rounded-md border shadow-lg bg-surface-0 px-4 py-3 select-none space-x-4
          ${t.visible
       ? "animate-in fade-in slide-in-from-bottom duration-300"
       : "animate-out fade-out slide-out-to-bottom duration-200"
     }`}
     >
-      <div className={`mr-4 flex h-full items-center justify-center
+      <div className={`flex h-full items-center justify-center
         ${type}
       `}
       >
         {icon && <icon.icon className={icon.className} size={24} weight={"bold"}/>}
       </div>
 
-      <div>
+      <div className={`flex flex-col h-full ${!message && "justify-center items-center"}`}>
         <p className="text-sm font-medium">{title}</p>
 
-        <p className="mt-1 text-xs text-foreground/80">{message}</p>
+        {message && <p className="mt-1 text-xs text-foreground/80">{message}</p>}
       </div>
 
       <Button
@@ -49,7 +50,7 @@ export default function Toast({t, title, message = "", type = "default"}: ToastP
         size="auto"
         className="aspect-square w-8"
         onClick={() => {
-          localStorage.setItem("zone-dismiss", "true");
+          if(invoke) invoke();
           toast.dismiss(t.id)
         }}
       >
