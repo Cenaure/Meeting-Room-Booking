@@ -51,7 +51,7 @@ export default function ReservationBlock({reservation, hourHeight, gridStart, he
             {timeLabel}
           </p>
           <p className="truncate ">
-            {reservation.reserver_username} {isUser && "(Ви)"}
+            {isUser ? "Ви" : reservation.reserver_username}
           </p>
         </>
       )}
