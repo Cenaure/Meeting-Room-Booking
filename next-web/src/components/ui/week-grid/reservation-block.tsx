@@ -23,14 +23,12 @@ export default function ReservationBlock({reservation, hourHeight, gridStart, he
   const hoursEnd = dateTimeEnd.hour + dateTimeEnd.minute / 60;
 
   // when grid start is on the previous day
-  const convertedHoursStart =
-    hoursStart + gridStart <= 24 ? hoursStart - gridStart : 24 - gridStart + hoursStart;
+  const offsetFromGridStart = (hoursStart - gridStart + 24) % 24;
+  const top = offsetFromGridStart * hourHeight + headerHeight;
 
-  // handle reservations that cross midnight
-  const convertedHoursEnd = hoursEnd >= hoursStart ? hoursEnd : hoursEnd + 24;
+  const length = dateTimeEnd.diff(dateTimeStart, "hours").hours;
+  const height = length * hourHeight;
 
-  const top = convertedHoursStart * hourHeight + headerHeight;
-  const height = (convertedHoursEnd - hoursStart) * hourHeight;
 
   const timeLabel = `${dateTimeStart.toFormat("HH:mm")} - ${dateTimeEnd.toFormat("HH:mm")}`;
 
