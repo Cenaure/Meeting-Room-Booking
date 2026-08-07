@@ -18,7 +18,7 @@ export default async function serverFetch<T>(
   });
 
   if (!res.ok) {
-    throw new Error(`Request failed: ${res.status} ${path}`);
+    throw new Error(res.statusText);
   }
 
   return res.json();
