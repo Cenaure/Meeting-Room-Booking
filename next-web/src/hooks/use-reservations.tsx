@@ -7,7 +7,7 @@ import {getReservations} from "@/app/(misc)/actions/reservations/getReservations
 import {useServerStatus} from "@/stores/server-status.store";
 
 export function useReservations() {
-  const selectedRoomId = useCalendar(state => state.selectedRoomId);
+  const selectedRoom = useCalendar(state => state.selectedRoom);
   const currentDate = useCalendar(state => state.currentDate);
   const setIsDown = useServerStatus(state => state.setIsDown)
 
@@ -19,7 +19,7 @@ export function useReservations() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!selectedRoomId || !startDate || !endDate) return;
+    if (!selectedRoom || !startDate || !endDate) return;
 
     let cancelled = false;
 
@@ -28,12 +28,11 @@ export function useReservations() {
       setError(null);
 
       getReservations({
-        roomId: selectedRoomId,
+        roomId: selectedRoom.id,
         startDate,
         endDate,
       }).then((result) => {
         if (cancelled) return;
-
         if (result.ok) {
           setReservations(result.data);
         } else {
@@ -51,7 +50,7 @@ export function useReservations() {
       cancelled = true;
       clearTimeout(timeout);
     };
-  }, [selectedRoomId, startDate, endDate]);
+  }, [selectedRoom, startDate, endDate]);
 
   return {reservations, loading, error};
 }
