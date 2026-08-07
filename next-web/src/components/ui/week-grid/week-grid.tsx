@@ -11,6 +11,7 @@ import {useReservations} from "@/hooks/use-reservations";
 import TimeAxisWrapper from "@/components/ui/week-grid/time-axis-wrapper";
 import {useCreateReservation} from "@/stores/create-reservation.store";
 import useIntervalSelection from "@/hooks/use-interval-selection";
+import {extractWorkingHours} from "@/utils/extract-working-hours";
 
 const CurrentTimeLine = dynamic(
   () => import("@/components/ui/week-grid/current-time-line"), {ssr: false}
@@ -53,11 +54,11 @@ export default function WeekGrid() {
 
     const mod24 = (h: number) => ((h + diffHours) % 24 + 24) % 24;
 
-    const selectedRoomStart = Number(selectedRoom?.working_hours_start.split(":")[0])
-    const selectedRoomEnd = Number(selectedRoom?.working_hours_end.split(":")[0])
+    const selectedRoomStart = selectedRoom?.working_hours_start || "9:00";
+    const selectedRoomEnd = selectedRoom?.working_hours_end || "19:00";
 
-    const start = mod24(selectedRoomStart || 9);
-    const end = mod24(selectedRoomEnd || 19);
+    const start = extractWorkingHours(selectedRoomStart, now).hour;
+    const end = extractWorkingHours(selectedRoomEnd, now).hour;
 
     setHourInterval(start, end);
   }, [selectedRoom]);
