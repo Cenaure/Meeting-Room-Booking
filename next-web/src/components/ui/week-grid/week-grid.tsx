@@ -70,22 +70,21 @@ export default function WeekGrid() {
   const setTimeEnd = useCreateReservation(state => state.setTimeEnd);
 
   const isIntervalBlocked = (index: number, day: DateTime) => {
-    reservations.find(r => {
+    const found = reservations.find(r => {
       const timeStart = DateTime.fromISO(r.time_start).setZone(zone);
       const timeEnd = DateTime.fromISO(r.time_end).setZone(zone);
 
       const indexTime = timeStart.startOf("day").plus({minutes: index * 30 + hourStart * 60});
-      console.log(indexTime, timeStart, timeEnd)
 
-      return (timeStart > day.startOf("day") && timeEnd < day.endOf("day")) && (indexTime >= timeStart && indexTime <= timeEnd);
+      return (timeStart > day.startOf("day") && timeEnd < day.endOf("day")) && (indexTime >= timeStart && indexTime < timeEnd);
     })
 
-    return reservations.length > 0;
+    return found !== undefined;
   }
 
-  const onSelectionFinish = (start: DateTime, end: DateTime) => {
-    setTimeStart(start);
-    setTimeEnd(end);
+  const onSelectionClear = () => {
+    setTimeStart(null);
+    setTimeEnd(null);
   }
 
   const selection = useIntervalSelection({
@@ -94,7 +93,7 @@ export default function WeekGrid() {
     headerHeight: HEADER_HEIGHT,
     hourStart: hours[0],
     isIntervalBlocked,
-    onFinish: onSelectionFinish,
+    onClear: onSelectionClear
   })
   //endregion: # Selection
 

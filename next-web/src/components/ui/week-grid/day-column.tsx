@@ -18,7 +18,6 @@ interface DayColumnProps {
     draft: Draft | null,
     startSelection: (y: number, day: DateTime) => void,
     expandSelection: (y: number, day: DateTime) => void,
-    clearSelection: () => void,
   }
 }
 
@@ -76,7 +75,7 @@ export default function DayColumn({
   return (
     <div
       ref={columnRef}
-      className={`flex flex-col relative ${isDragging ? "touch-none" : ""}`}
+      className={`flex flex-col relative ${isDragging ? "touch-none lg:touch-auto" : ""}`}
       {...handlers}
     >
       <div className={`absolute inset-0 z-2 rounded-lg
@@ -87,7 +86,7 @@ export default function DayColumn({
       </div>
 
       <div
-        className={`flex items-center justify-center text-xs text-foreground/60 select-none shrink-0`}
+        className={`flex items-center justify-center text-xs text-foreground/60 shrink-0`}
         style={{height: headerHeight + `px`}}
       >
         {capitalizeFirst(Info.weekdays("short", {locale: "uk"})[day.weekday - 1])}{" "}{day.day}
@@ -118,14 +117,14 @@ export default function DayColumn({
 
       {isActive && (
         <div
-          className="absolute inset-x-2 z-10 rounded-md pointer-events-none
+          className="absolute inset-x-2 z-10 rounded-md pointer-events-none z-10
                      bg-lavender-500/25 border-2 border-lavender-300 dark:border-lavender-500"
           style={{
             top: headerHeight + selection.draft!.startIndex * (hourHeight / 2),
             height: (selection.draft!.endIndex - selection.draft!.startIndex + 1) * (hourHeight / 2),
           }}
         >
-          <span className="p-2 text-xs font-medium text-lavender-700/80 dark:text-lavender-200/80 select-none">
+          <span className="p-2 text-xs font-medium text-lavender-700/80 dark:text-lavender-200/80 select-none cursor-default">
             {formatDraftTime(selection.draft!)}
           </span>
         </div>

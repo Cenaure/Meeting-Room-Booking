@@ -1,5 +1,7 @@
 import {DateTime} from "luxon";
 import {useEffect, useRef, useState} from "react";
+import {useCreateReservation} from "@/stores/create-reservation.store";
+import {useCalendar} from "@/stores/calendar.store";
 
 export interface Draft {
   startIndex: number, // index of 30-minutes slot
@@ -13,21 +15,25 @@ interface IntervalSelectionProps {
   headerHeight: number,
   hourStart: number,
   isIntervalBlocked: (index: number, day: DateTime) => boolean,
-  onFinish: (start: DateTime, end: DateTime) => void,
+  onClear: () => void,
 }
 
 const MAX_INTERVAL_LENGTH = 8;
 const MIN_INTERVAL_LENGTH = 1;
 
-// Hook for managing selection on week grid
 export default function useIntervalSelection({
                                                hoursCount,
                                                hourHeight,
                                                headerHeight,
                                                hourStart,
                                                isIntervalBlocked,
-                                               onFinish
+                                               onClear,
                                              }: IntervalSelectionProps) {
+  const selectedRoom = useCalendar(state => state.selectedRoom);
+
+  const setTimeStart = useCreateReservation(state => state.setTimeStart);
+  const setTimeEnd = useCreateReservation(state => state.setTimeEnd);
+
   const [draft, setDraft] = useState<Draft | null>(null);
 
   const anchorRef = useRef<number | null>(null);
@@ -48,11 +54,14 @@ export default function useIntervalSelection({
       else start = end - MAX_INTERVAL_LENGTH + 1;
     }
 
-    // TODO: check whether it works correct
     if (isExpandingDown) {
-      if (isIntervalBlocked(end, day)) { end -= 1; }
+      for (let i = start; i <= end; i++) {
+        if (isIntervalBlocked(i, day)) return draft
+      }
     } else {
-      if (isIntervalBlocked(start, day)) { start += 1; }
+      for (let i = end; i >= start; i--) {
+        if (isIntervalBlocked(i, day)) return draft
+      }
     }
 
     if (end < start) return null;
@@ -66,6 +75,7 @@ export default function useIntervalSelection({
 
   const startSelection = (y: number, day: DateTime) => {
     const startIndex = getIntervalIndexFromY(y);
+    console.log(isIntervalBlocked(startIndex, day))
     if (isIntervalBlocked(startIndex, day)) return;
     anchorRef.current = startIndex;
     draggingRef.current = true;
@@ -78,9 +88,7 @@ export default function useIntervalSelection({
     if (next) setDraft(next);
   }
 
-  const finishSelection = () => {
-    draggingRef.current = false;
-    anchorRef.current = null;
+  const calculateTime = () => {
     if (!draft) return;
 
     const length = draft.endIndex - draft.startIndex + 1;
@@ -91,8 +99,27 @@ export default function useIntervalSelection({
     });
     const end = start.plus({ minutes: length * 30 });
 
-    onFinish(start, end);
+    return { start, end };
   }
+
+  const finishSelection = () => {
+    draggingRef.current = false;
+    anchorRef.current = null;
+
+    const result = calculateTime();
+    if (!result) return;
+
+    setTimeStart(result.start);
+    setTimeEnd(result.end);
+  }
+
+  useEffect(() => {
+    const result = calculateTime();
+    if (!result) return;
+
+    setTimeStart(result.start);
+    setTimeEnd(result.end);
+  }, [draft]);
 
   // Break selection
   useEffect(() => {
@@ -104,17 +131,27 @@ export default function useIntervalSelection({
         draggingRef.current = false;
         anchorRef.current = null;
         setDraft(null);
+        onClear();
       }
     };
 
     window.addEventListener("pointerup", onUp);
+    window.addEventListener("pointercancel", onUp);
     window.addEventListener("keydown", onKey);
-
     return () => {
       window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointercancel", onUp);
       window.removeEventListener("keydown", onKey);
     };
   }, [draft]);
 
-  return { draft, startSelection, expandSelection, clearSelection: () => setDraft(null) };
+  // Break selection when room is changed
+  useEffect(() => {
+    draggingRef.current = false;
+    anchorRef.current = null;
+    setDraft(null);
+    onClear();
+  }, [selectedRoom])
+
+  return { draft, startSelection, expandSelection };
 }
