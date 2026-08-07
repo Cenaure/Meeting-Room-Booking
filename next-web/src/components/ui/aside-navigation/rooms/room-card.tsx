@@ -23,11 +23,11 @@ export default function RoomCard({
 
       <div
         className="
-          w-full p-4 rounded-md border transition-colors bg-surface-1/40
+          w-full p-4 rounded-md border-2 transition-colors bg-surface-1/40
           hover:border-lavender-300 hover:bg-lavender-500/10 dark:hover:border-lavender-600
-          peer-checked:text-lavender-800 dark:peer-checked:text-lavender-50 peer-checked:bg-lavender-300 dark:peer-checked:bg-lavender-700/80
+          peer-checked:text-lavender-800 dark:peer-checked:text-lavender-50 peer-checked:bg-lavender-300 dark:peer-checked:bg-lavender-700/50
           peer-checked:hover:bg-lavender-300/90 dark:peer-checked:hover:bg-lavender-700/50
-          peer-checked:border-lavender-400 dark:peer-checked:border-lavender-600
+          peer-checked:border-lavender-400 dark:peer-checked:border-lavender-500
         "
       >
         <div className="flex items-baseline justify-between gap-2">
