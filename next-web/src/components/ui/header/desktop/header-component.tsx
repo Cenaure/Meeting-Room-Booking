@@ -9,6 +9,7 @@ import {useAside} from "@/stores/aside.store";
 import Hint from "@/components/ui/_shared/hint/hint";
 import Button from "@/components/ui/_shared/button/button";
 import {useCalendar} from "@/stores/calendar.store";
+import {DateTime} from "luxon";
 
 export default function HeaderComponent() {
   const user = useUser(state => state.user);
@@ -16,6 +17,8 @@ export default function HeaderComponent() {
 
   const setCurrentDate = useCalendar(state => state.setCurrentDate)
   const currentDate = useCalendar(state => state.currentDate)
+
+  const setSelectedDate = useCalendar(state => state.setSelectedDate)
 
   const isActive = useAside(state => state.isActive);
   const setIsActive = useAside(state => state.setIsActive);
@@ -26,6 +29,11 @@ export default function HeaderComponent() {
 
   const goToPrevWeek = () => {
     setCurrentDate(currentDate.minus({week: 1}))
+  }
+
+  const goToToday = () => {
+    setCurrentDate(DateTime.now())
+    setSelectedDate(DateTime.now())
   }
 
   return (
@@ -53,7 +61,11 @@ export default function HeaderComponent() {
         </ButtonLink>
 
 
-        <div>
+        <div className="flex items-center">
+          <Button variant="outline" onClick={goToToday} className="mr-2">
+            Сьогодні
+          </Button>
+
           <Hint content={"Попередній тиждень"}>
             <Button
               variant="ghost"
