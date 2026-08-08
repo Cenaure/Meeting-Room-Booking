@@ -3,7 +3,7 @@
 import createInstance from "@/utils/http";
 import {parseApiError, success} from "@/lib/errors/api-errors-handler";
 import {Reservation} from "@/models/reservation";
-import {revalidateTag} from "next/cache";
+import {revalidatePath} from "next/cache";
 
 interface CreateReservationDto {
   roomId: number;
@@ -27,7 +27,7 @@ export const createReservationSeries = async (dto: CreateReservationDto) => {
       allow_partial: dto.allowPartial,
     });
 
-    revalidateTag(`reservations-room-${dto.roomId}`, "max")
+    revalidatePath("/")
     return success<Reservation[]>(data);
   } catch (error) {
     return parseApiError(error);
