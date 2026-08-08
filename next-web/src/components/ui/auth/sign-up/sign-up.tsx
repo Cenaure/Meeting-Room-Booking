@@ -64,7 +64,7 @@ export default function SignUpComponent() {
         <TextInput
           label="Введіть ім'я"
           type="text"
-          placeholder="example@gmail.com"
+          placeholder="Петро"
           {...register("username")}
           error={errors.username?.message}
         />
