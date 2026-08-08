@@ -93,7 +93,7 @@ export default function CreateReservation() {
       </div>
 
       {selectedRoom && timeStart && timeEnd && (
-        <div className="overflow-y-auto px-px max-h-[calc(90vh)] space-y-4">
+        <div className="max-h-[90vh] overflow-y-auto px-px space-y-4">
           <h6 className="font-medium">{capitalizeFirst(timeStart.toFormat("EEEE dd.MM.yyyy", {locale: "uk"}))}</h6>
 
           <div className="flex items-center gap-2 w-full">
@@ -155,9 +155,11 @@ export default function CreateReservation() {
             {isInPast && (
               <p className="text-red-500">Час який ви обрали - у минулому, будь ласка, оберіть коректний час для бронювання</p>
             )}
+
             {errors.root?.message && <p className="text-red-500 text-sm min-h-10 w-full">
               {errors.root?.message ?? " "}
             </p>}
+
             <Button
               type="submit"
               fullWidth

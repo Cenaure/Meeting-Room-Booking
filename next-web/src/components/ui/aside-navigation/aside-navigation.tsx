@@ -13,7 +13,7 @@ export default function AsideNavigation() {
   const setIsActive = useAside(state => state.setIsActive);
 
   return (
-    <aside className={`bg-surface-0 space-y-2 pt-2 border-r px-4 w-70 h-full ${!isActive ? "hidden" : ""}`}>
+    <aside className={`bg-surface-0 space-y-2 pt-2 border-r px-4 w-70 h-full overflow-y-auto ${!isActive ? "hidden" : ""}`}>
       <Hint content={"Сховати"}>
         <Button variant="ghost" className="" onClick={() => setIsActive(false)}>
           <SidebarSimpleIcon size={18} weight="bold" className="text-foreground/60"/>

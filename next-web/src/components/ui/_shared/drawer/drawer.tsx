@@ -3,7 +3,7 @@ import {HTMLAttributes, ReactNode, useEffect, useState} from "react";
 import {createPortal} from "react-dom";
 
 const drawerStyles = cva(
-  "fixed flex flex-col bg-surface-1 border-border duration-200",
+  "fixed flex flex-col bg-surface-1 border-border duration-200 overflow-y-auto",
   {
     variants: {
       side: {

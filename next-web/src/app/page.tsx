@@ -26,7 +26,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="hidden lg:block bg-surface-1 p-4 w-95">
+        <div className="hidden lg:block bg-surface-1 p-4 w-95 overflow-y-auto">
           <CreateReservation />
         </div>
       </div>
