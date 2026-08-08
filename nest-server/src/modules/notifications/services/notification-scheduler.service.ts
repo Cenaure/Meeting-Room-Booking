@@ -51,7 +51,7 @@ export class NotificationSchedulerService {
         userId: userReservation.reserved_by,
       },
       {
-        // delay,
+        delay,
         jobId: `notification-remind-reservation-ending-${userReservation.id}`,
       },
     );

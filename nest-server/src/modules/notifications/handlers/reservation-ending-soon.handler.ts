@@ -8,6 +8,7 @@ import { Job } from 'bullmq';
 import { NotificationsService } from '../services/notifications.service';
 import { NotificationsGateway } from '../notifications.gateway';
 import { NotificationType } from '../utils/notification-types.constants';
+import { Notification } from '../../../generated/prisma/client';
 
 export interface IReservationEndingSoonJobData extends INotificationJobData {
   reservationId: string;
@@ -44,8 +45,9 @@ class ReservationEndingSoonHandler implements NotificationHandler<IReservationEn
     )
       return;
 
+    let notification: Notification;
     try {
-      await this.notificationsService.createNotification({
+      notification = await this.notificationsService.createNotification({
         user_id: userId,
         reservation_id: reservationId,
         type: this.type,
@@ -60,6 +62,7 @@ class ReservationEndingSoonHandler implements NotificationHandler<IReservationEn
     }
 
     this.notificationGateway.sendReservationEndingReminder(
+      notification.id,
       userId,
       nextReservation.time_start,
     );
