@@ -60,7 +60,9 @@ export default function DayColumn({
 
   const isActive = selection.draft?.day.equals(day);
 
-  const formatDraftTime = (draft: Draft) => {
+  const formatDraftTime = (draft: Draft | null) => {
+    if (!draft || !hours[0]) return;
+
     const length = draft.endIndex - draft.startIndex + 1;
 
     const start = draft.day.startOf("day").plus({
@@ -78,7 +80,7 @@ export default function DayColumn({
       className={`flex flex-col relative ${isDragging ? "touch-none lg:touch-auto" : ""}`}
       {...handlers}
     >
-      <div className={`absolute inset-0 z-2 rounded-lg
+      <div className={`absolute inset-0 z-20 rounded-lg
           ${selectedDate && day.startOf("day").equals(selectedDate.startOf("day")) && "rounded-md animate-wink"}
         `}
            onAnimationEnd={() => setSelectedDate(null)}

@@ -13,7 +13,7 @@ interface IntervalSelectionProps {
   hoursCount: number,
   hourHeight: number,
   headerHeight: number,
-  hourStart: number,
+  hourStart: number | undefined,
   isIntervalBlocked: (index: number, day: DateTime) => boolean,
   onClear: () => void,
 }
@@ -30,7 +30,7 @@ export default function useIntervalSelection({
                                                onClear,
                                              }: IntervalSelectionProps) {
   const selectedRoom = useCalendar(state => state.selectedRoom);
-  const reservationsRefresh = useCalendar(state => state.reservationsRefresh);
+  const selectionBreak = useCalendar(state => state.selectionBreak);
 
   const setTimeStart = useCreateReservation(state => state.setTimeStart);
   const setTimeEnd = useCreateReservation(state => state.setTimeEnd);
@@ -76,7 +76,6 @@ export default function useIntervalSelection({
 
   const startSelection = (y: number, day: DateTime) => {
     const startIndex = getIntervalIndexFromY(y);
-    console.log(isIntervalBlocked(startIndex, day))
     if (isIntervalBlocked(startIndex, day)) return;
     anchorRef.current = startIndex;
     draggingRef.current = true;
@@ -90,7 +89,7 @@ export default function useIntervalSelection({
   }
 
   const calculateTime = () => {
-    if (!draft) return;
+    if (!draft || !hourStart) return;
 
     const length = draft.endIndex - draft.startIndex + 1;
     if (length < MIN_INTERVAL_LENGTH) { setDraft(null); return; }
