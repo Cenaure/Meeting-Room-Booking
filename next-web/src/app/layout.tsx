@@ -6,6 +6,7 @@ import {ReactNode} from "react";
 import {AuthProvider} from "@/providers/auth-provider";
 import {Toaster} from "react-hot-toast";
 import ServerStatusScreen from "@/components/ui/server-status/server-status-screen";
+import Notifications from "@/components/ui/notifications/notifications";
 
 const geologica = Geologica({
   subsets: ["latin", "cyrillic"],
@@ -43,6 +44,7 @@ export default function RootLayout({
           {modal}
 
           <Toaster/>
+          <Notifications />
         </ServerStatusScreen>
       </AuthProvider>
     </ThemeProvider>

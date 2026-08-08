@@ -1,12 +1,12 @@
 import Button from "@/components/ui/_shared/button/button";
 import toast from "react-hot-toast";
-import {SmileyIcon, SmileySadIcon, XIcon} from "@phosphor-icons/react/ssr";
+import {SmileyIcon, SmileySadIcon, WarningIcon, XIcon} from "@phosphor-icons/react/ssr";
 
 interface ToastProps {
   t: any;
   title: string;
   message?: string;
-  type: "error" | "success" | "default";
+  type: "error" | "success" | "warning" | "default";
   duration?: number;
   invoke?: () => void;
 }
@@ -20,6 +20,10 @@ const iconMap: Record<string, { icon: React.ComponentType<any>, className: strin
     icon: SmileyIcon,
     className: "text-green-500"
   },
+  warning: {
+    icon: WarningIcon,
+    className: "text-yellow-500"
+  }
 };
 
 export default function Toast({t, title, message = "", type = "default", invoke}: ToastProps) {
@@ -52,6 +56,7 @@ export default function Toast({t, title, message = "", type = "default", invoke}
         onClick={() => {
           if(invoke) invoke();
           toast.dismiss(t.id)
+          toast.remove(t.id)
         }}
       >
         <XIcon size={18}/>
