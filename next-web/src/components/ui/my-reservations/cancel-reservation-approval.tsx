@@ -4,10 +4,11 @@ import {useCancelReservation} from "@/stores/cancel-reservation.store";
 import {DateTime} from "luxon";
 import Button from "@/components/ui/_shared/button/button";
 import {XIcon} from "@phosphor-icons/react/ssr";
-import {cancelReservation} from "@/app/my-reservations/actions";
+import {cancelReservation, cancelReservationSeries} from "@/app/my-reservations/actions";
 import {useState} from "react";
 import toast from "react-hot-toast";
 import Toast from "@/components/ui/_shared/toast/toast";
+import {useCalendar} from "@/stores/calendar.store";
 
 export default function CancelReservationApproval() {
   const [isLoading, setIsLoading] = useState(false);
@@ -17,6 +18,8 @@ export default function CancelReservationApproval() {
 
   const reservation = useCancelReservation(state => state.reservation);
   const setReservation = useCancelReservation(state => state.setReservation);
+
+  const refreshReservations = useCalendar(state => state.refreshReservations)
 
   const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
@@ -30,9 +33,12 @@ export default function CancelReservationApproval() {
     setShow(false)
   }
 
-  const handleCancelReservation = async () => {
+  const handleCancelReservation = async (series: boolean = false) => {
     setIsLoading(true)
-    const response = await cancelReservation(reservation.id)
+    
+    const response = series
+      ? await cancelReservation(reservation.id)
+      : await cancelReservationSeries(reservation.reservation_series_id!)
 
     if (!response.ok) {
       setIsLoading(false)
@@ -45,15 +51,17 @@ export default function CancelReservationApproval() {
     setIsLoading(false)
     setReservation(null)
     setShow(false)
+
     toast.custom((t) => (
       <Toast t={t} title={"Бронювання було успішно скасовано"} type={"success"}/>
     ), {duration: 2000, position: "bottom-center", removeDelay: 200})
 
+    refreshReservations()
   }
 
   return (
     <div
-      className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-surface-0/50 backdrop-blur-sm z-80">
+      className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-surface-0/50 backdrop-blur-sm z-80" onClick={handleClose}>
       <div className="bg-surface-0 p-4 rounded-md space-y-2 shadow-md ring-2 ring-border relative">
         <h2>Скасувати бронювання</h2>
 
@@ -73,12 +81,19 @@ export default function CancelReservationApproval() {
 
 
         <div className="flex justify-end gap-2">
-          <Button onClick={handleClose}>
-            Ні, повернутися
-          </Button>
+          {!reservation.reservation_series_id && (
+            <Button onClick={handleClose}>
+              Ні, повернутися
+            </Button>
+          )}
           <Button variant="destructive" onClick={() => handleCancelReservation()} loading={isLoading}>
-            Так, скасувати
+            {!reservation.reservation_series_id ? "Так, скасувати" : "Скасувати лише це"}
           </Button>
+          {reservation.reservation_series_id && (
+            <Button variant="destructive" onClick={() => handleCancelReservation()} loading={isLoading}>
+              Скасувати всю серію
+            </Button>
+          )}
         </div>
 
       </div>
