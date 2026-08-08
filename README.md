@@ -2,7 +2,6 @@
 
 <p align="center">
   <img src=".github/assets/desktop-showcase.png" height="300"/>
-  <img src=".github/assets/mobile-showcase.png" height="300"/>
   <img src=".github/assets/mobile-showcase-calendar.png" height="300"/>
 </p>
 
