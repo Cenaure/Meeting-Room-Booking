@@ -3,7 +3,7 @@
 import createInstance from "@/utils/http";
 import {parseApiError, success} from "@/lib/errors/api-errors-handler";
 import {Reservation} from "@/models/reservation";
-import {revalidateTag} from "next/cache";
+import {revalidatePath} from "next/cache";
 
 interface CreateReservationDto {
   roomId: number;
@@ -12,7 +12,7 @@ interface CreateReservationDto {
   title: string;
 }
 
-export const createSingleReservation = async (dto: CreateReservationDto) => {
+export async function createSingleReservation(dto: CreateReservationDto){
   const instance = await createInstance();
 
   try {
@@ -23,9 +23,10 @@ export const createSingleReservation = async (dto: CreateReservationDto) => {
       title: dto.title,
     });
 
-    revalidateTag(`reservations-room-${dto.roomId}`, "max")
+    revalidatePath("/")
     return success<Reservation>(data);
   } catch (error) {
+    revalidatePath("/")
     return parseApiError(error);
   }
-};
+}

@@ -3,43 +3,44 @@ import {
   OnGatewayDisconnect,
   OnGatewayInit,
   WebSocketGateway,
-  WebSocketServer
+  WebSocketServer,
 } from '@nestjs/websockets';
-import {Logger} from "@nestjs/common";
-import {Server, Socket} from "socket.io";
-import {JwtService} from "@nestjs/jwt";
-import {AccessJwtPayload} from "../../common/dto/jwt-payload.dto";
-import {ConfigService} from "@nestjs/config";
+import { Logger } from '@nestjs/common';
+import { Server, Socket } from 'socket.io';
+import { JwtService } from '@nestjs/jwt';
+import { AccessJwtPayload } from '../../common/dto/jwt-payload.dto';
+import { ConfigService } from '@nestjs/config';
 
 @WebSocketGateway({
   cors: {
-    origin: ["http://localhost:3000"],
+    origin: ['http://localhost:3000'],
     credentials: true,
-    methods: ["GET", "POST"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
   },
+  namespace: '/notifications',
 })
-export class NotificationsGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+export class NotificationsGateway
+  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
+{
   private readonly logger = new Logger(NotificationsGateway.name);
 
   constructor(
     private readonly jwtService: JwtService,
-    private readonly configService: ConfigService
-  ) {
-  }
+    private readonly configService: ConfigService,
+  ) {}
 
   @WebSocketServer()
   server: Server;
 
   afterInit() {
-    this.logger.log("WebSocket Gateway initialized");
+    this.logger.log('WebSocket Gateway initialized');
   }
 
   async handleConnection(client: Socket) {
     try {
       const token: string | undefined = client.handshake.auth?.token as
-        | string
-        | undefined;
+        string | undefined;
 
       if (!token) {
         this.logger.warn(`Client ${client.id} tried to connect without token`);
@@ -57,7 +58,7 @@ export class NotificationsGateway implements OnGatewayInit, OnGatewayConnection,
 
       await client.join(user.user_id.toString());
     } catch (error) {
-      this.logger.error(error)
+      this.logger.error(error);
       client.disconnect();
     }
   }
@@ -67,7 +68,9 @@ export class NotificationsGateway implements OnGatewayInit, OnGatewayConnection,
   }
 
   private getUserFromToken(accessToken: string) {
-    const accessTokenSecret = this.configService.get("auth.access_token_secret")
+    const accessTokenSecret = this.configService.get(
+      'auth.access_token_secret',
+    );
 
     try {
       return this.jwtService.verify<AccessJwtPayload>(accessToken, {
@@ -79,11 +82,14 @@ export class NotificationsGateway implements OnGatewayInit, OnGatewayConnection,
   }
 
   sendReservationEndingReminder(
+    notificationId: string,
     userId: number,
     freeRoomBefore: Date,
   ) {
-    this.server.to(userId.toString()).emit("reservation_ending_soon", {
-      free_room_before: freeRoomBefore,
+    this.server.to(userId.toString()).emit('new', {
+      id: notificationId,
+      type: 'reservation-ending-soon',
+      body: { free_before_date: freeRoomBefore },
     });
   }
 }

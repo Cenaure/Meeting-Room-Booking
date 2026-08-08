@@ -15,7 +15,7 @@
     --surface-2: #e2e1e7;
     --surface-3: #d7d4de;
 
-    --border: #d4e0d6;
+    --border: #dcd7e0;
 
     --wink-color: var(--color-lavender-400);
 }
@@ -114,7 +114,6 @@ h6 {
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    color: var(--foreground-muted);
 }
 
 p {
@@ -149,3 +148,30 @@ button, a {
 * {
     user-select: none;
 }
+
+/*region: Scrollbar*/
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-lavender-400) transparent;
+}
+
+*::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: var(--color-lavender-400);
+    border-radius: 9999px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-lavender-500);
+}
+/*endregion: Scrollbar*/

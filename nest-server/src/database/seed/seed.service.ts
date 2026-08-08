@@ -13,7 +13,7 @@ export class SeedService {
     await this.insertUsers();
     await this.insertRooms();
     await this.insertReservations();
-    this.logger.log('Seed Run');
+    this.logger.log('Seed Applied');
   }
 
   async insertUsers() {
@@ -28,7 +28,7 @@ export class SeedService {
         username: 'Oleksandr Ponomarenko',
         email: 'test2@test.com',
         password: '12345678',
-        isActivated: false,
+        isActivated: true,
       },
     ];
 
@@ -183,6 +183,13 @@ export class SeedService {
         reserved_by: user2.id,
         reserver_username: user2.username,
         ...time(3, 16, 18),
+      },
+      {
+        title: "Рев'ю CI/CD",
+        room_id: room1.id,
+        reserved_by: user2.id,
+        reserver_username: user2.username,
+        ...time(7, 16, 18),
       },
     ];
 

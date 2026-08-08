@@ -6,6 +6,8 @@ import Button from "@/components/ui/_shared/button/button";
 import TextInput from "@/components/ui/_shared/inputs/text-input";
 import {ChangePasswordFormValues, changePasswordZodSchema} from "@/lib/schemas/change-password.zod.schema";
 import {changePassword} from "@/app/settings/actions";
+import toast from "react-hot-toast";
+import Toast from "@/components/ui/_shared/toast/toast";
 
 export default function ChangePasswordComponent() {
   const {
@@ -28,6 +30,10 @@ export default function ChangePasswordComponent() {
       setError("root", {message: result.message});
       return;
     }
+
+    toast.custom((t) => (
+      <Toast t={t} title={"Пароль успішно змінено"} type={"success"} />
+    ), {removeDelay: 200, position: "bottom-center"})
 
     reset();
   }

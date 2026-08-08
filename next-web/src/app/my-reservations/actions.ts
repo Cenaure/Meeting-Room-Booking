@@ -39,6 +39,20 @@ export async function cancelReservation(reservationId: string) {
   try {
     await instance.patch(`/reservations/cancel/${reservationId}`);
     revalidatePath("/my-reservations");
+    revalidatePath("/");
+    return success(null);
+  } catch (error) {
+    return parseApiError(error);
+  }
+}
+
+export async function cancelReservationSeries(reservationSeriesId: string) {
+  const instance = await createInstance();
+
+  try {
+    await instance.patch(`/reservations/cancel-series/${reservationSeriesId}`);
+    revalidatePath("/my-reservations");
+    revalidatePath("/");
     return success(null);
   } catch (error) {
     return parseApiError(error);

@@ -5,6 +5,9 @@ services:
       target: development
     ports:
       - "3000:3000"
+    volumes:
+      - ./next-web:/app
+      - /app/node_modules
     env_file: ./next-web/.env.development.local
     depends_on:
       server:
@@ -23,7 +26,7 @@ services:
     ports:
       - "5000:5000"
     env_file: ./nest-server/.env.development.local
-    command: npm run start:dev
+    command: sh -c "npx prisma migrate deploy && npm run seed && npm run start:dev"
     stdin_open: true
     tty: true
     restart: unless-stopped

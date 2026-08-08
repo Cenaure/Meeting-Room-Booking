@@ -5,7 +5,7 @@ import {useSearchParams} from "next/navigation";
 import {CheckCircleIcon, CircleNotchIcon, XCircleIcon} from "@phosphor-icons/react/ssr";
 import {activateEmail} from "@/app/email-activation/actions";
 import {useUser} from "@/stores/user.store";
-import ButtonLink from "@/components/ui/shared/button/button-link";
+import ButtonLink from "@/components/ui/_shared/button/button-link";
 
 type ActivationState = "loading" | "success" | "error" | "invalid";
 

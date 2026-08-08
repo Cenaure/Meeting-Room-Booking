@@ -19,7 +19,7 @@ export default function AsideNavigation() {
           <SidebarSimpleIcon size={18} weight="bold" className="text-foreground/60"/>
         </Button>
       </Hint>
-
+      
       <MonthCalendar/>
 
       <MyReservationsAsideButton/>

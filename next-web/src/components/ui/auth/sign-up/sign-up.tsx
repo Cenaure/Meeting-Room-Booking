@@ -64,7 +64,7 @@ export default function SignUpComponent() {
         <TextInput
           label="Введіть ім'я"
           type="text"
-          placeholder="example@gmail.com"
+          placeholder="Петро"
           {...register("username")}
           error={errors.username?.message}
         />
@@ -154,7 +154,7 @@ export default function SignUpComponent() {
       <div className="hidden md:block">
         <div className="relative h-full w-full">
           <Image
-            src="/auth/sign-in-fox.svg"
+            src="/auth/sign-up-fox.svg"
             alt="Cute fox looking at the sign in form"
             objectFit="cover"
             fill

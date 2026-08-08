@@ -17,10 +17,10 @@ import RadioGroup from "@/components/ui/_shared/inputs/radio-group";
 import toast from "react-hot-toast";
 import Toast from "@/components/ui/_shared/toast/toast";
 import {DateTime} from "luxon";
-import {createSingleReservation} from "@/app/(misc)/actions/reservations/createSingleReservation";
+import {createSingleReservation} from "@/app/(misc)/actions/reservations/create-single-reservation";
 import React from "react";
 import {capitalizeFirst} from "@/utils/capitalize-first";
-import {createReservationSeries} from "@/app/(misc)/actions/reservations/createReservationSeries";
+import {createReservationSeries} from "@/app/(misc)/actions/reservations/create-reservation-series";
 
 export default function CreateReservation() {
   const selectedRoom = useCalendar(state => state.selectedRoom)
@@ -29,6 +29,7 @@ export default function CreateReservation() {
   const timeEnd = useCreateReservation(state => state.timeEnd)
 
   const refreshReservations = useCalendar(state => state.refreshReservations)
+  const breakSelection = useCalendar(state => state.breakSelection)
 
   const isInPast = timeStart ? timeStart.toMillis() < DateTime.now().toMillis() : false;
 
@@ -43,7 +44,7 @@ export default function CreateReservation() {
     resolver: zodResolver(createReservationZodSchema),
     defaultValues: {
       title: "",
-      allow_partial: false
+      allow_partial: "false"
     }
   });
 
@@ -73,10 +74,12 @@ export default function CreateReservation() {
 
     if (!result.ok) {
       setError("root", {message: result.message});
+      refreshReservations()
       return;
     }
 
     refreshReservations()
+    breakSelection()
 
     toast.custom((t) => (
       <Toast t={t} title={"Бронювання успішно створено"} type={"success"} />
@@ -93,7 +96,7 @@ export default function CreateReservation() {
       </div>
 
       {selectedRoom && timeStart && timeEnd && (
-        <div className="overflow-y-auto px-px max-h-[calc(90vh)] space-y-4">
+        <div className="max-h-[90vh] overflow-y-auto px-px space-y-4">
           <h6 className="font-medium">{capitalizeFirst(timeStart.toFormat("EEEE dd.MM.yyyy", {locale: "uk"}))}</h6>
 
           <div className="flex items-center gap-2 w-full">
@@ -155,9 +158,11 @@ export default function CreateReservation() {
             {isInPast && (
               <p className="text-red-500">Час який ви обрали - у минулому, будь ласка, оберіть коректний час для бронювання</p>
             )}
+
             {errors.root?.message && <p className="text-red-500 text-sm min-h-10 w-full">
               {errors.root?.message ?? " "}
             </p>}
+
             <Button
               type="submit"
               fullWidth
