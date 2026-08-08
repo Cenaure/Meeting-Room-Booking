@@ -13,7 +13,7 @@ export class SeedService {
     await this.insertUsers();
     await this.insertRooms();
     await this.insertReservations();
-    this.logger.log('Seed Run');
+    this.logger.log('Seed Applied');
   }
 
   async insertUsers() {
