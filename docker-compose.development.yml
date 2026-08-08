@@ -26,7 +26,11 @@ services:
     ports:
       - "5000:5000"
     env_file: ./nest-server/.env.development.local
-    command: sh -c "npx prisma migrate deploy && npm run seed && npm run start:dev"
+    command: >
+      sh -c "pnpm prisma generate &&
+             pnpm prisma migrate deploy &&
+             pnpm run seed &&
+             pnpm run start:dev"
     stdin_open: true
     tty: true
     restart: unless-stopped
