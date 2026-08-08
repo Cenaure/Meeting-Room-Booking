@@ -27,7 +27,7 @@ export const errorMessages: Record<AppExceptionBodyCodes, string> = {
   [AppExceptionBodyCode.reservationNotFound]: "Бронювання не знайдено",
   [AppExceptionBodyCode.forbidden]: "Немає доступу до цієї дії",
   [AppExceptionBodyCode.reservationCancelationTooLate]: "Скасувати бронювання вже запізно",
-  [AppExceptionBodyCode.accountMustBeActivated]: "Спершу активуйте акаунт",
+  [AppExceptionBodyCode.accountMustBeActivated]: "Спершу підтвердіть вашу пошту",
   [AppExceptionBodyCode.reservationSeriesConflict]: "Один із повторюваних слотів уже заброньовано",
   [AppExceptionBodyCode.reservationSeriesNotFound]: "Серію бронювань не знайдено",
 };
