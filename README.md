@@ -1,6 +1,10 @@
 # Бронювання переговорних кімнат
 
-Вебзастосунок для бронювання переговорних кімнат.
+<p align="center">
+  <img src=".github/assets/desktop-showcase.png" height="300"/>
+  <img src=".github/assets/mobile-showcase.png" height="300"/>
+  <img src=".github/assets/mobile-showcase-calendar.png" height="300"/>
+</p>
 
 ## Зміст
 - [Технічний стек](#технічний-стек)
@@ -92,8 +96,8 @@ cd Meeting-Room-Booking
 У проєкті є файли середовища, які потрібно налаштувати перед запуском:
 
 - [`.env.example`](./.env.example)
-- [`./nest-server/.env.development.example`](nest-server/.env.development.local.example)
-- [`./next-web/.env.development.example`](nest-server/.env.development.local.example)
+- [`./nest-server/.env.development.local.example`](nest-server/.env.development.local.example)
+- [`./next-web/.env.development.local.example`](nest-server/.env.development.local.example)
 
 Для кожного файлу приберіть суфікс `.example`, щоб активувати його.
 
