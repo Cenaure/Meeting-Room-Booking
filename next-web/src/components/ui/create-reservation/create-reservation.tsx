@@ -17,10 +17,10 @@ import RadioGroup from "@/components/ui/_shared/inputs/radio-group";
 import toast from "react-hot-toast";
 import Toast from "@/components/ui/_shared/toast/toast";
 import {DateTime} from "luxon";
-import {createSingleReservation} from "@/app/(misc)/actions/reservations/createSingleReservation";
+import {createSingleReservation} from "@/app/(misc)/actions/reservations/create-single-reservation";
 import React from "react";
 import {capitalizeFirst} from "@/utils/capitalize-first";
-import {createReservationSeries} from "@/app/(misc)/actions/reservations/createReservationSeries";
+import {createReservationSeries} from "@/app/(misc)/actions/reservations/create-reservation-series";
 
 export default function CreateReservation() {
   const selectedRoom = useCalendar(state => state.selectedRoom)

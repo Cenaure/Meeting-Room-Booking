@@ -10,26 +10,23 @@ interface CreateReservationDto {
   timeStart: string;
   timeEnd: string;
   title: string;
-  repeats: number,
-  allowPartial: boolean,
 }
 
-export const createReservationSeries = async (dto: CreateReservationDto) => {
+export async function createSingleReservation(dto: CreateReservationDto){
   const instance = await createInstance();
 
   try {
-    const {data} = await instance.post(`/reservations/new-series`, {
+    const {data} = await instance.post(`/reservations`, {
       room_id: dto.roomId,
       time_start: dto.timeStart,
       time_end: dto.timeEnd,
       title: dto.title,
-      repeats: dto.repeats,
-      allow_partial: dto.allowPartial,
     });
 
     revalidatePath("/")
-    return success<Reservation[]>(data);
+    return success<Reservation>(data);
   } catch (error) {
+    revalidatePath("/")
     return parseApiError(error);
   }
-};
+}

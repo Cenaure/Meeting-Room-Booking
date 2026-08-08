@@ -3,7 +3,7 @@
 import {useEffect, useState} from "react";
 import {Reservation} from "@/models/reservation";
 import {useCalendar} from "@/stores/calendar.store";
-import {getReservations} from "@/app/(misc)/actions/reservations/getReservations";
+import {getReservations} from "@/app/(misc)/actions/reservations/get-reservations";
 import {useServerStatus} from "@/stores/server-status.store";
 
 export function useReservations() {

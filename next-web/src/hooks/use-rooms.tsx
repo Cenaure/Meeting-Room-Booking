@@ -2,7 +2,7 @@
 import {useEffect, useState} from "react";
 import {useServerStatus} from "@/stores/server-status.store";
 import {Room} from "@/models/room";
-import getRooms from "@/app/(misc)/actions/rooms/getRooms";
+import getRooms from "@/app/(misc)/actions/rooms/get-rooms";
 
 interface UseRoomsParams {
   page: number;
