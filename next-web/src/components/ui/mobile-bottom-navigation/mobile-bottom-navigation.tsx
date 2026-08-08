@@ -5,25 +5,32 @@ import {useState} from "react";
 import RoomPickerComponent from "@/components/ui/aside-navigation/rooms/room-picker-component";
 import OpenRoomsDrawerButton from "@/components/ui/mobile-bottom-navigation/open-rooms-drawer";
 import CreateReservationButton from "@/components/ui/mobile-bottom-navigation/create-reservation-button";
+import CreateReservation from "@/components/ui/create-reservation/create-reservation";
 
 export default function MobileBottomNavigation() {
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isRoomDrawerOpen, setIsRoomDrawerOpen] = useState(false);
+  const [isReservationDrawerOpen, setIsReservationDrawerOpen] = useState(false);
 
-  const handleDrawerClose = () => {
-    setIsDrawerOpen(false);
-  }
 
   return (
     <div className="fixed lg:hidden z-20 bottom-0 p-4 flex justify-between w-full">
-      <OpenRoomsDrawerButton setIsDrawerOpen={setIsDrawerOpen}/>
+      <OpenRoomsDrawerButton setIsDrawerOpen={setIsRoomDrawerOpen}/>
 
-      <CreateReservationButton/>
+      <CreateReservationButton setIsDrawerOpen={setIsReservationDrawerOpen}/>
 
 
-      {isDrawerOpen && (
-        <Drawer onClose={handleDrawerClose} side="right">
+      {isRoomDrawerOpen && (
+        <Drawer onClose={() => setIsRoomDrawerOpen(false)} side="right">
           <div className="p-4">
             <RoomPickerComponent/>
+          </div>
+        </Drawer>
+      )}
+
+      {isReservationDrawerOpen && (
+        <Drawer onClose={() => setIsReservationDrawerOpen(false)} side="right">
+          <div className="p-4">
+            <CreateReservation />
           </div>
         </Drawer>
       )}
