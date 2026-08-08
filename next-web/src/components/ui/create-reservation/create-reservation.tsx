@@ -44,7 +44,7 @@ export default function CreateReservation() {
     resolver: zodResolver(createReservationZodSchema),
     defaultValues: {
       title: "",
-      allow_partial: false
+      allow_partial: "false"
     }
   });
 

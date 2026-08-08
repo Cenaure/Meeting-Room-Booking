@@ -15,7 +15,15 @@ export const createReservationZodSchema = z
           .max(12, { error: "Бронювання не можна повторити більше ніж на 12 тижнів" })
           .optional(),
       ),
-    allow_partial: z.coerce.boolean().default(false),
+    allow_partial: z.string().transform(value => {
+      if (value === "true") {
+        return true;
+      } else if (value === "false") {
+        return false;
+      } else {
+        throw new Error("Некоректний варіант");
+      }
+    }).default(false)
   })
 
 export type CreateReservationInput = z.input<typeof createReservationZodSchema>;
