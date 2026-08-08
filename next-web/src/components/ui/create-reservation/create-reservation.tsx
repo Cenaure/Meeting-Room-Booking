@@ -29,6 +29,7 @@ export default function CreateReservation() {
   const timeEnd = useCreateReservation(state => state.timeEnd)
 
   const refreshReservations = useCalendar(state => state.refreshReservations)
+  const breakSelection = useCalendar(state => state.breakSelection)
 
   const isInPast = timeStart ? timeStart.toMillis() < DateTime.now().toMillis() : false;
 
@@ -73,10 +74,12 @@ export default function CreateReservation() {
 
     if (!result.ok) {
       setError("root", {message: result.message});
+      refreshReservations()
       return;
     }
 
     refreshReservations()
+    breakSelection()
 
     toast.custom((t) => (
       <Toast t={t} title={"Бронювання успішно створено"} type={"success"} />

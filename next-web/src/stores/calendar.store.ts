@@ -18,6 +18,9 @@ interface CalendarStore {
 
   reservationsRefresh: number;
   refreshReservations: () => void;
+
+  selectionBreak: number;
+  breakSelection: () => void;
 }
 
 export const useCalendar = create<CalendarStore>((set) => ({
@@ -37,4 +40,8 @@ export const useCalendar = create<CalendarStore>((set) => ({
   reservationsRefresh: 0,
   refreshReservations: () =>
     set((state) => ({ reservationsRefresh: state.reservationsRefresh + 1 })),
+
+  selectionBreak: 0,
+  breakSelection: () =>
+    set((state) => ({ selectionBreak: state.selectionBreak + 1 })),
 }))

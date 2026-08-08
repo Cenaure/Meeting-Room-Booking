@@ -151,7 +151,7 @@ export default function useIntervalSelection({
     anchorRef.current = null;
     setDraft(null);
     onClear();
-  }, [selectedRoom, reservationsRefresh])
+  }, [selectedRoom, selectionBreak])
 
   return { draft, startSelection, expandSelection };
 }
