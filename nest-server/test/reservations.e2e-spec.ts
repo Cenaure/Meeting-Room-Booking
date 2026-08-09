@@ -531,7 +531,7 @@ describe('Reservations (e2e)', () => {
 
       it('Cancels every reservation in the series', async () => {
         const { body } = await create().expect(201);
-        console.log(body);
+
         const seriesId = seriesIdOf(body);
         await cancel(seriesId).expect(200);
 

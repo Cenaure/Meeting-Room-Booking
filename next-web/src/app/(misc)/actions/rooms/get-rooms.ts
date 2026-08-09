@@ -27,7 +27,6 @@ export default async function getRooms({page, limit, search, wishedCapacity}: Ge
 
     return success<{ items: Room[], total: number }>(result);
   } catch (error) {
-    console.log(error);
     return parseApiError(error)
   }
 }
