@@ -62,8 +62,8 @@ model Reservation {
   reserver_username     String // If user's account become deleted reservation should be visible for other users
   room                  Room              @relation(fields: [room_id], references: [id], onDelete: Cascade)
   room_id               Int
-  time_start            DateTime
-  time_end              DateTime
+  time_start            DateTime          @db.Timestamptz(3)
+  time_end              DateTime          @db.Timestamptz(3)
   created_at            DateTime          @default(now())
   status                ReservationStatus @default(active)
   reservation_series_id String?
