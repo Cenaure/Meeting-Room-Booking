@@ -104,14 +104,15 @@ export default function WeekGrid() {
         {capitalizeFirst(monthLabel)} {currentDate.year}
       </p>
 
-      <div className="min-h-0 flex-1 overflow-auto">
+      <div className="w-full min-h-0 flex-1 overflow-auto">
         <div
           className="grid
-                    grid-cols-[60px_repeat(7,calc((100vw-60px)/2))]
-                    md:grid-cols-[60px_repeat(7,calc((100vw-60px)/4))]
-                    lg:grid-cols-[80px_repeat(7,1fr)]
+                    grid-cols-[60px_repeat(7,calc((100%-60px)/2))]
+                    lg:grid-cols-[60px_repeat(7,calc((100%-60px)/4))]
+                    xl:grid-cols-[60px_repeat(7,calc((100%-60px)/5))]
+                    2xl:grid-cols-[80px_repeat(7,1fr)]
                     min-w-max relative
-                    pb-25 lg:pb-0
+                    pb-25 md:pb-10 2xl:pb-0
           ">
           <CurrentTimeLine hourStart={hourStart} hourEnd={hourEnd} hourHeight={HOUR_PX} headerHeight={HEADER_HEIGHT}/>
 
