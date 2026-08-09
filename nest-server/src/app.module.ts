@@ -44,7 +44,6 @@ const ENV = process.env.NODE_ENV;
 
     // Nest JS Cache module based on redis
     // used for caching user's activation links
-    // TODO: should be used for caching rooms
     CacheModule.registerAsync({
       isGlobal: true,
       imports: [ConfigModule],
@@ -52,9 +51,10 @@ const ENV = process.env.NODE_ENV;
       useFactory: (configService: ConfigService) => {
         const host = configService.get<string>('redis.host');
         const port = configService.get<number>('redis.port');
-        const redisPass = configService.get<string>('redis.password');
+        const password = configService.get<string>('redis.password');
 
-        const link = `redis://:${redisPass}@${host}:${port}`;
+        const auth = password ? `:${encodeURIComponent(password)}@` : '';
+        const link = `redis://${auth}${host}:${port}`;
 
         return {
           stores: [
@@ -73,13 +73,13 @@ const ENV = process.env.NODE_ENV;
       useFactory: (configService: ConfigService) => {
         const host = configService.get('redis.host');
         const port = configService.get('redis.port');
-        const redisPass = configService.get('redis.password');
+        const password = configService.get<string>('redis.password');
 
         return {
           connection: {
             host,
             port,
-            password: redisPass,
+            ...(password ? { password } : {}),
           },
         };
       },
