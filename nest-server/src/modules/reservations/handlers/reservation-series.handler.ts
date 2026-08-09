@@ -1,13 +1,18 @@
-import {IReservationJobData, ReservationHandler} from "./reservation-handler.interface";
-import {ConflictException, Injectable} from "@nestjs/common";
-import {Reservation} from "../../../generated/prisma/client";
-import {ReservationType} from "../utils/reservation-types.constants";
-import {Job} from "bullmq";
-import {ReservationsService} from "../reservations.service";
-import {AppExceptionBodyCode} from "../../../common/errors/app-exception-body.interface";
-import {DatabaseService} from "../../../database/database.service";
-import {randomUUID} from "crypto";
-import {NotificationSchedulerService} from "../../notifications/services/notification-scheduler.service";
+import {
+  IReservationJobData,
+  ReservationHandler,
+} from './reservation-handler.interface';
+import { ConflictException, Injectable } from '@nestjs/common';
+import { Reservation } from '../../../generated/prisma/client';
+import { ReservationType } from '../utils/reservation-types.constants';
+import { Job } from 'bullmq';
+import { ReservationsService } from '../reservations.service';
+import { AppExceptionBodyCode } from '../../../common/errors/app-exception-body.interface';
+import { DatabaseService } from '../../../database/database.service';
+import { randomUUID } from 'crypto';
+import { NotificationSchedulerService } from '../../notifications/services/notification-scheduler.service';
+import { DateTime } from 'luxon';
+import { ConfigService } from '@nestjs/config';
 
 export interface IReservationSeriesJobData extends IReservationJobData {
   repeats: number;
@@ -21,35 +26,46 @@ interface SeriesOccurrenceConflict {
   conflicting_reservation_id: string;
 }
 
-export type ReservationSeriesReturnType = {
-  created: Reservation[],
-  skipped: SeriesOccurrenceConflict[]
-} | ConflictException
-
-const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+export type ReservationSeriesReturnType =
+  | {
+      created: Reservation[];
+      skipped: SeriesOccurrenceConflict[];
+    }
+  | ConflictException;
 
 @Injectable()
-export class ReservationSeriesHandler implements ReservationHandler<IReservationSeriesJobData, ReservationSeriesReturnType> {
-  readonly type = ReservationType.ReservationSeries
+export class ReservationSeriesHandler implements ReservationHandler<
+  IReservationSeriesJobData,
+  ReservationSeriesReturnType
+> {
+  readonly type = ReservationType.ReservationSeries;
 
   constructor(
     private readonly reservationsService: ReservationsService,
     private readonly databaseService: DatabaseService,
-    private readonly notificationSchedulerService: NotificationSchedulerService
-  ) {
-  }
+    private readonly notificationSchedulerService: NotificationSchedulerService,
+    private readonly configService: ConfigService,
+  ) {}
 
-  async processReservation(job: Job<IReservationSeriesJobData>): Promise<ReservationSeriesReturnType> {
-    const {room_id, title, user, repeats, allow_partial} = job.data;
+  async processReservation(
+    job: Job<IReservationSeriesJobData>,
+  ): Promise<ReservationSeriesReturnType> {
+    const { room_id, title, user, repeats, allow_partial } = job.data;
 
-    const time_start = new Date(job.data.time_start);
-    const time_end = new Date(job.data.time_end);
+    const officeTimezone = this.configService.get('app.office_timezone');
+
+    const time_start = DateTime.fromJSDate(
+      new Date(job.data.time_start),
+    ).setZone(officeTimezone);
+    const time_end = DateTime.fromJSDate(new Date(job.data.time_end)).setZone(
+      officeTimezone,
+    );
 
     // Create an array of all date intervals of reservations
-    const allReservationsDates = Array.from({length: repeats}, (_, i) => ({
+    const allReservationsDates = Array.from({ length: repeats }, (_, i) => ({
       index: i,
-      time_start: new Date(time_start.getTime() + i * WEEK_MS),
-      time_end: new Date(time_end.getTime() + i * WEEK_MS),
+      time_start: time_start.plus({ weeks: i }).toJSDate(),
+      time_end: time_end.plus({ weeks: i }).toJSDate(),
     }));
 
     //region: # Find conflicts
@@ -72,7 +88,7 @@ export class ReservationSeriesHandler implements ReservationHandler<IReservation
           conflicting_reservation_id: existing[0].id,
         });
 
-        continue
+        continue;
       }
 
       available.push(item);
@@ -80,12 +96,13 @@ export class ReservationSeriesHandler implements ReservationHandler<IReservation
     //endregion: # Find conflicts
 
     if (!allow_partial && conflicts.length > 0)
-      throw new Error(JSON.stringify({
-        code: AppExceptionBodyCode.reservationSeriesConflict,
-        message: "Reservation Series Conflict",
-        details: {conflicts}
-      }))
-
+      throw new Error(
+        JSON.stringify({
+          code: AppExceptionBodyCode.reservationSeriesConflict,
+          message: 'Reservation Series Conflict',
+          details: { conflicts },
+        }),
+      );
 
     const seriesId = randomUUID();
 
@@ -111,21 +128,28 @@ export class ReservationSeriesHandler implements ReservationHandler<IReservation
 
     //region: # Notifications Scheduling
     for (const reservation of result) {
-      const {leftAdjacent, rightAdjacent} = await this.reservationsService.findAdjacentReservations({
-        room_id,
-        start_date: reservation.time_start,
-        end_date: reservation.time_end,
-      });
+      const { leftAdjacent, rightAdjacent } =
+        await this.reservationsService.findAdjacentReservations({
+          room_id,
+          start_date: reservation.time_start,
+          end_date: reservation.time_end,
+        });
       if (leftAdjacent)
-        await this.notificationSchedulerService.scheduleReservationEndingNotification(leftAdjacent, reservation);
+        await this.notificationSchedulerService.scheduleReservationEndingNotification(
+          leftAdjacent,
+          reservation,
+        );
       if (rightAdjacent)
-        await this.notificationSchedulerService.scheduleReservationEndingNotification(reservation, rightAdjacent);
+        await this.notificationSchedulerService.scheduleReservationEndingNotification(
+          reservation,
+          rightAdjacent,
+        );
     }
     //endregion: # Notifications Scheduling
 
     return {
       created: result,
-      skipped: conflicts
+      skipped: conflicts,
     };
   }
 }

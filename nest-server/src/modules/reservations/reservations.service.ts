@@ -195,8 +195,8 @@ export class ReservationsService {
     if (
       DateTime.fromJSDate(end_date).diff(
         DateTime.fromJSDate(start_date),
-        'days',
-      ).days > 7
+        'hours',
+      ).hours > 169
     )
       throw AppException.badRequest({
         code: AppExceptionBodyCode.requestedIntervalTooLong,
