@@ -286,15 +286,6 @@ export class ReservationsService {
 
     if (reservation.reserved_by !== userId) throw AppException.forbidden();
 
-    console.log(
-      DateTime.fromJSDate(reservation.time_start, { zone: 'UTC' }).diff(
-        DateTime.now().setZone('UTC'),
-        'minutes',
-      ).minutes,
-    );
-
-    console.log(preventCancellationBeforeMinutes);
-
     if (
       DateTime.fromJSDate(reservation.time_start, { zone: 'UTC' }).diff(
         DateTime.now().setZone('UTC'),

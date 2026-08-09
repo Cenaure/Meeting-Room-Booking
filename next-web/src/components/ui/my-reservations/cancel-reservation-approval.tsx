@@ -37,8 +37,8 @@ export default function CancelReservationApproval() {
     setIsLoading(true)
     
     const response = series
-      ? await cancelReservation(reservation.id)
-      : await cancelReservationSeries(reservation.reservation_series_id!)
+      ? await cancelReservationSeries(reservation.reservation_series_id!)
+      : await cancelReservation(reservation.id)
 
     if (!response.ok) {
       setIsLoading(false)
@@ -90,7 +90,7 @@ export default function CancelReservationApproval() {
             {!reservation.reservation_series_id ? "Так, скасувати" : "Скасувати лише це"}
           </Button>
           {reservation.reservation_series_id && (
-            <Button variant="destructive" onClick={() => handleCancelReservation()} loading={isLoading}>
+            <Button variant="destructive" onClick={() => handleCancelReservation(true)} loading={isLoading}>
               Скасувати всю серію
             </Button>
           )}

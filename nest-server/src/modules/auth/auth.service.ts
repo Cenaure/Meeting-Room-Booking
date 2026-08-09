@@ -6,10 +6,7 @@ import { AppExceptionBodyCode } from '../../common/errors/app-exception-body.int
 import * as bcrypt from 'bcrypt';
 import { randomUUID } from 'crypto';
 import { User } from '../../generated/prisma/client';
-import {
-  AccessJwtPayload,
-  RefreshJwtPayload,
-} from '../../common/dto/jwt-payload.dto';
+import { AccessJwtPayload, RefreshJwtPayload, } from '../../common/dto/jwt-payload.dto';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import SignUpDto from './dto/signUp.dto';
@@ -54,8 +51,6 @@ export class AuthService {
       this.configService.get('auth.access_token_ttl') / 1000;
     const refreshTokenTTL =
       this.configService.get('auth.refresh_token_ttl') / 1000;
-
-    console.log(accessTokenTTL, refreshTokenTTL); //TODO: remove
 
     const accessToken = this.jwtService.sign(plainAccessJwtPayload, {
       secret: accessJwtSecret,

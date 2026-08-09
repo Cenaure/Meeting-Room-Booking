@@ -10,8 +10,8 @@ export default function TimeAxis({hours, hourHeight, headerHeight}: TimeAxisProp
   const timeZone = DateTime.local().toFormat("ZZZZ");
 
   return (
-    <div className="sticky left-0 z-20 lg:z-0 lg:block">
-      <div className="absolute lg:hidden inset-0 bg-surface-1 border-r -mr-[1px] "/>
+    <div className="sticky left-0 z-20 2xl:z-0 2xl:block bg-surface-1">
+      <div className="absolute 2xl:hidden inset-0 bg-surface-1 border-r -mr-[1px] "/>
 
       <div className="relative bg-surface-1">
 
@@ -22,7 +22,7 @@ export default function TimeAxis({hours, hourHeight, headerHeight}: TimeAxisProp
         {hours.map((hour, index) => (
           <div
             key={hour}
-            className="absolute right-2 -translate-y-1/2 text-xs text-foreground/50 select-none"
+            className="absolute text-right pr-2 -translate-y-1/2 text-xs bg-surface-1 text-foreground/50 select-none inset-x-0"
             style={{top: index * hourHeight + headerHeight}}
           >
             {hour}:00

@@ -7,7 +7,6 @@ import {markNotificationAsRead} from "@/app/(misc)/actions/notifications/mark-no
 export default async function handleNotification(notification: Notification) {
   switch (notification.type) {
     case NotificationType.ReservationEndingSoon:
-      console.log(notification)
       const freeBeforeDate = DateTime.fromISO(notification.body.free_before_date).toLocal();
 
       if (freeBeforeDate < DateTime.now())

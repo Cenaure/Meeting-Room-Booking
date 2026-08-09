@@ -92,11 +92,12 @@ export default function CreateReservation() {
     <div className="space-y-4">
       <div>
         <h2>Бронювання кімнати</h2>
-        <p className="text-foreground/60">Оберіть кімнату зліва та виділіть бажаний час на сітці</p>
+        <p className="text-foreground/60 lg:block hidden">Оберіть кімнату зліва та виділіть бажаний час на сітці</p>
+        <p className="text-foreground/60 block lg:hidden">Оберіть кімнату натиснувши іконку зліва знизу та виділіть бажаний час на сітці</p>
       </div>
 
       {selectedRoom && timeStart && timeEnd && (
-        <div className="max-h-[90vh] overflow-y-auto px-px space-y-4">
+        <div className="max-h-[90vh] px-px space-y-4">
           <h6 className="font-medium">{capitalizeFirst(timeStart.toFormat("EEEE dd.MM.yyyy", {locale: "uk"}))}</h6>
 
           <div className="flex items-center gap-2 w-full">

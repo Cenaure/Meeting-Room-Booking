@@ -9,12 +9,11 @@ import CreateReservation from "@/components/ui/create-reservation/create-reserva
 export default function Home() {
   return (
     <div className="h-screen flex relative">
-      <div className="hidden md:block">
+      <div className="hidden lg:block w-70 2xl:w-75">
         <AsideNavigation/>
-
       </div>
 
-      <div className="h-full bg-zinc-50 flex flex-col md:flex-row w-full">
+      <div className="h-full bg-zinc-50 flex flex-col lg:flex-row w-full">
         <div className="bg-surface-1 border-r flex flex-col w-full h-full">
           <header className="lg:px-4 shrink-0">
             <HeaderComponent/>
@@ -26,15 +25,14 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="hidden lg:block bg-surface-1 p-4 w-95 overflow-y-auto">
+        <div className="hidden lg:block bg-surface-1 shrink-0 p-4 w-70 pb-10 overflow-y-auto">
           <CreateReservation />
         </div>
       </div>
 
+
       <MobileBottomNavigation/>
-
       <TimezoneDiffersToast/>
-
     </div>
   );
 }
